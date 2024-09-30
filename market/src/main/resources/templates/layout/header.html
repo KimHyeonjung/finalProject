@@ -4,35 +4,40 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
     <header th:fragment="header">
-		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-			<!-- Brand -->
-			<a class="navbar-brand" href="#">Logo</a>
-		
-			<!-- Links -->
-			<ul class="navbar-nav">
-			
+		<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+			<a class="navbar-brand" href="#">LOGO</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
 			<select>
 				<option>물건</option>
-				<option>동네</option>
+				<option>지역</option>
 			</select>
-			
 			<input type="text">
-		
 			<button>검색</button>
-			
-		  		 <!-- Dropdown -->
-		  		 <li class="nav-item dropdown">
-			    	<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-		       			Dropdown link
-		     		</a>
-	     			<div class="dropdown-menu">
-			    		<a class="dropdown-item" href="#">Link 1</a>
-			      		<a class="dropdown-item" href="#">Link 2</a>
-			      		<a class="dropdown-item" href="#">Link 3</a>
-			    	</div>
-				</li>
-			</ul>
-		  
+			<div class="collapse navbar-collapse d-flex " id="collapsibleNavbar">
+				<ul class="navbar-nav" sec:authorize="isAnonymous()">
+					<li class="nav-item" >
+						<a class="nav-link" th:href="@{/login}">로그인</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/signup}">회원가입</a>
+					</li>  
+				</ul>
+				
+				<ul class="navbar-nav" sec:authorize="isAuthenticated()">
+					<li class="nav-item dropdown">
+     					<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+        					Dropdown link
+      					</a>
+	      				<div class="dropdown-menu">
+		        			<a class="dropdown-item" href="#">마이 페이지</a>
+		       				<a class="dropdown-item" href="#">Link 2</a>
+		        			<a class="dropdown-item" th:action="@{/logout}">로그아웃</a>
+	      				</div>
+   					</li>
+  				</ul>
+			</div>  
 		</nav>
     </header>
 </body>
