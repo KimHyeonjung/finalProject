@@ -8,3 +8,5 @@ insert into category (category_name) values
 ('패션'), ('리빙'), ('모바일/태블릿'), ('가전제품'), 
 ('스포츠'), ('도서/음반'), ('반려동물'), ('유아/완구'), 
 ('공구/산업용품'), ('취미용품'), ('여행'), ('중고차'), ('무료나눔');
+
+insert into member value (1, 'a', 'a', 'a', 'a', 'a', 'user', 'default', 0, 0, 0);
