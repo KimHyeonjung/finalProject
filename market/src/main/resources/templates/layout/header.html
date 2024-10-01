@@ -17,7 +17,6 @@
 					<option>동네</option>
 				</select>
    				<input class="form-control mr-sm-2" type="text" placeholder="물건이나 동네를 검색해보세요">
-    			<button class="btn btn-success" type="submit">검색</button>
   			</form>
 			
 			<div class="collapse navbar-collapse d-flex " id="collapsibleNavbar">
@@ -34,20 +33,34 @@
 					<li class="nav-item">
 						<a class="nav-link" th:href="@{/chatRoom}">채팅</a>
 					</li>
-					<li class="nav-item dropdown">
-     					<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-     						<img src="bird.jpg" alt="Logo" style="width:40px;">
-      					</a>
-	      				<div class="dropdown-menu">
-		        			<a class="dropdown-item" href="#">마이 페이지</a>
-		       				<a class="dropdown-item" href="#">게시글 관리</a>
-		       				<a class="dropdown-item" href="#">문의하기</a>
-		        			<a class="dropdown-item" th:action="@{/logout}">로그아웃</a>
-	      				</div>
-   					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/}">글 쓰기</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/mypage}">마이페이지</a>
+					</li>
   				</ul>
 			</div>  
 		</nav>
+		
+	  	<!-- Navbar links -->
+	  	<button data-toggle="collapse" type="button" data-target="#category">카테고리</button>
+
+		<div id="category" class="collapse">
+   			<p>패션</p>
+   			<p>리빙</p>
+   			<p>모바일/태블릿</p>
+   			<p>가전제품</p>
+   			<p>스포츠</p>
+   			<p>도서/음반</p>
+   			<p>반려동물</p>
+   			<p>유아/완구</p>
+   			<p>공구/산업용품</p>
+   			<p>취미용품</p>
+   			<p>여행</p>
+   			<p>중고차</p>
+   			<p>무료나눔</p>
+		</div>
     </header>
 </body>
 </html>
