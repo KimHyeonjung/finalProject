@@ -5,16 +5,21 @@
 <body>
     <header th:fragment="header">
 		<nav class="navbar navbar-expand-md bg-dark navbar-dark">
-			<a class="navbar-brand" href="#">LOGO</a>
+			<a class="navbar-brand" href="#">
+				<img src="bird.jpg" alt="Logo" style="width:40px;">
+			</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<select>
-				<option>물건</option>
-				<option>지역</option>
-			</select>
-			<input type="text">
-			<button>검색</button>
+  			<form class="form-inline" action="/action_page.php">
+	  			<select>
+					<option>물건</option>
+					<option>동네</option>
+				</select>
+   				<input class="form-control mr-sm-2" type="text" placeholder="물건이나 동네를 검색해보세요">
+    			<button class="btn btn-success" type="submit">검색</button>
+  			</form>
+			
 			<div class="collapse navbar-collapse d-flex " id="collapsibleNavbar">
 				<ul class="navbar-nav" sec:authorize="isAnonymous()">
 					<li class="nav-item" >
@@ -26,13 +31,17 @@
 				</ul>
 				
 				<ul class="navbar-nav" sec:authorize="isAuthenticated()">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/chatRoom}">채팅</a>
+					</li>
 					<li class="nav-item dropdown">
      					<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        					Dropdown link
+     						<img src="bird.jpg" alt="Logo" style="width:40px;">
       					</a>
 	      				<div class="dropdown-menu">
 		        			<a class="dropdown-item" href="#">마이 페이지</a>
-		       				<a class="dropdown-item" href="#">Link 2</a>
+		       				<a class="dropdown-item" href="#">게시글 관리</a>
+		       				<a class="dropdown-item" href="#">문의하기</a>
 		        			<a class="dropdown-item" th:action="@{/logout}">로그아웃</a>
 	      				</div>
    					</li>
