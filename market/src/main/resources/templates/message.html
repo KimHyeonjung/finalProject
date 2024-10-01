@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>메세지 레이아웃</title>
+</head>
+<body>
+	<!-- 메시지 출력용 프래그먼트 정의 -->
+    <div th:fragment="messageFragment">
+        <script type="text/javascript">
+			window.onload = function() {
+				// Thymeleaf에서 서버에서 전달된 message 값을 사용하여 JavaScript에서 처리
+				var message = '[[${message}]]';
+				if (message) {
+					alert(message); // 메시지를 팝업으로 출력
+				}
+			}
+		</script>
+    </div>
+</body>
+</html>
