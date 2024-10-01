@@ -20,13 +20,20 @@ public class MainController {
 		return "index";
 	}
 	
-	@GetMapping("/post/list/{category_num}")
-	public String postList(Model model, @PathVariable int co_num) {
-		List<CategoryVO> list = postService.getPostList();
+	@GetMapping("index")
+	public String categorytList(Model model) {
 		List<CategoryVO> category = postService.getCategoryList();
-		model.addAttribute("list", list);
 		model.addAttribute("category", category);
-		return "post/list";
+		return "index";
 	}
+	
+//	@GetMapping("/post/list/{category_num}")
+//	public String postList(Model model, @PathVariable int category_num) {
+//		List<CategoryVO> list = postService.getPostList();
+//		List<CategoryVO> category = postService.getCategoryList();
+//		model.addAttribute("list", list);
+//		model.addAttribute("category", category);
+//		return "post/list";
+//	}
 	
 }

@@ -47,19 +47,13 @@
 	  	<button data-toggle="collapse" type="button" data-target="#category">카테고리</button>
 
 		<div id="category" class="collapse">
-   			<p>패션</p>
-   			<p>리빙</p>
-   			<p>모바일/태블릿</p>
-   			<p>가전제품</p>
-   			<p>스포츠</p>
-   			<p>도서/음반</p>
-   			<p>반려동물</p>
-   			<p>유아/완구</p>
-   			<p>공구/산업용품</p>
-   			<p>취미용품</p>
-   			<p>여행</p>
-   			<p>중고차</p>
-   			<p>무료나눔</p>
+   			<table class="table table-striped">
+      			<tr th:each="item : ${category}">
+    				<td class="list">
+    					<a th:text="${item.category_name}"></a>
+    				</td>
+   				</tr>
+			</table>
 		</div>
     </header>
 </body>
