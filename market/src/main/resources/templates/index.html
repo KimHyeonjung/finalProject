@@ -9,7 +9,27 @@ layout:decorate="~{layout/layout.html}">
 </head>
 <body>
 	<main layout:fragment="content">
-		<h1>Hi!</h1>
+		<div class="cards-wrap">
+			<table class="table table-striped">
+      			<tr th:each="item : ${list}">
+    				<td class="card-photo">
+        				<img alt="${item.post_name}" src="https://img.kr.gcp-karroter.net/origin/article/202409/ae5a9fd1d39633a5733ede78e0b38e83ef69d19da8843ea69ce05b0cf371fa8f.jpg?f=webp&amp;q=82&amp;s=300x300&amp;t=crop">
+    				</td>
+    				<td>
+      					<a th:text="${item.post_name}"></a>
+    				</td>
+    				<td>
+    					<a th:text="${item.post_price}"></a>
+    				</td>
+    				<td>
+    					<a th:text="${item.post_address}"></a>
+    				</td>
+   				</tr>
+   				<tr th:if="${list.size() == 0}">
+					<td class="text-center">등록된 게시글이 없습니다.</td>
+				</tr>
+			</table>
+		</div>
 	</main>
 </body>
 </html>
