@@ -26,10 +26,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return resolver;
     }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
-    }
+	/*
+	 * @Override public void addResourceHandlers(ResourceHandlerRegistry registry) {
+	 * registry.addResourceHandler("/resources/**").addResourceLocations(
+	 * "/resources/"); }
+	 */
     
 	// TilesViewResolver 설정
     @Bean
@@ -47,11 +48,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return tilesConfigurer;
     }
     
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 인터셉터 추가 및 URL 패턴 설정
-        registry.addInterceptor(new MemberInterceptor())
-                .addPathPatterns("/**")  // 모든 경로에 대해 인터셉터 적용
-                .excludePathPatterns("/login", "/logout"); //제외할 경로  // 특정 경로 제외
-    }
+	/*
+	 * @Override public void addInterceptors(InterceptorRegistry registry) { // 인터셉터
+	 * 추가 및 URL 패턴 설정 registry.addInterceptor(new MemberInterceptor())
+	 * .addPathPatterns("/**") // 모든 경로에 대해 인터셉터 적용 .excludePathPatterns("/login",
+	 * "/logout"); //제외할 경로 // 특정 경로 제외 }
+	 */
 }
