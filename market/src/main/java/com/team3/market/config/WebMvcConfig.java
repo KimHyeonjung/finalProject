@@ -26,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return resolver;
     }
 
-    @Override
+//    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
     }
@@ -47,7 +47,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return tilesConfigurer;
     }
     
-    @Override
+//    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 인터셉터 추가 및 URL 패턴 설정
         registry.addInterceptor(new MemberInterceptor())
