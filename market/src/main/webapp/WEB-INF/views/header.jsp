@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
     
 <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-	<a class="navbar-brand" href="#">
+	<a class="navbar-brand" href="/"/>
 		<img src="bird.jpg" alt="Logo" style="width:40px;">
 	</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -17,25 +17,26 @@
 	</form>
 	
 	<div class="collapse navbar-collapse d-flex " id="collapsibleNavbar">
-		<ul class="navbar-nav" sec:authorize="isAnonymous()">
-			<li class="nav-item" >
-				<a class="nav-link" th:href="@{/login}">로그인</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" th:href="@{/signup}">회원가입</a>
-			</li>  
-		</ul>
-		
-		<ul class="navbar-nav" sec:authorize="isAuthenticated()">
-			<li class="nav-item">
-				<a class="nav-link" th:href="@{/chatRoom}">채팅</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" th:href="@{/post/insert}">글 쓰기</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" th:href="@{/mypage}">마이페이지</a>
-			</li>
+		<ul class="navbar-nav">
+			<%-- <c:if test="${user == null}"> --%>
+			    <li class="nav-item">
+					<a class="nav-link" href="/signup"/>회원가입</a>
+			    </li>
+			    <li class="nav-item">
+					<a class="nav-link" href="/login"/>로그인</a>
+			    </li>
+			<%-- </c:if> --%>
+			<%-- <c:if test="${user != null}"> --%>
+		    	<li class="nav-item">
+					<a class="nav-link" href="/chatRoom"/>채팅</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/post/insert"/>글 쓰기</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/mypage"/>마이페이지</a>
+				</li>
+		    <%--</c:if> --%>
 		</ul>
 	</div>  
 </nav>
@@ -45,7 +46,7 @@
 
 <div id="category" class="collapse">
 	<table class="table table-striped">
-		<tr th:each="item : ${category}">
+		<tr c:each="item : ${category}">
 			<td class="list">
 				<a th:text="${item.category_name}"></a>
 			</td>
