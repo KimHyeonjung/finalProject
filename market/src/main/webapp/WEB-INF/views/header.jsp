@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
     
 <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-	<a class="navbar-brand" href="/"/>
+	<a class="navbar-brand" href="/market">
 		<img src="bird.jpg" alt="Logo" style="width:40px;">
 	</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -18,25 +18,25 @@
 	
 	<div class="collapse navbar-collapse d-flex " id="collapsibleNavbar">
 		<ul class="navbar-nav">
-			<%-- <c:if test="${user == null}"> --%>
+			<c:if test="${user == null}">
 			    <li class="nav-item">
-					<a class="nav-link" href="/signup"/>회원가입</a>
+					<a class="nav-link" href="/signup">회원가입</a>
 			    </li>
 			    <li class="nav-item">
-					<a class="nav-link" href="/login"/>로그인</a>
+					<a class="nav-link" href="/login">로그인</a>
 			    </li>
-			<%-- </c:if> --%>
-			<%-- <c:if test="${user != null}"> --%>
+			</c:if>
+			<c:if test="${user != null}">
 		    	<li class="nav-item">
-					<a class="nav-link" href="/chatRoom"/>채팅</a>
+					<a class="nav-link" href="/chatRoom">채팅</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="/post/insert"/>글 쓰기</a>
+					<a class="nav-link" href="/post/insert">글 쓰기</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="/mypage"/>마이페이지</a>
+					<a class="nav-link" href="/mypage">마이페이지</a>
 				</li>
-		    <%--</c:if> --%>
+		    </c:if>
 		</ul>
 	</div>  
 </nav>
