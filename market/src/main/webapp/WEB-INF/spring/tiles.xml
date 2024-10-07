@@ -14,8 +14,8 @@
         <put-attribute name="content" value="/WEB-INF/views/{1}.jsp" />
     </definition>
     
-    <definition name="/post/insert" extends="baseLayout">
-        <put-attribute name="content" value="/WEB-INF/views/post/insert.jsp" />
+    <definition name="/*/*" extends="baseLayout">
+        <put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" />
     </definition>
 
 </tiles-definitions>

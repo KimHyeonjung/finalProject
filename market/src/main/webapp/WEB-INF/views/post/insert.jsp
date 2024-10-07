@@ -12,11 +12,11 @@
 	<h1>게시글 등록</h1>
 	<form action="<c:url value="/post/insert/${co_num}"/>" method="post" enctype="multipart/form-data">
 		<div class="form-group">
-			<label for="po_title">제목:</label>
+			<label for="po_title">상품명:</label>
 			<input type="text" class="form-control" id="po_title" name="po_title">
 		</div>
 		<div class="form-group">
-			<label for="po_title">내용:</label>
+			<label for="po_title">상품설명:</label>
 			<textarea class="form-control" id="po_content" name="po_content" style="min-height: 400px; height: auto"></textarea >
 		</div>
 		<div class="form-group">
