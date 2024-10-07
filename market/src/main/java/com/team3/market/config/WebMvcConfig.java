@@ -54,4 +54,3 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")  // 모든 경로에 대해 인터셉터 적용
                 .excludePathPatterns("/login", "/logout"); //제외할 경로  // 특정 경로 제외
     }
-}
