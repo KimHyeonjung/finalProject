@@ -14,4 +14,12 @@
     <select id="getMemberByEmail" parameterType="String" resultType="MemberVO">
         SELECT * FROM member WHERE member_email = #{member_email}
     </select>
+    <update id="updateMemberCookie">
+		update member
+		set
+			member_cookie = #{member_cookie},
+			member_limit = #{member_limit}
+		where
+			member_id = #{member_id}
+	</update>
 </mapper>

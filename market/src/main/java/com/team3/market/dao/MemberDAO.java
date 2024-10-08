@@ -14,4 +14,6 @@ public interface MemberDAO {
     
     // 회원 정보 삽입
     int insertMember(MemberVO member);
+
+	void updateMemberCookie(MemberVO user);
 }
