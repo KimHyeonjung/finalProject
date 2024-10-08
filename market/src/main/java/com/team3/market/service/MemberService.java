@@ -12,10 +12,14 @@ public class MemberService {
 	@Autowired
     private MemberDAO memberDao;
 	
-	public void registerMember(MemberVO member) {
-        memberDao.insertMember(member);
+	public boolean signup(MemberVO member) {
+        // 아이디나 이메일 중복 체크
+        if(memberDao.getMemberById(member.getMember_id()) != null || 
+           memberDao.getMemberByEmail(member.getMember_email()) != null) {
+            return false; // 중복되면 회원가입 실패
+        }
+        // 회원가입 처리
+        return memberDao.insertMember(member) > 0;
     }
-
-	
 	
 }

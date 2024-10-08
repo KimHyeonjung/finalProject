@@ -26,25 +26,25 @@ public class HomeController {
 		return "/home";//타일즈에서 /*로 했기 때문에 /를 붙임
 	}
 	
-	@GetMapping("/signup")
-    public String showSignupForm() {
-        return "signup"; // 회원가입 폼을 보여주는 JSP로 이동
-    }
-	
-	@PostMapping("/signup")
-    public String signup(MemberVO member, RedirectAttributes rttr) {
-        // 비밀번호 암호화 (추후 구현 예정)
-        // member.setMember_pw(암호화된 비밀번호);
-        
-		try {
-            memberService.registerMember(member);
-            rttr.addFlashAttribute("msg", "회원가입 성공!");
-        } catch (Exception e) {
-            rttr.addFlashAttribute("msg", "회원가입 실패!");
-        }
+	 @GetMapping("/signup")
+	    public String showSignupForm() {
+	        return "/member/signup";
+	    }
 
-        return "redirect:/login"; // 회원가입 후 로그인 페이지로 이동
-    }
-	
+	    @PostMapping("/signup")
+	    public String processSignup(Model model, MemberVO member) {
+	        
+	        boolean res = memberService.signup(member);
+	        
+	        MessageDTO message;
+	        if(res) {
+	            message = new MessageDTO("/", "회원가입에 성공했습니다.");
+	        } else {
+	            message = new MessageDTO("/signup", "아이디나 이메일이 중복되었습니다.");
+	        }
+	        
+	        model.addAttribute("message", message);
+	        return "/main/message";
+	    }
 	
 }
