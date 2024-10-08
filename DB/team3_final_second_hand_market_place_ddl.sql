@@ -16,7 +16,7 @@ CREATE TABLE `member` (
 	`member_auth`	varchar(5)	NOT NULL,
 	`member_state`	varchar(10)	NULL,
 	`member_report`	int	NULL,
-	`member_score`	float	NULL,
+	`member_score`	double	NULL,
 	`member_money`	int	NULL
 );
 
@@ -48,7 +48,7 @@ DROP TABLE IF EXISTS `wish`;
 
 CREATE TABLE `wish` (
 	`wish_num`	int primary key auto_increment	NOT NULL,
-	`wish_post_name`	int	NOT NULL,
+	`wish_post_num`	int	NOT NULL,
 	`wish_member_num`	int	NOT NULL,
 	`wish_date`	date	NULL
 );
@@ -94,10 +94,10 @@ DROP TABLE IF EXISTS `chat_room`;
 
 CREATE TABLE `chat_room` (
 	`chatRoom_num`	int primary key auto_increment	NOT NULL,
-	`charRoom_member_num`	int	NOT NULL,
-	`charRoom_member_num2`	int	NOT NULL,
-	`charRoom_post_name`	int	NOT NULL,
-	`charRoom_date`	date	NULL
+	`chatRoom_member_num`	int	NOT NULL,
+	`chatRoom_member_num2`	int	NOT NULL,
+	`chatRoom_post_num`	int	NOT NULL,
+	`chatRoom_date`	date	NULL
 );
 
 DROP TABLE IF EXISTS `chat`;
@@ -142,7 +142,7 @@ DROP TABLE IF EXISTS `wallet`;
 CREATE TABLE `wallet` (
 	`wallet_num`	int primary key auto_increment	NOT NULL,
 	`wallet_member_num`	int	NOT NULL,
-	`wallet_post_name`	int	NOT NULL,
+	`wallet_post_num`	int	NOT NULL,
 	`wallet_money`	int	NULL,
 	`wallet_date`	date	NULL
 );
@@ -174,7 +174,7 @@ CREATE TABLE `deal` (
 	`deal_num`	int primary key auto_increment	NOT NULL,
 	`deal_price`	int	NOT NULL,
 	`deal_yes_or_no`	boolean	NOT NULL,
-	`deal_post_name`	int	NOT NULL,
+	`deal_post_num`	int	NOT NULL,
 	`deal_member_num`	int	NOT NULL
 );
 
@@ -191,7 +191,7 @@ DROP TABLE IF EXISTS `after`;
 CREATE TABLE `after` (
 	`after_num`	int primary key auto_increment	NOT NULL,
 	`after_member_num`	int	NOT NULL,
-	`after_post_name`	int	NOT NULL,
+	`after_post_num`	int	NOT NULL,
 	`after_message`	varchar(255)	NULL
 );
 
@@ -285,7 +285,7 @@ REFERENCES `category` (
 );
 
 ALTER TABLE `wish` ADD CONSTRAINT `FK_post_TO_wish_1` FOREIGN KEY (
-	`wish_post_name`
+	`wish_post_num`
 )
 REFERENCES `post` (
 	`post_num`
@@ -341,21 +341,21 @@ REFERENCES `report_category` (
 );
 
 ALTER TABLE `chat_room` ADD CONSTRAINT `FK_member_TO_chat_room_1` FOREIGN KEY (
-	`charRoom_member_num`
+	`chatRoom_member_num`
 )
 REFERENCES `member` (
 	`member_num`
 );
 
 ALTER TABLE `chat_room` ADD CONSTRAINT `FK_member_TO_chat_room_2` FOREIGN KEY (
-	`charRoom_member_num2`
+	`chatRoom_member_num2`
 )
 REFERENCES `member` (
 	`member_num`
 );
 
 ALTER TABLE `chat_room` ADD CONSTRAINT `FK_post_TO_chat_room_1` FOREIGN KEY (
-	`charRoom_post_name`
+	`chatRoom_post_num`
 )
 REFERENCES `post` (
 	`post_num`
@@ -397,7 +397,7 @@ REFERENCES `member` (
 );
 
 ALTER TABLE `wallet` ADD CONSTRAINT `FK_post_TO_wallet_1` FOREIGN KEY (
-	`wallet_post_name`
+	`wallet_post_num`
 )
 REFERENCES `post` (
 	`post_num`
@@ -425,7 +425,7 @@ REFERENCES `notification_type` (
 );
 
 ALTER TABLE `deal` ADD CONSTRAINT `FK_post_TO_deal_1` FOREIGN KEY (
-	`deal_post_name`
+	`deal_post_num`
 )
 REFERENCES `post` (
 	`post_num`
@@ -453,7 +453,7 @@ REFERENCES `member` (
 );
 
 ALTER TABLE `after` ADD CONSTRAINT `FK_post_TO_after_1` FOREIGN KEY (
-	`after_post_name`
+	`after_post_num`
 )
 REFERENCES `post` (
 	`post_num`
