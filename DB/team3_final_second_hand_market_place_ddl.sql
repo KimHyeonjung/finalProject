@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS `member`;
 CREATE TABLE `member` (
 	`member_num`	int primary key auto_increment	NOT NULL,
 	`member_id`	varchar(13) unique	NOT NULL,
-	`member_pw`	varchar(20)	NOT NULL,
+	`member_pw`	varchar(255)	NOT NULL,
 	`member_nick`	varchar(10)	NOT NULL,
 	`member_phone`	varchar(13)	NOT NULL,
 	`member_email`	varchar(30)	NOT NULL,
@@ -17,7 +17,11 @@ CREATE TABLE `member` (
 	`member_state`	varchar(10)	NULL,
 	`member_report`	int	NULL,
 	`member_score`	float	NULL,
-	`member_money`	int	NULL
+	`member_money`	int	NULL,
+    `member_fail`  int NULL,
+    `member_autoLogin` boolean NULL,
+    `member_cookie` varchar(4096) NULL,
+    `member_limit` datetime NULL
 );
 
 DROP TABLE IF EXISTS `post`;
@@ -500,4 +504,3 @@ ALTER TABLE `rating` ADD CONSTRAINT `FK_after_TO_rating_1` FOREIGN KEY (
 REFERENCES `after` (
 	`after_num`
 );
-
