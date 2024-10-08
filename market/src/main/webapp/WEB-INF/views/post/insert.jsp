@@ -133,6 +133,14 @@
 			placeholder="- 상품명(브랜드)&#10;- 구매 시기&#10;- 사용 기간&#10;- 하자 여부&#10;* 실제 촬영한 사진과 함께 상세 정보를 입력해주세요.&#10;* 게시글 규정 위반 시 게시물 삭제 및 이용제재 처리될 수 있어요."></textarea>
 			<div class="char-count">0 / 1000</div>
 		</div>
+		
+		<!-- 상품 상태 선택 (중고, 새상품) -->
+		<div class="form-group">
+			<label>흥정 여부</label><br>
+			<button type="button" class="btn btn-outline-primary" id="usedBtn" onclick="selectCondition('중고')">중고</button>
+			<button type="button" class="btn btn-outline-primary" id="newBtn" onclick="selectCondition('새상품')">새상품</button>
+			<input type="hidden" name="condition" id="condition" required>
+		</div>
 
 		<!-- 거래 방법 선택 -->
 		<div class="form-group">

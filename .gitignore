@@ -33,3 +33,8 @@ replay_pid*
 =======
 replay_pid*
 >>>>>>> cyw
+market/target/m2e-wtp/web-resources/META-INF/maven/com.team3/market/pom.properties
+
+test/
+target/
+/market/target
