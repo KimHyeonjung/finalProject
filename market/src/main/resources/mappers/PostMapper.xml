@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.team3.market.dao.PostDAO">
+	<select id="selectPost" resultType="PostVO">
+		select * 
+		from 
+			post 
+		join 
+			member
+			on post_member_num = member_num			
+		where post_num = #{post_num}
+	</select>
+</mapper>
