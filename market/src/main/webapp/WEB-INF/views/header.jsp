@@ -57,7 +57,7 @@
 	
 		<div>
 			<p>닉네임</p>
-			<a href="#">개인정보 변경</a>
+			<a href="<c:url value="/mypage"/>">개인정보 변경</a>
 			<a href="#">알림</a>
 			<p>온도</p>
 		</div>

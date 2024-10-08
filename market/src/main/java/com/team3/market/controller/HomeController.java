@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.MessageDTO;
@@ -72,4 +71,26 @@ public class HomeController {
         session.invalidate();  // 세션 무효화
         return "redirect:/";  // 홈으로 리다이렉트
     }
+    
+    @GetMapping("/mypage")
+	public String mypage() {
+		return "/member/mypage";
+	}
+	
+	@PostMapping("/mypage")
+	public String mypagePost(Model model, HttpSession session, MemberVO member) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		
+		boolean res = memberService.updateMember(user, member);
+		
+		if(res) {
+			model.addAttribute("msg","회원 정보를 수정했습니다.");
+		}else {
+			model.addAttribute("msg","회원 정보를 수정했습니다.");
+		}
+		model.addAttribute("url","/mypage");
+		
+		return "/main/message";
+	}
 }

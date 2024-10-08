@@ -39,4 +39,17 @@ public class MemberService {
             return null;
         }
 	}
+
+	public boolean updateMember(MemberVO user, MemberVO member) {
+		if(user == null || member == null) {
+			return false;
+		}
+		
+		if(member.getMember_pw().length() == 0) {
+			//로그인한 회원 비번을 이용
+			member.setMember_pw(user.getMember_pw());
+			String encPw = passwordEncoder.encode(member.getMember_pw());
+			member.setMember_pw(encPw);
+		return memberDao.updateMember(member);
+	}
 }
