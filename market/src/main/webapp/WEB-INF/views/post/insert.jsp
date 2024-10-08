@@ -134,15 +134,14 @@
 			<div class="char-count">0 / 1000</div>
 		</div>
 		
-		<!-- 상품 상태 선택 (중고, 새상품) -->
-		<div class="form-group">
-			<label>흥정 여부</label><br>
-			<button type="button" class="btn btn-outline-primary" id="usedBtn" onclick="selectCondition('중고')">중고</button>
-			<button type="button" class="btn btn-outline-primary" id="newBtn" onclick="selectCondition('새상품')">새상품</button>
-			<input type="hidden" name="condition" id="condition" required>
-		</div>
-
-		<!-- 거래 방법 선택 -->
+		<!-- 흥정 여부 선택 -->
+		<div class="form-check">
+		  <label class="form-check-label">
+		    <input type="checkbox" class="form-check-input" name="deal" id="deal">흥정 받기
+		  </label>
+		</div><br>
+	
+		<!-- 거래 방법 선택 -->	
 		<div class="form-group">
 			<label>거래 방법</label><br>
 			<div class="form-check form-check-inline">
@@ -219,7 +218,7 @@
 		}
 	}
 	
-	// 직거래 체크박스 선택 시 주소 입력란 표시/숨김
+/* 	// 직거래 체크박스 선택 시 주소 입력란 표시/숨김
 	function toggleAddressInput() {
 	    var directCheckbox = document.getElementById('direct');
 	    var addressContainer = document.getElementById('addressContainer');
@@ -229,28 +228,72 @@
 	    } else {
 	        addressContainer.style.display = 'none'; // 체크 해제되면 주소 입력란 숨김
 	    }
-	}
+	} */
 	
-	// 거래 방법 선택
+    // 직거래 체크박스 선택 시 주소 입력란 표시/숨김
+    function toggleAddressInput() {
+        var directCheckbox = document.getElementById('direct');
+        var addressContainer = document.getElementById('addressContainer');
+
+        if (directCheckbox.checked) {
+            addressContainer.style.display = 'block'; // 체크되면 주소 입력란 표시
+        } else {
+            addressContainer.style.display = 'none'; // 체크 해제되면 주소 입력란 숨김
+            clearAddressFields(); // 체크 해제 시 주소 필드 초기화
+        }
+
+        checkFormCompletion(); // 체크박스 변경 시 폼 상태 재검증
+    }
+	
+    // 주소 필드 초기화
+    function clearAddressFields() {
+        document.getElementById('sample4_postcode').value = '';
+        document.getElementById('sample4_roadAddress').value = '';
+        document.getElementById('sample4_jibunAddress').value = '';
+        document.getElementById('sample4_detailAddress').value = '';
+        document.getElementById('sample4_extraAddress').value = '';
+    }
+	
+	// 거래 방법 선택 여부 확인
 	function checkTransactionMethod() {
 		const deliveryChecked = document.getElementById('delivery').checked;
 		const directChecked = document.getElementById('direct').checked;
 		return deliveryChecked || directChecked;
 	}
 
-	// 폼 요소 모두가 선택되었는지 확인하는 함수
+/* 	// 폼 요소 모두가 선택되었는지 확인하는 함수
 	function checkFormCompletion() {
-		const conditionSelected = document.getElementById('condition').value !== ""; // 상품 상태 선택 여부 확인
 		const transactionMethodSelected = checkTransactionMethod(); // 거래 방법 체크박스 선택 여부 확인
 		
 		// 조건이 모두 충족되면 등록 버튼 활성화, 그렇지 않으면 비활성화
-		document.getElementById('submitBtn').disabled = !(conditionSelected && transactionMethodSelected);
-	}
+		document.getElementById('submitBtn').disabled = ! transactionMethodSelected;
+	} */
+	
+    // 폼 완료 상태 확인
+    function checkFormCompletion() {
+        const transactionMethodSelected = checkTransactionMethod();
+        const directChecked = document.getElementById('direct').checked;
 
-	// 거래 방법 체크박스에 change 이벤트 리스너 추가
+        // 직거래가 선택된 경우에는 주소 입력 여부까지 확인
+        const formValid = transactionMethodSelected && (!directChecked || isAddressFilled());
+
+        // 조건이 모두 충족되면 등록 버튼 활성화, 그렇지 않으면 비활성화
+        document.getElementById('submitBtn').disabled = !formValid;
+    }
+
+    // 거래 방법 체크박스와 주소 필드에 change 이벤트 리스너 추가
+    document.getElementById('delivery').addEventListener('change', checkFormCompletion);
+    document.getElementById('direct').addEventListener('change', checkFormCompletion);
+    document.getElementById('sample4_postcode').addEventListener('input', checkFormCompletion);
+    document.getElementById('sample4_roadAddress').addEventListener('input', checkFormCompletion);
+    document.getElementById('sample4_jibunAddress').addEventListener('input', checkFormCompletion);
+    document.getElementById('sample4_detailAddress').addEventListener('input', checkFormCompletion);
+
+	
+/* 	// 거래 방법 체크박스에 change 이벤트 리스너 추가
 	document.getElementById('delivery').addEventListener('change', checkFormCompletion);
-	document.getElementById('direct').addEventListener('change', checkFormCompletion);
-
+	document.getElementById('direct').addEventListener('change', checkFormCompletion); */
+	
 	
 	
     let selectedFiles = [];
