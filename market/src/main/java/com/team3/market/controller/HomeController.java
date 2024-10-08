@@ -72,25 +72,4 @@ public class HomeController {
         return "redirect:/";  // 홈으로 리다이렉트
     }
     
-    @GetMapping("/mypage")
-	public String mypage() {
-		return "/member/mypage";
-	}
-	
-	@PostMapping("/mypage")
-	public String mypagePost(Model model, HttpSession session, MemberVO member) {
-		
-		MemberVO user = (MemberVO)session.getAttribute("user");
-		
-		boolean res = memberService.updateMember(user, member);
-		
-		if(res) {
-			model.addAttribute("msg","회원 정보를 수정했습니다.");
-		}else {
-			model.addAttribute("msg","회원 정보를 수정했습니다.");
-		}
-		model.addAttribute("url","/mypage");
-		
-		return "/main/message";
-	}
 }
