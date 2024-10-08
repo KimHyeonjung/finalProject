@@ -21,5 +21,22 @@ public class MemberService {
         // 회원가입 처리
         return memberDao.insertMember(member) > 0;
     }
-	
+
+	public MemberVO login(MemberVO member) {
+		if(member == null) {
+			return null;
+		}
+		//회원 정보를 가져옴(아이디를 이용)
+		MemberVO user = memberDao.getMemberById(member.getMember_id());
+		//아아디 일치하지 않음
+		if(user == null) {
+			return null;
+		}
+		//비번 확인
+		if (user != null && user.getMember_pw().equals(member.getMember_pw())) {
+            return user;  // 로그인 성공 시 해당 회원 정보 반환
+        } else {
+            return null;
+        }
+	}
 }
