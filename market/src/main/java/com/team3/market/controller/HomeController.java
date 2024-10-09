@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.MessageDTO;
@@ -71,5 +72,16 @@ public class HomeController {
     public String logout(HttpSession session) {
         session.invalidate();  // 세션 무효화
         return "redirect:/";  // 홈으로 리다이렉트
+    }
+    
+    // 아이디 중복 체크
+    @GetMapping("/checkId")
+    @ResponseBody
+    public String checkId(@RequestParam("member_id") String memberId) {
+        MemberVO member = memberService.getMemberById(memberId);
+        if (member != null) {
+            return "EXISTS"; // 중복된 아이디
+        }
+        return "OK"; // 사용 가능한 아이디
     }
 }
