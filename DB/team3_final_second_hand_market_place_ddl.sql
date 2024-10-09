@@ -13,8 +13,8 @@ CREATE TABLE `member` (
 	`member_nick`	varchar(10)	NOT NULL,
 	`member_phone`	varchar(13)	NOT NULL,
 	`member_email`	varchar(30)	NOT NULL,
-	`member_auth`	varchar(5)	NOT NULL,
-	`member_state`	varchar(10)	NULL,
+	`member_auth`	varchar(5)	NOT NULL DEFAULT 'USER',
+	`member_state`	varchar(10)	NULL DEFAULT '사용',
 	`member_report`	int	NULL,
 	`member_score`	double	NULL,
 	`member_money`	int	NULL
@@ -25,9 +25,9 @@ DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
 	`post_num`	int primary key auto_increment	NOT NULL,
 	`post_member_num`	int	NOT NULL,
-	`post_position_num`	int	NOT NULL,
-	`post_way_num`	int	NOT NULL,
-	`post_category_num`	int	NOT NULL,
+	`post_position_name`	varchar(10) NOT NULL,
+	`post_way_name`	varchar(10) NOT NULL,
+	`post_category_name`	varchar(16) NOT NULL,
 	`post_title`	varchar(20)	NOT NULL,
 	`post_content`	varchar(255)	NOT NULL,
 	`post_price`	int	NULL,
@@ -37,11 +37,22 @@ CREATE TABLE `post` (
 	`post_address`	varchar(100)	NULL
 );
 
+DROP TABLE IF EXISTS `position`;
+
+CREATE TABLE `position` (
+	`position_name`	varchar(10) primary key	NOT NULL
+);
+
+DROP TABLE IF EXISTS `way`;
+
+CREATE TABLE `way` (
+	`way_name`	varchar(10) primary key	NOT NULL
+);
+
 DROP TABLE IF EXISTS `category`;
 
 CREATE TABLE `category` (
-	`category_num`	int primary key auto_increment	NOT NULL,
-	`category_name`	varchar(10)	NULL
+	`category_name`	varchar(16) primary key	NOT NULL
 );
 
 DROP TABLE IF EXISTS `wish`;
@@ -62,12 +73,6 @@ CREATE TABLE `address` (
 	`address_ad`	varchar(100)	NULL
 );
 
-DROP TABLE IF EXISTS `way`;
-
-CREATE TABLE `way` (
-	`way_num`	int primary key auto_increment	NOT NULL,
-	`way_name`	varchar(10)	NULL
-);
 
 DROP TABLE IF EXISTS `notice`;
 
@@ -118,13 +123,6 @@ CREATE TABLE `block` (
 	`block_member_num`	int	NOT NULL,
 	`block_member_num2`	int	NOT NULL,
 	`block_date`	date	NULL
-);
-
-DROP TABLE IF EXISTS `position`;
-
-CREATE TABLE `position` (
-	`position_num`	int primary key auto_increment	NOT NULL,
-	`position_name`	varchar(10)	NULL
 );
 
 DROP TABLE IF EXISTS `file`;
@@ -264,24 +262,24 @@ REFERENCES `member` (
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_position_TO_post_1` FOREIGN KEY (
-	`post_position_num`
+	`position_name`
 )
 REFERENCES `position` (
-	`position_num`
+	`position_name`
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_way_TO_post_1` FOREIGN KEY (
-	`post_way_num`
+	`way_name`
 )
 REFERENCES `way` (
-	`way_num`
+	`way_name`
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_category_TO_post_1` FOREIGN KEY (
-	`post_category_num`
+	`category_name`
 )
 REFERENCES `category` (
-	`category_num`
+	`category_name`
 );
 
 ALTER TABLE `wish` ADD CONSTRAINT `FK_post_TO_wish_1` FOREIGN KEY (
