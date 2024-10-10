@@ -12,4 +12,19 @@
 			on post_member_num = member_num			
 		where post_num = #{post_num}
 	</select>
+	<select id="selectPostMap" resultType="map">
+		select * 
+		from 
+			post 
+		join 
+			member
+			on post_member_num = member_num			
+		where post_num = #{post_num}
+	</select>
+	<update id="updateView">
+		update post set post_view = post_view + 1 where post_num = #{post_num}
+	</update>
+	<delete id="deletePost">
+		delete from post where post_num = #{post_num}
+	</delete>
 </mapper>

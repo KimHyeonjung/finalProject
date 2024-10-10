@@ -9,7 +9,7 @@
 <body>
 	<nav class="navbar navbar-expand-md bg-dark navbar-dark">
 		<a class="navbar-brand" href="<c:url value="/"/>">
-			<img src="bird.jpg" alt="Logo" style="width:40px;">
+			<img src="" alt="Logo" style="width:40px;">
 		</a>
 		<form class="form-inline" action="/action_page.php">
 			<select>

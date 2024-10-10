@@ -18,12 +18,11 @@ INSERT INTO `category` (`category_name`) VALUES
 
 -- member 테이블에 대한 샘플 데이터 삽입
 INSERT INTO `member` 
-(`member_num`, `member_id`, `member_pw`, `member_nick`, `member_phone`, `member_email`, 
-`member_auth`, `member_state`, `member_report`, `member_score`, `member_money`)
+(`member_id`, `member_pw`, `member_nick`, `member_phone`, `member_email`)
 VALUES 
-(1, 'qwe', 'qweqwe', 'qweqweqwe', '010-1234-5678', 'qwe@example.com', 'USER', '사용'	, 0, 4.5, 10000	),
-(2, 'asd', 'asdasd', 'asdasdasd', '010-8765-4321', 'asd@example.com', 'USER', '사용'	, 1, 3.9, 5000	),
-(3, 'zxc', 'zxczxc', 'zxczxczxc', '010-1357-2468', 'zxc@example.com', 'USER', '휴면', 2, 4.8, 15000	);
+('qwe', 'qweqwe', '큐더블유디', '010-1234-5678', 'qwe@example.com'),
+('asd', 'asdasd', '에이에스디', '010-8765-4321', 'asd@example.com'),
+('zxc', 'zxczxc', '즈엑스씨', '010-1357-2468', 'zxc@example.com');
 
 -- post 테이블에 대한 샘플 데이터 삽입
 INSERT INTO `post` 
@@ -31,8 +30,8 @@ INSERT INTO `post`
 `post_title`, `post_content`, `post_price`, `post_deal`, `post_date`, `post_refresh`, `post_address`)
 VALUES 
 (1, 1, '팝니다', '직거래', '모바일/태블릿', '핸드폰'		, '핸드폰'	, 10000, true, 	'2024-01-01', NULL, '서울, 한국'),
-(2, 1, '팝니다', '예약중', '패션', '바지'		, '바지'		, 10000, true, 	'2024-01-01', NULL, '서울, 한국'),
-(3, 2, '팝니다', '직거래', '가전제품', '전자레인지'	, '전자레인지'	, 20000, false, '2024-02-01', NULL, '부산, 한국'),
-(4, 2, '팝니다', '거래완료', '도서/음반', '노인과바다'	, '노인과바다'	, 15000, true, 	'2024-03-01', NUll, '인천, 한국'),
+(2, 1, '팝니다', '택배거래', '패션', '바지'		, '바지'		, 10000, true, 	'2024-01-01', NULL, '서울, 한국'),
+(3, 2, '거래완료', '직거래', '가전제품', '전자레인지'	, '전자레인지'	, 20000, false, '2024-02-01', NULL, '부산, 한국'),
+(4, 2, '팝니다', '희망거래', '도서/음반', '노인과바다'	, '노인과바다'	, 15000, true, 	'2024-03-01', NUll, '인천, 한국'),
 (5, 3, '팝니다', '직거래', '반려동물', '목줄'		, '목줄'		, 20000, false, '2024-02-01', NULL, '부산, 한국'),
-(6, 3, '팝니다', '무료나눔', '공구/산업용품', '드라이버'	, '드라이버'	, 20000, false, '2024-02-01', NULL, '부산, 한국');
+(6, 3, '팝니다', '택배거래', '공구/산업용품', '드라이버'	, '드라이버'	, 20000, false, '2024-02-01', NULL, '부산, 한국');
