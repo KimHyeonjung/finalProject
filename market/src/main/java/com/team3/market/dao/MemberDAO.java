@@ -17,4 +17,6 @@ public interface MemberDAO {
 
 	boolean updateMember(MemberVO member);
 
+	boolean deleteMember(MemberVO user);
+
 }

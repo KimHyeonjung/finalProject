@@ -1,5 +1,7 @@
 package com.team3.market.service;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -50,30 +52,45 @@ public class MemberService {
 		return memberDao.getMemberById(memberId);
 	}
 	
-	public boolean updateMember(MemberVO user, MemberVO member) {
+	public boolean updateMember(MemberVO user, MemberVO member, HttpSession session) {
+		
 		if(user == null || member == null) {
 			return false;
 		}
+		
 		member.setMember_id(user.getMember_id());
+		member.setMember_nick(user.getMember_nick());
+		member.setMember_auth(user.getMember_auth());
+		member.setMember_pw(user.getMember_pw());
 		
-		if(member.getMember_pw().length() == 0) {
-			member.setMember_pw(user.getMember_pw());
-		}else {
-			//입력한 비번을 암호화
-			String encPw = passwordEncoder.encode(member.getMember_pw());
-			member.setMember_pw(encPw);
+		member.setMember_email(member.getMember_email());
+		
+		member.setMember_phone(member.getMember_phone());
+		
+		boolean update = memberDao.updateMember(member);
+		
+		if(update) {
+			session.setAttribute("user", member);
 		}
 		
-		if(member.getMember_email().length() == 0) {
-			member.setMember_email(user.getMember_email());
+		return update;
+	}
+	
+	public boolean deleteMember(MemberVO user) {
+		if(user == null) {
+			return false;
 		}
-		
-		if(member.getMember_phone().length() == 0) {
-			member.setMember_phone(user.getMember_phone());
-		}
-		
-		return memberDao.updateMember(member);
+		return memberDao.deleteMember(user);
 	}
 
+	public boolean changepw(MemberVO member, MemberVO user, String oldPassword, String newPassword) {
+		
+		if(passwordEncoder.matches(oldPassword, member.getMember_pw())) {
+            user.setMember_pw(passwordEncoder.encode(newPassword)); // 새 비밀번호 해시
+            return true;
+        }
+		
+		return false;
+	}
 
 }

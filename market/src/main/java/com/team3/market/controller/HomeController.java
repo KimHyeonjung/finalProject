@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -92,13 +91,22 @@ public class HomeController {
 	}
 	
 	@PostMapping("/mypage")
-	public String mypagePost(Model model, HttpSession session, MemberVO member) {
+	public String mypage(Model model, HttpSession session, MemberVO member, 
+						@RequestParam("member_pw") String oldPassword, 
+						@RequestParam("new_member_pw") String newPassword, 
+						@RequestParam("new_member_pw2") String newPasswordConfirm) {
 		
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		
-		boolean res = memberService.updateMember(user, member);
-		
 		MessageDTO message;
+		
+		if(!newPassword.equals(newPasswordConfirm)) {
+			return "/mypage";
+		}
+		
+		memberService.changepw(user, member, oldPassword, newPassword);
+		
+		boolean res = memberService.updateMember(user, member, session);
 		
         if(res) {
             message = new MessageDTO("/", "회원 정보를 수정했습니다.");
@@ -108,6 +116,46 @@ public class HomeController {
         
         model.addAttribute("message", message);
 		return "/main/message";
+	}
+	
+	@PostMapping("/delete")
+	public String deleteAccount(Model model, HttpSession session, MemberVO member) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+    
+	    boolean res = memberService.deleteMember(user);
+	    
+	    MessageDTO message;
+	    if(res) {
+	        message = new MessageDTO("/", "회원 탈퇴에 성공했습니다.");
+	    } else {
+	        message = new MessageDTO("/redirect:/mypage", "회원 탈퇴에 실패했습니다.");
+	    }
+	    
+	    model.addAttribute("message", message);
+	    return "/main/message";
+	}
+	
+	@GetMapping("/updatepw")
+	public String updatepw() {
+		return "/updatepw";
+	}
+	
+	@PostMapping("/updatepw")
+	public String updatepw(HttpSession session, MemberVO member, 
+						@RequestParam("member_pw") String oldPassword, 
+						@RequestParam("new_member_pw") String newPassword, 
+						@RequestParam("new_member_pw2") String newPasswordConfirm) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		
+		if(!newPassword.equals(newPasswordConfirm)) {
+			return "/updatepw";
+		}
+		
+		memberService.changepw(user, member, oldPassword, newPassword);
+		
+		return "/mypage";
 	}
 	
 }

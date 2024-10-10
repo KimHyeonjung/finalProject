@@ -18,11 +18,15 @@
     <update id="updateMember">
 		update member
 		set
-			member_pw = #{member_pw},
 			member_email = #{member_email},
 			member_phone = #{member_phone}
 		where
 			member_id = #{member_id}
 	</update>
+	
+	<delete id="deleteMember">
+		delete from member
+		where member_id = #{member_id}
+	</delete>
 	
 </mapper>

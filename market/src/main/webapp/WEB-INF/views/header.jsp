@@ -68,10 +68,6 @@
 		</div>
 		<div>
 			<a href="#">주소록</a>
-			<a href="#">차단 목록</a>
-		</div>
-		<div>
-			<a href="#">신고 목록(사용할지 안 할지 모름)</a>
 			<a href="#">거래 내역</a>
 		</div>
 		<a href="<c:url value="/logout"/>">로그아웃</a>
