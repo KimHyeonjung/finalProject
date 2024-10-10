@@ -16,4 +16,5 @@ public interface MemberDAO {
     int insertMember(MemberVO member);
 
 	boolean updateMember(MemberVO member);
+
 }

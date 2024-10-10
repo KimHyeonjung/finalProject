@@ -3,7 +3,8 @@ package com.team3.market.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -64,5 +65,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //    public String uploadPath() {
 //        return "C:\\git\\uploadfiles"; // 서버에 저장할 경로
 //    }
+    
+    @Bean
+	public PasswordEncoder passwordEncoder() {
+	    return new BCryptPasswordEncoder();  // BCryptPasswordEncoder 빈 등록
+	}
     
 }
