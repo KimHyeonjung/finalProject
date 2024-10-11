@@ -19,7 +19,6 @@ CREATE TABLE `member` (
 	`member_score`	float	NULL,
 	`member_money`	int	NULL,
     `member_fail`  int NULL,
-    `member_autoLogin` boolean NULL,
     `member_cookie` varchar(4096) NULL,
     `member_limit` datetime NULL
 );

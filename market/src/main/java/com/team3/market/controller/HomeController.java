@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.tiles.request.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,34 +28,9 @@ public class HomeController {
 	MemberService memberService;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-		// 세션에 사용자 정보가 없을 때 자동 로그인 체크
-		if (session.getAttribute("user") == null) {
-			// 쿠키에서 "AL" 값을 확인
-			Cookie[] cookies = request.getCookies();
-			if (cookies != null) {
-				for (Cookie cookie : cookies) {
-					if (cookie.getName().equals("AL")) {
-						String cookieValue = cookie.getValue();
-						// 쿠키 값으로 사용자 확인
-						MemberVO user = memberService.checkAutoLogin(cookieValue);
-
-						// 유효한 쿠키가 있으면 자동 로그인 처리
-						if (user != null) {
-							session.setAttribute("user", user);
-							break; // 자동 로그인이 성공하면 더 이상 반복하지 않음
-						} else {
-							// 만료된 쿠키라면 삭제 처리
-							Cookie expiredCookie = new Cookie("AL", null);
-							expiredCookie.setMaxAge(0);
-							expiredCookie.setPath("/");
-							response.addCookie(expiredCookie);
-						}
-					}
-				}
-			}
-		}
-		return "/home"; // 타일즈에서 /*로 했기 때문에 /를 붙임
+	public String home() {
+	
+		return "/home";//타일즈에서 /*로 했기 때문에 /를 붙임
 	}
 	
 	 @GetMapping("/signup")
@@ -84,17 +58,22 @@ public class HomeController {
         return "/member/login";
     }
     @PostMapping("/login")
-    public String guestLoginPost(MemberVO member, HttpSession session, 
-    		HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
-		MemberVO user = memberService.login(member);
-
-		if (user != null) {
+    public String guestLoginPost(Model model, MemberVO member, HttpSession session, 
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest request,HttpServletResponse response) {
+			MemberVO user = memberService.login(member);
+			
+			if (user != null) {
 			session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
 			
-			//자동 로그인 쿠키 생성
-			Cookie cookie = memberService.createCookie(user,request);
-			response.addCookie(cookie);
-            
+			// 자동 로그인 체크 여부 확인
+			String auto = request.getParameter("autoLogin");
+			System.out.println("AutoLogin Parameter: " + auto);
+			if (auto != null && auto.equals("Y")) {
+				Cookie cookie = memberService.createCookie(user, request);
+				response.addCookie(cookie);
+			}
+					
 			redirectAttributes.addFlashAttribute("message", "로그인 성공!");
 			return "redirect:/";  // 홈으로 리다이렉트
 		} else {
@@ -105,14 +84,18 @@ public class HomeController {
     
     @GetMapping("/logout")
     public String logout(HttpSession session, HttpServletResponse response) {
+    	MemberVO user = (MemberVO) session.getAttribute("user");
+    	if(user != null) {
+			user.setMember_cookie(null);
+			user.setMember_limit(null);
+			memberService.updateMemberCookie(user);
+			
+			Cookie cookie = new Cookie("AL", null);
+	        cookie.setMaxAge(0); // 쿠키 만료
+	        cookie.setPath("/");
+	        response.addCookie(cookie);
+		}
         session.invalidate();  // 세션 무효화
-        
-        //자동 로그인 쿠키 삭제
-        Cookie cookie = new Cookie("AL", null);
-        cookie.setMaxAge(0); // 쿠키 즉시 삭제
-        cookie.setPath("/"); // 애플리케이션 전체에서 쿠키 삭제 적용
-        response.addCookie(cookie);
-        
         return "redirect:/";  // 홈으로 리다이렉트
     }
     

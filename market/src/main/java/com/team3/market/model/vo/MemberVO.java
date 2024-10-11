@@ -16,7 +16,10 @@ public class MemberVO {
     private String member_auth; // 권한 (USER, ADMIN 등)
 	private String member_cookie;
 	private Date member_limit;
+	private String member_state;
 		
-		
-	
+	public MemberVO(String id, String email) {
+		this.member_id = id;
+		this.member_email = email;
+	}
 }

@@ -14,12 +14,15 @@
     <select id="getMemberByEmail" parameterType="String" resultType="MemberVO">
         SELECT * FROM member WHERE member_email = #{member_email}
     </select>
-    <update id="updateMemberCookie">
-		update member
-		set
-			member_cookie = #{member_cookie},
-			member_limit = #{member_limit}
-		where
-			member_id = #{member_id}
+    <update id="updateMemberCookie" parameterType="com.team3.market.model.vo.MemberVO">
+	    UPDATE member
+	    SET member_cookie = #{member_cookie}, member_limit = #{member_limit}
+	    WHERE member_id = #{member_id}
 	</update>
+	<select id="getMemberBySessionId" parameterType="String" resultType="com.team3.market.model.vo.MemberVO">
+	    SELECT * FROM member WHERE member_cookie = #{sessionId}
+	</select>
+    <select id="selectMember" resultType="MemberVO">
+  	  select * from member where member_id = #{id}
+    </select>
 </mapper>
