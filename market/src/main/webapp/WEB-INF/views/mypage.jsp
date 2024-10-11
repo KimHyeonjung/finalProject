@@ -121,34 +121,58 @@
 	    }
 
 	    // 폼 데이터 전송
-	    const formData = new FormData(document.getElementById("passwordForm"));
+	    // const formData = new FormData(document.getElementById("passwordForm"));
+	    
+	    const formData = new FormData();
+	    
+	    formData.append("member_pw", oldPassword);
+	    formData.append("new_member_pw", newPassword);
+	    formData.append("new_member_pw2", newPasswordConfirm);
+	    
+	    console.log(formData);
 	    
 	    event.preventDefault(); // 기본 제출 방지
 	    
-	    fetch('/market/updatepw', {
-	        method: 'POST',
-	        body: formData
-	    })
-	    .then(response => response.json())
-	    .then(data => {
-	        if (data.success) {
-	            // 비밀번호 변경 성공 시 처리
-	            alert("비밀번호가 성공적으로 변경되었습니다.");
-	            // 모달 닫기
-	            $('#modal').modal('hide');
-	        } else {
-	            // 비밀번호 변경 실패 시 처리
-	            errorMessageElement.textContent = data.message;
+	    $.ajax({
+	        method: 'post',
+	        url: '/market/updatepw',
+	        data: {
+	            member_pw: oldPassword,
+	            new_member_pw: newPassword,
+	            new_member_pw2: newPasswordConfirm
+	        },
+	        success: function(data) {
+	            console.log(data);
+	            // 서버에서 문자열을 반환한다고 가정
+	            if (data === '/main/message') {
+	                alert("비밀번호가 성공적으로 변경되었습니다.");
+	                window.location.href = '/market/mypage'; // 페이지 이동
+	            } else {
+	                errorMessageElement.textContent = "비밀번호 변경 실패: " + data;
+	                errorMessageElement.classList.remove("d-none");
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.error('Error:', error);
+	            errorMessageElement.textContent = "서버 오류가 발생했습니다.";
 	            errorMessageElement.classList.remove("d-none");
 	        }
 	    })
-	    .catch(error => {
-	        console.error('Error:', error);
-	        errorMessageElement.textContent = "서버 오류가 발생했습니다.";
-	        errorMessageElement.classList.remove("d-none");
-	    });
 	});
 
+/* 	   	var params = new URLSearchParams();
+	    
+	    params.append('member_pw', oldPassword);
+	    params.append('new_member_pw', newPassword);
+	    params.append('new_member_pw2', newPasswordConfirm);
+	    
+	    fetch('/market/updatepw', {
+	        method: 'POST',
+	        headers: {
+	          'Content-Type': 'application/x-www-form-urlencoded'
+	        },
+	        body: params.toString()
+	    }) */
 	
 	$(document).ready(function() {
 	    $('#delete').on('click', function() {

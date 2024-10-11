@@ -61,9 +61,7 @@ public class MemberService {
 		member.setMember_id(user.getMember_id());
 		member.setMember_nick(user.getMember_nick());
 		member.setMember_auth(user.getMember_auth());
-		member.setMember_pw(user.getMember_pw());
-		
-		member.setMember_email(member.getMember_email());
+		member.setMember_pw(member.getMember_pw());
 		
 		member.setMember_phone(member.getMember_phone());
 		
@@ -83,11 +81,16 @@ public class MemberService {
 		return memberDao.deleteMember(user);
 	}
 
-	public boolean changepw(MemberVO member, MemberVO user, String oldPassword, String newPassword) {
+	public boolean changepw(MemberVO user, MemberVO member, HttpSession session, String oldPassword, String newPassword) {
 		
-		if(passwordEncoder.matches(oldPassword, member.getMember_pw())) {
-            user.setMember_pw(passwordEncoder.encode(newPassword)); // 새 비밀번호 해시
-            return true;
+		user.setMember_id(user.getMember_id());
+		
+		if(passwordEncoder.matches(oldPassword, user.getMember_pw())) {
+			user.setMember_pw(passwordEncoder.encode(newPassword));
+			boolean update = memberDao.updatepw(user);
+			if(update) {
+				session.setAttribute("user", user);
+			}
         }
 		
 		return false;

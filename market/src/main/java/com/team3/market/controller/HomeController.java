@@ -91,20 +91,11 @@ public class HomeController {
 	}
 	
 	@PostMapping("/mypage")
-	public String mypage(Model model, HttpSession session, MemberVO member, 
-						@RequestParam("member_pw") String oldPassword, 
-						@RequestParam("new_member_pw") String newPassword, 
-						@RequestParam("new_member_pw2") String newPasswordConfirm) {
+	public String mypage(Model model, HttpSession session, MemberVO member) {
 		
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		
 		MessageDTO message;
-		
-		if(!newPassword.equals(newPasswordConfirm)) {
-			return "/mypage";
-		}
-		
-		memberService.changepw(user, member, oldPassword, newPassword);
 		
 		boolean res = memberService.updateMember(user, member, session);
 		
@@ -142,20 +133,36 @@ public class HomeController {
 	}
 	
 	@PostMapping("/updatepw")
-	public String updatepw(HttpSession session, MemberVO member, 
-						@RequestParam("member_pw") String oldPassword, 
+	@ResponseBody
+	public String updatepw(Model model, HttpSession session, MemberVO member,
 						@RequestParam("new_member_pw") String newPassword, 
+						@RequestParam("member_pw") String oldPassword, 
 						@RequestParam("new_member_pw2") String newPasswordConfirm) {
 		
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		
+		System.out.println(user);
+		
+		MessageDTO message;
+		
 		if(!newPassword.equals(newPasswordConfirm)) {
-			return "/updatepw";
+			message = new MessageDTO("/updatepw", "비밀번호가 일치하지 않습니다.");
 		}
 		
-		memberService.changepw(user, member, oldPassword, newPassword);
+		boolean change = memberService.changepw(user, member, session, oldPassword, newPassword);
 		
-		return "/mypage";
+		if(change) {
+			return "/market/mypage";
+		}
+		else {
+			message = new MessageDTO("/updatepw", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
+		}
+		
+		System.out.println(user);
+		
+		model.addAttribute("message", message);
+	    return "/main/message";
+		
 	}
 	
 }

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
@@ -24,11 +25,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return resolver;
     }
 
-	/*
-	 * @Override public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	 * registry.addResourceHandler("/resources/**").addResourceLocations(
-	 * "/resources/"); }
-	 */
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/"); 
+	}
     
 	// TilesViewResolver 설정
     @Bean

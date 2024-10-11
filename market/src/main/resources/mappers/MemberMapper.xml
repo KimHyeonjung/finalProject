@@ -29,4 +29,12 @@
 		where member_id = #{member_id}
 	</delete>
 	
+	<update id="updatepw">
+		update member
+		set
+			user_pw = #{member_pw},
+		where
+			user_id = #{member_id}
+	</update>
+	
 </mapper>
