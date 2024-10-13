@@ -2,6 +2,9 @@ package com.team3.market.dao;
 
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.PostVO;
 
 public interface PostDAO {
@@ -13,5 +16,9 @@ public interface PostDAO {
 	void updateView(int post_num);
 
 	boolean deletePost(int post_num);
+
+	boolean insertPost(@Param("post")PostVO post);
+
+	void insertFile(@Param("file")FileVO fileVo);
 
 }

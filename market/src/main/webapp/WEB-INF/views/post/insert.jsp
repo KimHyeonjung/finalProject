@@ -70,7 +70,7 @@
 <body>
 <div class="container mt-4">
 	<h1>상품 등록</h1>
-	<form action="<c:url value='/post/insert/${co_num}'/>" method="post" enctype="multipart/form-data">
+	<form action="<c:url value='/post/insert'/>" method="post" enctype="multipart/form-data">
 		
 		<!-- 사진 첨부 -->
 		<div class="form-group">
@@ -85,14 +85,14 @@
 
 		<!-- 상품명 입력 -->
 		<div class="form-group">
-			<label for="po_title">상품명</label>
-			<input type="text" class="form-control" id="po_title" name="po_title" required>
+			<label for="title">상품명</label>
+			<input type="text" class="form-control" id="title" name="post_title" required>
 		</div>
 
 		<!-- 카테고리 드롭다운 -->
 		<div class="form-group">
 			<label for="category">카테고리</label>
-			<select class="form-control" id="category" name="category" onchange="categoryChange()" required>
+			<select class="form-control" id="category" name="post_category" onchange="categoryChange()" required>
 				<option value="">선택하세요</option>
 				<option value="패션">패션</option>
 				<option value="리빙">리빙</option>
@@ -115,7 +115,7 @@
 		<div class="form-group">
 			<label for="price">금액</label>
 			<div class="input-group">
-				<input type="number" class="form-control" id="price" name="price" min="0" required>
+				<input type="number" class="form-control" id="price" name="post_price" min="0" required>
 				<div class="input-group-append">
 					<span class="input-group-text">원</span>
 				</div>
@@ -128,8 +128,8 @@
 
 		<!-- 상품 설명 -->
 		<div class="form-group">
-			<label for="po_content">상품 설명</label>
-			<textarea class="form-control" id="po_content" name="po_content" rows="5" oninput="updateCharCount()" maxlength="1000" required 
+			<label for="content">상품 설명</label>
+			<textarea class="form-control" id="content" name="post_content" rows="5" oninput="updateCharCount()" maxlength="1000" required 
 			placeholder="- 상품명(브랜드)&#10;- 구매 시기&#10;- 사용 기간&#10;- 하자 여부&#10;* 실제 촬영한 사진과 함께 상세 정보를 입력해주세요.&#10;* 게시글 규정 위반 시 게시물 삭제 및 이용제재 처리될 수 있어요."></textarea>
 			<div class="char-count">0 / 1000</div>
 		</div>
@@ -137,7 +137,7 @@
 		<!-- 흥정 여부 선택 -->
 		<div class="form-check">
 		  <label class="form-check-label">
-		    <input type="checkbox" class="form-check-input" name="deal" id="deal">흥정 받기
+		    <input type="checkbox" class="form-check-input" id="deal" name="post_deal" >흥정 받기
 		  </label>
 		</div><br>
 	
