@@ -141,6 +141,7 @@ public class HomeController {
 		
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		
+		System.out.println(member);
 		System.out.println(user);
 		
 		MessageDTO message;
@@ -149,7 +150,7 @@ public class HomeController {
 			message = new MessageDTO("/updatepw", "비밀번호가 일치하지 않습니다.");
 		}
 		
-		boolean change = memberService.changepw(user, member, session, oldPassword, newPassword);
+		boolean change = memberService.changepw(user, session, oldPassword, newPassword);
 		
 		if(change) {
 			return "/market/mypage";
@@ -158,6 +159,7 @@ public class HomeController {
 			message = new MessageDTO("/updatepw", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
 		}
 		
+		System.out.println(member);
 		System.out.println(user);
 		
 		model.addAttribute("message", message);

@@ -153,7 +153,7 @@
 	            }
 	        },
 	        error: function(xhr, status, error) {
-	            console.error('Error:', error);
+	            console.log('Eroor : ' + error);
 	            errorMessageElement.textContent = "서버 오류가 발생했습니다.";
 	            errorMessageElement.classList.remove("d-none");
 	        }

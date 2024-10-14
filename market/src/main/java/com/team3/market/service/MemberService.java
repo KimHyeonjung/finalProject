@@ -61,9 +61,21 @@ public class MemberService {
 		member.setMember_id(user.getMember_id());
 		member.setMember_nick(user.getMember_nick());
 		member.setMember_auth(user.getMember_auth());
-		member.setMember_pw(member.getMember_pw());
+		member.setMember_pw(user.getMember_pw());
 		
-		member.setMember_phone(member.getMember_phone());
+		if(user.getMember_email() == null || user.getMember_email().equals(member.getMember_email())) {
+			member.setMember_phone(member.getMember_phone());
+		}
+		else {
+			member.setMember_email(user.getMember_email());
+		}
+		
+		if(user.getMember_phone() == null || user.getMember_phone().equals(member.getMember_phone())) {
+			member.setMember_phone(member.getMember_phone());
+		}
+		else {
+			member.setMember_phone(user.getMember_phone());
+		}
 		
 		boolean update = memberDao.updateMember(member);
 		
@@ -81,13 +93,13 @@ public class MemberService {
 		return memberDao.deleteMember(user);
 	}
 
-	public boolean changepw(MemberVO user, MemberVO member, HttpSession session, String oldPassword, String newPassword) {
+	public boolean changepw(MemberVO user, HttpSession session, String oldPassword, String newPassword) {
 		
 		user.setMember_id(user.getMember_id());
 		
 		if(passwordEncoder.matches(oldPassword, user.getMember_pw())) {
-			user.setMember_pw(passwordEncoder.encode(newPassword));
 			boolean update = memberDao.updatepw(user);
+			user.setMember_pw(passwordEncoder.encode(newPassword));
 			if(update) {
 				session.setAttribute("user", user);
 			}
