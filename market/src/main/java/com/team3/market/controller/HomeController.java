@@ -84,4 +84,85 @@ public class HomeController {
         }
         return "OK"; // 사용 가능한 아이디
     }
+    
+    @GetMapping("/mypage")
+	public String mypage() {
+		return "/mypage";
+	}
+	
+	@PostMapping("/mypage")
+	public String mypage(Model model, HttpSession session, MemberVO member) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		
+		MessageDTO message;
+		
+		boolean res = memberService.updateMember(user, member, session);
+		
+        if(res) {
+            message = new MessageDTO("/", "회원 정보를 수정했습니다.");
+        } else {
+            message = new MessageDTO("/mypage", "회원 정보를 수정하지 못했습니다.");
+        }
+        
+        model.addAttribute("message", message);
+		return "/main/message";
+	}
+	
+	@PostMapping("/delete")
+	public String deleteAccount(Model model, HttpSession session, MemberVO member) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+    
+	    boolean res = memberService.deleteMember(user);
+	    
+	    MessageDTO message;
+	    if(res) {
+	        message = new MessageDTO("/", "회원 탈퇴에 성공했습니다.");
+	    } else {
+	        message = new MessageDTO("/redirect:/mypage", "회원 탈퇴에 실패했습니다.");
+	    }
+	    
+	    model.addAttribute("message", message);
+	    return "/main/message";
+	}
+	
+	@GetMapping("/updatepw")
+	public String updatepw() {
+		return "/updatepw";
+	}
+	
+	@PostMapping("/updatepw")
+	@ResponseBody
+	public String updatepw(Model model, HttpSession session,
+						@RequestParam("new_member_pw") String newPassword, 
+						@RequestParam("member_pw") String oldPassword, 
+						@RequestParam("new_member_pw2") String newPasswordConfirm) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		
+		System.out.println(user);
+		
+		MessageDTO message;
+		
+		if(!newPassword.equals(newPasswordConfirm)) {
+			message = new MessageDTO("/updatepw", "비밀번호가 일치하지 않습니다.");
+		}
+		
+		boolean change = memberService.changepw(user, session, oldPassword, newPassword);
+		
+		if(change) {
+			return "/market/mypage";
+		}
+		else {
+			message = new MessageDTO("/updatepw", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
+		}
+		
+		System.out.println(user);
+		
+		model.addAttribute("message", message);
+	    return "/main/message";
+		
+	}
+	
 }

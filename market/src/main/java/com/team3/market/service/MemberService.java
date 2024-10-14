@@ -1,5 +1,7 @@
 package com.team3.market.service;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,9 +48,65 @@ public class MemberService {
             return null;
     }
 	
-
 	public MemberVO getMemberById(String memberId) {
-		
 		return memberDao.getMemberById(memberId);
 	}
+	
+	public boolean updateMember(MemberVO user, MemberVO member, HttpSession session) {
+		
+		if(user == null || member == null) {
+			return false;
+		}
+		
+		member.setMember_id(user.getMember_id());
+		member.setMember_nick(user.getMember_nick());
+		member.setMember_auth(user.getMember_auth());
+		member.setMember_pw(user.getMember_pw());
+		
+		if(user.getMember_email() == null || user.getMember_email().equals(member.getMember_email())) {
+			member.setMember_phone(member.getMember_phone());
+		}
+		else {
+			member.setMember_email(user.getMember_email());
+		}
+		
+		if(user.getMember_phone() == null || user.getMember_phone().equals(member.getMember_phone())) {
+			member.setMember_phone(member.getMember_phone());
+		}
+		else {
+			member.setMember_phone(user.getMember_phone());
+		}
+		
+		boolean update = memberDao.updateMember(member);
+		
+		if(update) {
+			session.setAttribute("user", member);
+		}
+		
+		return update;
+	}
+	
+	public boolean deleteMember(MemberVO user) {
+		if(user == null) {
+			return false;
+		}
+		return memberDao.deleteMember(user);
+	}
+
+	public boolean changepw(MemberVO user, HttpSession session, String oldPassword, String newPassword) {
+		
+		user.setMember_id(user.getMember_id());
+		
+		if(passwordEncoder.matches(oldPassword, user.getMember_pw())) {
+			user.setMember_pw(passwordEncoder.encode(newPassword));
+			boolean update = memberDao.updatepw(user);
+			if(update) {
+				session.setAttribute("user", user);
+			}
+			return update;
+        }
+		
+		return false;
+	}
+
 }

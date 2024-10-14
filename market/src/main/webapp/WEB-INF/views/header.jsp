@@ -26,15 +26,12 @@
 		
 		<div class="collapse navbar-collapse" id="collapsibleNavbar">
 			<ul class="navbar-nav">
-				<c:if test="${user == null}">
 				    <li class="nav-item">
 						<a class="nav-link" href="<c:url value="/signup"/>">회원가입</a>
 				    </li>
 				    <li class="nav-item">
 						<a class="nav-link" href="<c:url value="/login"/>">로그인</a>
 				    </li>
-			    </c:if>
-			    <c:if test="${user != null}">
 			    	<li class="nav-item">
 						<a class="nav-link" href="<c:url value="/chatRoom"/>">채팅</a>
 					</li>
@@ -48,7 +45,6 @@
 							</button>
 						</div>
 					</li>
-			    </c:if>
 			</ul>
 		</div>  
 	</nav>
@@ -57,7 +53,7 @@
 	
 		<div>
 			<p>닉네임</p>
-			<a href="#">개인정보 변경</a>
+			<a href="<c:url value="/mypage"/>">개인정보 변경</a>
 			<a href="#">알림</a>
 			<p>온도</p>
 		</div>
@@ -72,10 +68,6 @@
 		</div>
 		<div>
 			<a href="#">주소록</a>
-			<a href="#">차단 목록</a>
-		</div>
-		<div>
-			<a href="#">신고 목록(사용할지 안 할지 모름)</a>
 			<a href="#">거래 내역</a>
 		</div>
 		<a href="<c:url value="/logout"/>">로그아웃</a>

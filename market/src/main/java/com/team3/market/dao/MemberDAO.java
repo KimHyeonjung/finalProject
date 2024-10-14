@@ -14,4 +14,11 @@ public interface MemberDAO {
     
     // 회원 정보 삽입
     int insertMember(MemberVO member);
+
+	boolean updateMember(MemberVO member);
+
+	boolean deleteMember(MemberVO user);
+
+	boolean updatepw(MemberVO user);
+
 }
