@@ -27,4 +27,16 @@
 	<delete id="deletePost">
 		delete from post where post_num = #{post_num}
 	</delete>
+	
+	<!-- 게시물 삽입 (생성) -->
+    <insert id="insertPost" parameterType="PostVO">
+        insert into post (
+            post_member_num, post_position_name, post_way_name, post_category_name, 
+            post_title, post_content, post_price, post_deal, post_date, post_refresh, post_address
+        ) 
+        values (
+            #{post_member_num}, #{post_position_name}, #{post_way_name}, #{post_category_name}, 
+            #{post_title}, #{post_content}, #{post_price}, #{post_deal}, #{post_date}, #{post_refresh}, #{post_address}
+        )
+    </insert>
 </mapper>

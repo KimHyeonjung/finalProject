@@ -14,4 +14,5 @@ public interface PostDAO {
 
 	boolean deletePost(int post_num);
 
+    boolean insertPost(PostVO post);
 }

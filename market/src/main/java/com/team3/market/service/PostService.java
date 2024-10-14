@@ -15,8 +15,6 @@ public class PostService {
 	@Autowired
 	PostDAO postDao;
 	
-//	@Resource
-//	String uploadPath;
 	//게시글 가져오기
 	public PostVO getPost(int post_num) {
 		return postDao.selectPost(post_num);
@@ -42,5 +40,9 @@ public class PostService {
 	public boolean deletePost(int post_num) {
 		return postDao.deletePost(post_num);
 	}
-	
+
+    // 게시글 생성 메서드 추가
+    public boolean insertPost(PostVO post) {
+        return postDao.insertPost(post);
+    }
 }
