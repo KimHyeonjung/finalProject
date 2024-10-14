@@ -8,18 +8,19 @@ DROP TABLE IF EXISTS `member`;
 
 CREATE TABLE `member` (
 	`member_num`	int primary key auto_increment	NOT NULL,
-	`member_id`	varchar(13) unique	NOT NULL,
-	`member_pw`	varchar(255)	NOT NULL,
-	`member_nick`	varchar(10) unique	NOT NULL,
-	`member_phone`	varchar(13) unique	NOT NULL,
-	`member_email`	varchar(30) unique	NOT NULL,
+	`member_id`	varchar(50) unique	NOT NULL,
+	`member_pw`	varchar(255)	NULL,
+	`member_nick`	varchar(10)	NULL,
+	`member_phone`	varchar(13)	NULL,
+	`member_email`	varchar(30)	NOT NULL,
 	`member_auth`	varchar(5)	NOT NULL DEFAULT 'USER',
 	`member_state`	varchar(10)	NULL DEFAULT '사용',
-	`member_report`	int	NULL	DEFAULT 0,
-	`member_score`	double	NULL	DEFAULT 0,
-	`member_money`	int	NULL	DEFAULT 0,
-    `member_fail`	int	NULL	DEFAULT 0,
-	`member_cookie`	varchar(255)	NULL
+	`member_report`	int	NULL,
+	`member_score`	double	NULL DEFAULT 0,
+	`member_money`	int	NULL DEFAULT 0,
+    `member_fail`  int NULL DEFAULT 0,
+    `member_cookie` varchar(255) NULL,
+    `member_limit` datetime NULL
 );
 
 DROP TABLE IF EXISTS `post`;
@@ -115,7 +116,7 @@ CREATE TABLE `chat` (
 	`chat_member_num`	int	NOT NULL,
 	`chat_chatRoom_num`	int	NOT NULL,
 	`chat_content`	varchar(100)	NULL,
-	`chat_read`	bool	NULL,
+	`chat_read`	boolean	NULL	DEFAULT false,
 	`chat_date`	date	NULL
 );
 
@@ -165,7 +166,7 @@ CREATE TABLE `notification` (
 	`notification_member_num`	int	NOT NULL,
 	`notification_type_num`	int	NOT NULL,
 	`notification_message`	varchar(50)	NULL,
-	`notification_read`	boolean	NULL,
+	`notification_read`	boolean	NULL	DEFAULT false,
 	`notification_date`	date	NULL
 );
 
@@ -174,7 +175,7 @@ DROP TABLE IF EXISTS `deal`;
 CREATE TABLE `deal` (
 	`deal_num`	int primary key auto_increment	NOT NULL,
 	`deal_price`	int	NOT NULL,
-	`deal_yes_or_no`	boolean	NOT NULL,
+	`deal_yes_or_no`	boolean	NOT NULL	DEFAULT false,
 	`deal_post_num`	int	NOT NULL,
 	`deal_member_num`	int	NOT NULL
 );
@@ -230,8 +231,8 @@ CREATE TABLE `emd_areas` (
 DROP TABLE IF EXISTS `activity_areas`;
 
 CREATE TABLE `activity_areas` (
-	`activity_emd_num`	int NOT NULL,
-	`activity_member_num`	int NOT NULL,
+	`activity_emd_num`	int	NOT NULL,
+	`activity_member_num`	int	NOT NULL, 
     PRIMARY KEY (`activity_emd_num`, `activity_member_num`)
 );
 
@@ -501,4 +502,3 @@ ALTER TABLE `rating` ADD CONSTRAINT `FK_after_TO_rating_1` FOREIGN KEY (
 REFERENCES `after` (
 	`after_num`
 );
-

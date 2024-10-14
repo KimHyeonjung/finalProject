@@ -27,12 +27,4 @@
 	<delete id="deletePost">
 		delete from post where post_num = #{post_num}
 	</delete>
-	<insert id="insertPost" keyProperty="post.post_num" useGeneratedKeys="true">
-		insert into post(post_title, post_content, post_member_num, post_price)
-		values(#{post.post_title},#{post.post_content},#{post.post_member_num},#{post.post_price},)
-	</insert>
-	<insert id="insertFile">
-		insert into file(file_name, file_ori_name)
-		values(#{file.file_name},#{file.file_ori_name})
-	</insert>
 </mapper>

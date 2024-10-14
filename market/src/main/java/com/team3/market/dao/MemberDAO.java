@@ -13,5 +13,20 @@ public interface MemberDAO {
     MemberVO getMemberByEmail(String member_email);
     
     // 회원 정보 삽입
-    int insertMember(MemberVO member);
+    boolean insertMember(MemberVO member);
+
+	void updateMemberCookie(MemberVO user);
+
+	MemberVO getMemberBySessionId(String sessionId);
+
+	MemberVO selectMember(String id);
+
+	boolean deleteMember(MemberVO user);
+
+	boolean updatepw(MemberVO user);
+
+	boolean updateemail(MemberVO user);
+
+	boolean updatephone(MemberVO user);
+
 }

@@ -1,5 +1,8 @@
 package com.team3.market.controller;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,11 +58,22 @@ public class HomeController {
         return "/member/login";
     }
     @PostMapping("/login")
-    public String guestLoginPost(Model model, MemberVO member, HttpSession session, RedirectAttributes redirectAttributes) {
-		MemberVO user = memberService.login(member);
-
-		if (user != null) {
+    public String guestLoginPost(Model model, MemberVO member, HttpSession session, 
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest request,HttpServletResponse response) {
+			MemberVO user = memberService.login(member);
+			
+			if (user != null) {
 			session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
+			
+			// 자동 로그인 체크 여부 확인
+			String auto = request.getParameter("autoLogin");
+			System.out.println("AutoLogin Parameter: " + auto);
+			if (auto != null && auto.equals("Y")) {
+				Cookie cookie = memberService.createCookie(user, request);
+				response.addCookie(cookie);
+			}
+					
 			redirectAttributes.addFlashAttribute("message", "로그인 성공!");
 			return "redirect:/";  // 홈으로 리다이렉트
 		} else {
@@ -69,7 +83,18 @@ public class HomeController {
 	}
     
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session, HttpServletResponse response) {
+    	MemberVO user = (MemberVO) session.getAttribute("user");
+    	if(user != null) {
+			user.setMember_cookie(null);
+			user.setMember_limit(null);
+			memberService.updateMemberCookie(user);
+			
+			Cookie cookie = new Cookie("AL", null);
+	        cookie.setMaxAge(0); // 쿠키 만료
+	        cookie.setPath("/");
+	        response.addCookie(cookie);
+		}
         session.invalidate();  // 세션 무효화
         return "redirect:/";  // 홈으로 리다이렉트
     }
@@ -84,4 +109,122 @@ public class HomeController {
         }
         return "OK"; // 사용 가능한 아이디
     }
+    
+    @GetMapping("/mypage")
+	public String mypage() {
+		return "/mypage";
+	}
+	
+	@PostMapping("/delete")
+	public String deleteAccount(Model model, HttpSession session, MemberVO member) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+    
+	    boolean res = memberService.deleteMember(user);
+	    
+	    MessageDTO message;
+	    if(res) {
+	        message = new MessageDTO("/", "회원 탈퇴에 성공했습니다.");
+	    } else {
+	        message = new MessageDTO("/redirect:/mypage", "회원 탈퇴에 실패했습니다.");
+	    }
+	    
+	    model.addAttribute("message", message);
+	    return "/main/message";
+	}
+	
+	@GetMapping("/updatepw")
+	public String updatepw() {
+		return "/updatepw";
+	}
+	
+	@PostMapping("/updatepw")
+	@ResponseBody
+	public String updatepw(Model model, HttpSession session,
+						@RequestParam("new_member_pw") String newPassword, 
+						@RequestParam("member_pw") String oldPassword, 
+						@RequestParam("new_member_pw2") String newPasswordConfirm) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		
+		MessageDTO message;
+		
+		if(!newPassword.equals(newPasswordConfirm)) {
+			message = new MessageDTO("/updatepw", "비밀번호가 일치하지 않습니다.");
+		}
+		
+		boolean change = memberService.changepw(user, session, oldPassword, newPassword);
+		
+		if(change) {
+			return "/market/mypage";
+		}
+		else {
+			message = new MessageDTO("/updatepw", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
+		}
+		
+		model.addAttribute("message", message);
+	    return "/main/message";
+		
+	}
+	
+	@GetMapping("/updateemail")
+	public String updateemail() {
+		return "/updatepw";
+	}
+	
+	
+	@PostMapping("/updateemail")
+	@ResponseBody
+	public String updateemail(Model model, HttpSession session,
+						@RequestParam("member_email") String newEmail) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		
+		MessageDTO message;
+		
+		boolean change = memberService.changeemail(user, session, newEmail);
+		
+		if(change) {
+			return "/market/mypage";
+		}
+		else {
+			message = new MessageDTO("/updateemail", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
+		}
+		
+		model.addAttribute("message", message);
+	    return "/main/message";
+		
+	}
+	
+	@GetMapping("/updatephone")
+	public String updatephone() {
+		return "/updatepw";
+	}
+	
+	
+	@PostMapping("/updatephone")
+	@ResponseBody
+	public String updatephone(Model model, HttpSession session,
+						@RequestParam("member_phone") String newPhone) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		
+		MessageDTO message;
+		
+		boolean change = memberService.changephone(user, session, newPhone);
+		
+		if(change) {
+			return "/market/mypage";
+		}
+		else {
+			message = new MessageDTO("/updatephone", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
+		}
+		
+		System.out.println(user);
+		
+		model.addAttribute("message", message);
+	    return "/main/message";
+		
+	}
+	
 }
