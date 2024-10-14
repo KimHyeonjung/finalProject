@@ -134,14 +134,13 @@ public class HomeController {
 	
 	@PostMapping("/updatepw")
 	@ResponseBody
-	public String updatepw(Model model, HttpSession session, MemberVO member,
+	public String updatepw(Model model, HttpSession session,
 						@RequestParam("new_member_pw") String newPassword, 
 						@RequestParam("member_pw") String oldPassword, 
 						@RequestParam("new_member_pw2") String newPasswordConfirm) {
 		
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		
-		System.out.println(member);
 		System.out.println(user);
 		
 		MessageDTO message;
@@ -159,7 +158,6 @@ public class HomeController {
 			message = new MessageDTO("/updatepw", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
 		}
 		
-		System.out.println(member);
 		System.out.println(user);
 		
 		model.addAttribute("message", message);

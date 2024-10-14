@@ -98,11 +98,12 @@ public class MemberService {
 		user.setMember_id(user.getMember_id());
 		
 		if(passwordEncoder.matches(oldPassword, user.getMember_pw())) {
-			boolean update = memberDao.updatepw(user);
 			user.setMember_pw(passwordEncoder.encode(newPassword));
+			boolean update = memberDao.updatepw(user);
 			if(update) {
 				session.setAttribute("user", user);
 			}
+			return update;
         }
 		
 		return false;

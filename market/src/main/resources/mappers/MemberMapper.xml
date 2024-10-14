@@ -32,9 +32,9 @@
 	<update id="updatepw">
 		update member
 		set
-			user_pw = #{member_pw},
+			member_pw = #{member_pw}
 		where
-			user_id = #{member_id}
+			member_id = #{member_id}
 	</update>
 	
 </mapper>

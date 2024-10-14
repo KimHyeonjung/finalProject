@@ -144,7 +144,7 @@
 	        success: function(data) {
 	            console.log(data);
 	            // 서버에서 문자열을 반환한다고 가정
-	            if (data === '/main/message') {
+	            if (data === '/market/mypage') {
 	                alert("비밀번호가 성공적으로 변경되었습니다.");
 	                window.location.href = '/market/mypage'; // 페이지 이동
 	            } else {
