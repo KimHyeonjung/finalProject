@@ -146,23 +146,23 @@
 		      }
 		    });
 		  }
-		  function checkMember(sns, id){
-			  
-			  var res;
-			  $.ajax({
-					async : false,
-					url : `<c:url value="/sns"/>/\${sns}/check/id`, 
-					type : 'post', 
-					data : {id}, 
-					success : function (data){
-						res = data;
-					}, 
-					error : function(jqXHR, textStatus, errorThrown){
+			function checkMember(sns, id){
+				  
+				  var res;
+				  $.ajax({
+						async : false,
+						url : `<c:url value="/sns"/>/\${sns}/check/id`, 
+						type : 'post', 
+						data : {id}, 
+						success : function (data){
+							res = data;
+						}, 
+						error : function(jqXHR, textStatus, errorThrown){
 
-					}
-				});
-			  return res;
-		  }
+						}
+					});
+				  return res;
+			  }
 		  function signupSns(sns, id, email){
 			  $.ajax({
 					async : false,
