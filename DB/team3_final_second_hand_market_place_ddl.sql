@@ -115,7 +115,7 @@ CREATE TABLE `chat` (
 	`chat_member_num`	int	NOT NULL,
 	`chat_chatRoom_num`	int	NOT NULL,
 	`chat_content`	varchar(100)	NULL,
-	`chat_read`	bool	NULL,
+	`chat_read`	boolean	NULL	DEFAULT false,
 	`chat_date`	date	NULL
 );
 
@@ -165,7 +165,7 @@ CREATE TABLE `notification` (
 	`notification_member_num`	int	NOT NULL,
 	`notification_type_num`	int	NOT NULL,
 	`notification_message`	varchar(50)	NULL,
-	`notification_read`	boolean	NULL,
+	`notification_read`	boolean	NULL	DEFAULT false,
 	`notification_date`	date	NULL
 );
 
@@ -174,7 +174,7 @@ DROP TABLE IF EXISTS `deal`;
 CREATE TABLE `deal` (
 	`deal_num`	int primary key auto_increment	NOT NULL,
 	`deal_price`	int	NOT NULL,
-	`deal_yes_or_no`	boolean	NOT NULL,
+	`deal_yes_or_no`	boolean	NOT NULL	DEFAULT false,
 	`deal_post_num`	int	NOT NULL,
 	`deal_member_num`	int	NOT NULL
 );
@@ -230,8 +230,8 @@ CREATE TABLE `emd_areas` (
 DROP TABLE IF EXISTS `activity_areas`;
 
 CREATE TABLE `activity_areas` (
-	`activity_emd_num`	int NOT NULL,
-	`activity_member_num`	int NOT NULL,
+	`activity_emd_num`	int	NOT NULL,
+	`activity_member_num`	int	NOT NULL, 
     PRIMARY KEY (`activity_emd_num`, `activity_member_num`)
 );
 

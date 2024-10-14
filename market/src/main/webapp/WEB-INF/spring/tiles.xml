@@ -13,7 +13,6 @@
     <definition name="/*" extends="baseLayout">
         <put-attribute name="content" value="/WEB-INF/views/{1}.jsp" />
     </definition>
-    
     <definition name="/*/*" extends="baseLayout">
         <put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" />
     </definition>
