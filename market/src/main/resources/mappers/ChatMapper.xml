@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.team3.market.dao.ChatDAO">
+	<select id="selectChatRoomsByMember" parameterType="int" resultType="ChatRoomVO">
+	SELECT *
+	FROM 
+		chat_room
+	WHERE 
+		chatRoom_member_num = #{member_num}
+			OR
+		chatRoom_member_num2 = #{member_num};
+    </select>
+    
+    <select id="selectSenderByChatRoom" resultType="MemberVO">
+	SELECT m.*
+	FROM 
+		member m
+			JOIN 
+		chat_room cr 
+				ON 
+			m.member_num = cr.chatRoom_member_num2
+	WHERE 
+		cr.chatRoom_num = #{chatRoom_num};
+    </select>
+    
+    <select id="selectLatestChatByRoom" parameterType="int" resultType="com.team3.market.model.vo.ChatVO">
+	SELECT *
+	FROM 
+		chat
+	WHERE 
+		chat_chatRoom_num = #{chatRoom_num}
+	ORDER BY
+		chat_date DESC LIMIT 1
+	</select>
+</mapper>
