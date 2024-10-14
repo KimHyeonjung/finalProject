@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChatRoomDTO {
     private ChatRoomVO chatRoom; // ChatRoomVO 객체
-//    private MemberVO member;
     private MemberVO targetMember;
-    private ChatVO lastChat;
+    private ChatVO Chat;
 }

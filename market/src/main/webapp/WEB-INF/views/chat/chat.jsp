@@ -5,28 +5,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>채팅 화면</title>
+    <title>채팅창</title>
+    <style>
+        .chat-container {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        .message {
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        .message.self {
+            text-align: right;
+            background-color: #e1ffc7;
+        }
+        .message.other {
+            text-align: left;
+            background-color: #f1f1f1;
+        }
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h2>채팅방</h2>
-    <div>
-        <c:forEach var="chatMessage" items="${chatMessages}">
-            <c:if test="${chatMessage.chat_member_num == sessionScope.user.member_num}">
-                <div>
-                    ${chatMessage.chat_content} [${chatMessage.chat_read}] - ${chatMessage.chat_date}
-                </div>
-            </c:if>
-            <c:if test="${chatMessage.chat_member_num != sessionScope.user.member_num}">
-                <div>
-                    <strong>${chatMessage.member_nick}</strong>: ${chatMessage.chat_content} 
-                    [${chatMessage.chat_read}] - ${chatMessage.chat_date}
-                </div>
-            </c:if>
+    <h2>채팅 내역</h2>
+    <div class="chat-history">
+        <c:forEach var="chatDTO" items="${chatDTOs}">
+            <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                <strong>${chatDTO.getTargetMember().member_nick}</strong>: <span>${chatDTO.getChat().chat_content}</span>
+                <p style="font-size: small;">[${chatDTO.getChat().chat_date}]</p>
+            </div>
         </c:forEach>
     </div>
-    <form action="/sendMessage" method="post">
-        <input type="hidden" name="chat_chatRoom_num" value="${param.chatRoomNum}" />
-        <input type="text" name="chat_content" placeholder="메시지를 입력하세요" required />
+
+    <form action="/sendChat" method="post">
+        <input type="hidden" name="chatRoomNum" value="${chatRoomNum}" />
+        <textarea name="chatContent" class="chat-input" rows="3" placeholder="메시지를 입력하세요..."></textarea>
         <button type="submit">전송</button>
     </form>
 </body>

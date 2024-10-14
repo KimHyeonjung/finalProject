@@ -41,6 +41,21 @@ public class ChatService {
 	private MemberVO getSenderByChatRoomId(int chatRoom_num) {
 		return chatDAO.selectSenderByChatRoom(chatRoom_num);
 	}
+	
+	// 특정 채팅방의 채팅 내역 가져오기
+    public List<ChatRoomDTO> getChatsByRoom(int chatRoomNum) {
+    	List<ChatVO> chats = chatDAO.selectChatsByRoom(chatRoomNum);
+        List<ChatRoomDTO> chatRoomDTOs = new ArrayList<ChatRoomDTO>();
+
+        for (ChatVO chat : chats) {
+        	MemberVO member = chatDAO.selectMemberById(chat.getChat_member_num());
+            ChatRoomDTO dto = new ChatRoomDTO(null, member, chat);
+            chatRoomDTOs.add(dto);
+        }
+
+        return chatRoomDTOs;
+//        return chatDAO.selectChatsByRoom(chatRoomNum);
+    }
 
     
 }
