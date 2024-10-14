@@ -1,5 +1,8 @@
 package com.team3.market.controller;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,11 +58,22 @@ public class HomeController {
         return "/member/login";
     }
     @PostMapping("/login")
-    public String guestLoginPost(Model model, MemberVO member, HttpSession session, RedirectAttributes redirectAttributes) {
-		MemberVO user = memberService.login(member);
-
-		if (user != null) {
+    public String guestLoginPost(Model model, MemberVO member, HttpSession session, 
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest request,HttpServletResponse response) {
+			MemberVO user = memberService.login(member);
+			
+			if (user != null) {
 			session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
+			
+			// 자동 로그인 체크 여부 확인
+			String auto = request.getParameter("autoLogin");
+			System.out.println("AutoLogin Parameter: " + auto);
+			if (auto != null && auto.equals("Y")) {
+				Cookie cookie = memberService.createCookie(user, request);
+				response.addCookie(cookie);
+			}
+					
 			redirectAttributes.addFlashAttribute("message", "로그인 성공!");
 			return "redirect:/";  // 홈으로 리다이렉트
 		} else {
@@ -69,7 +83,18 @@ public class HomeController {
 	}
     
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session, HttpServletResponse response) {
+    	MemberVO user = (MemberVO) session.getAttribute("user");
+    	if(user != null) {
+			user.setMember_cookie(null);
+			user.setMember_limit(null);
+			memberService.updateMemberCookie(user);
+			
+			Cookie cookie = new Cookie("AL", null);
+	        cookie.setMaxAge(0); // 쿠키 만료
+	        cookie.setPath("/");
+	        response.addCookie(cookie);
+		}
         session.invalidate();  // 세션 무효화
         return "redirect:/";  // 홈으로 리다이렉트
     }

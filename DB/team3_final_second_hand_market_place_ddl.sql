@@ -8,18 +8,19 @@ DROP TABLE IF EXISTS `member`;
 
 CREATE TABLE `member` (
 	`member_num`	int primary key auto_increment	NOT NULL,
-	`member_id`	varchar(13) unique	NOT NULL,
-	`member_pw`	varchar(255)	NOT NULL,
-	`member_nick`	varchar(10) unique	NOT NULL,
-	`member_phone`	varchar(13) unique	NOT NULL,
-	`member_email`	varchar(30) unique	NOT NULL,
+	`member_id`	varchar(50) unique	NOT NULL,
+	`member_pw`	varchar(255)	NULL,
+	`member_nick`	varchar(10)	NULL,
+	`member_phone`	varchar(13)	NULL,
+	`member_email`	varchar(30)	NOT NULL,
 	`member_auth`	varchar(5)	NOT NULL DEFAULT 'USER',
 	`member_state`	varchar(10)	NULL DEFAULT '사용',
-	`member_report`	int	NULL	DEFAULT 0,
-	`member_score`	double	NULL	DEFAULT 0,
-	`member_money`	int	NULL	DEFAULT 0,
-    `member_fail`	int	NULL	DEFAULT 0,
-	`member_cookie`	varchar(255)	NULL
+	`member_report`	int	NULL,
+	`member_score`	double	NULL DEFAULT 0,
+	`member_money`	int	NULL DEFAULT 0,
+    `member_fail`  int NULL DEFAULT 0,
+    `member_cookie` varchar(255) NULL,
+    `member_limit` datetime NULL
 );
 
 DROP TABLE IF EXISTS `post`;
@@ -501,4 +502,3 @@ ALTER TABLE `rating` ADD CONSTRAINT `FK_after_TO_rating_1` FOREIGN KEY (
 REFERENCES `after` (
 	`after_num`
 );
-
