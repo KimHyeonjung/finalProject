@@ -25,4 +25,34 @@
     <select id="selectMember" resultType="MemberVO">
   	  select * from member where member_id = #{id}
     </select>
+    
+	<delete id="deleteMember">
+		delete from member
+		where member_id = #{member_id}
+	</delete>
+	
+	<update id="updatepw">
+		update member
+		set
+			member_pw = #{member_pw}
+		where
+			member_id = #{member_id}
+	</update>
+	
+	<update id="updateemail">
+		update member
+		set
+			member_email = #{member_email}
+		where
+			member_id = #{member_id}
+	</update>
+	
+	<update id="updatephone">
+		update member
+		set
+			member_phone = #{member_phone}
+		where
+			member_id = #{member_id}
+	</update>
+	
 </mapper>

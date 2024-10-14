@@ -13,13 +13,13 @@ CREATE TABLE `member` (
 	`member_nick`	varchar(10)	NULL,
 	`member_phone`	varchar(13)	NULL,
 	`member_email`	varchar(30)	NOT NULL,
-	`member_auth`	varchar(5)	NOT NULL,
-	`member_state`	varchar(10)	NULL,
+	`member_auth`	varchar(5)	NOT NULL DEFAULT 'USER',
+	`member_state`	varchar(10)	NULL DEFAULT '사용',
 	`member_report`	int	NULL,
-	`member_score`	float	NULL,
-	`member_money`	int	NULL,
-    `member_fail`  int NULL,
-    `member_cookie` varchar(4096) NULL,
+	`member_score`	double	NULL DEFAULT 0,
+	`member_money`	int	NULL DEFAULT 0,
+    `member_fail`  int NULL DEFAULT 0,
+    `member_cookie` varchar(255) NULL,
     `member_limit` datetime NULL
 );
 
@@ -28,30 +28,42 @@ DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
 	`post_num`	int primary key auto_increment	NOT NULL,
 	`post_member_num`	int	NOT NULL,
-	`post_position_num`	int	NOT NULL,
-	`post_way_num`	int	NOT NULL,
-	`post_category_num`	int	NOT NULL,
+	`post_position_name`	varchar(10) NOT NULL,
+	`post_way_name`	varchar(10) NOT NULL,
+	`post_category_name`	varchar(16) NOT NULL,
 	`post_title`	varchar(20)	NOT NULL,
-	`post_content`	varchar(255)	NOT NULL,
+	`post_content`	varchar(500)	NOT NULL,
 	`post_price`	int	NULL,
 	`post_deal`	boolean	NOT NULL,
 	`post_date`	date	NOT NULL,
 	`post_refresh`	date	NULL,
-	`post_address`	varchar(100)	NULL
+	`post_address`	varchar(100)	NULL,
+    `post_view` int NULL DEFAULT 0
+);
+
+DROP TABLE IF EXISTS `position`;
+
+CREATE TABLE `position` (
+	`position_name`	varchar(10) primary key	NOT NULL
+);
+
+DROP TABLE IF EXISTS `way`;
+
+CREATE TABLE `way` (
+	`way_name`	varchar(10) primary key	NOT NULL
 );
 
 DROP TABLE IF EXISTS `category`;
 
 CREATE TABLE `category` (
-	`category_num`	int primary key auto_increment	NOT NULL,
-	`category_name`	varchar(10)	NULL
+	`category_name`	varchar(16) primary key	NOT NULL
 );
 
 DROP TABLE IF EXISTS `wish`;
 
 CREATE TABLE `wish` (
 	`wish_num`	int primary key auto_increment	NOT NULL,
-	`wish_post_name`	int	NOT NULL,
+	`wish_post_num`	int	NOT NULL,
 	`wish_member_num`	int	NOT NULL,
 	`wish_date`	date	NULL
 );
@@ -65,12 +77,6 @@ CREATE TABLE `address` (
 	`address_ad`	varchar(100)	NULL
 );
 
-DROP TABLE IF EXISTS `way`;
-
-CREATE TABLE `way` (
-	`way_num`	int primary key auto_increment	NOT NULL,
-	`way_name`	varchar(10)	NULL
-);
 
 DROP TABLE IF EXISTS `notice`;
 
@@ -97,10 +103,10 @@ DROP TABLE IF EXISTS `chat_room`;
 
 CREATE TABLE `chat_room` (
 	`chatRoom_num`	int primary key auto_increment	NOT NULL,
-	`charRoom_member_num`	int	NOT NULL,
-	`charRoom_member_num2`	int	NOT NULL,
-	`charRoom_post_name`	int	NOT NULL,
-	`charRoom_date`	date	NULL
+	`chatRoom_member_num`	int	NOT NULL,
+	`chatRoom_member_num2`	int	NOT NULL,
+	`chatRoom_post_num`	int	NOT NULL,
+	`chatRoom_date`	date	NULL
 );
 
 DROP TABLE IF EXISTS `chat`;
@@ -110,7 +116,7 @@ CREATE TABLE `chat` (
 	`chat_member_num`	int	NOT NULL,
 	`chat_chatRoom_num`	int	NOT NULL,
 	`chat_content`	varchar(100)	NULL,
-	`chat_read`	bool	NULL,
+	`chat_read`	boolean	NULL	DEFAULT false,
 	`chat_date`	date	NULL
 );
 
@@ -121,13 +127,6 @@ CREATE TABLE `block` (
 	`block_member_num`	int	NOT NULL,
 	`block_member_num2`	int	NOT NULL,
 	`block_date`	date	NULL
-);
-
-DROP TABLE IF EXISTS `position`;
-
-CREATE TABLE `position` (
-	`position_num`	int primary key auto_increment	NOT NULL,
-	`position_name`	varchar(10)	NULL
 );
 
 DROP TABLE IF EXISTS `file`;
@@ -145,7 +144,7 @@ DROP TABLE IF EXISTS `wallet`;
 CREATE TABLE `wallet` (
 	`wallet_num`	int primary key auto_increment	NOT NULL,
 	`wallet_member_num`	int	NOT NULL,
-	`wallet_post_name`	int	NOT NULL,
+	`wallet_post_num`	int	NOT NULL,
 	`wallet_money`	int	NULL,
 	`wallet_date`	date	NULL
 );
@@ -167,7 +166,7 @@ CREATE TABLE `notification` (
 	`notification_member_num`	int	NOT NULL,
 	`notification_type_num`	int	NOT NULL,
 	`notification_message`	varchar(50)	NULL,
-	`notification_read`	boolean	NULL,
+	`notification_read`	boolean	NULL	DEFAULT false,
 	`notification_date`	date	NULL
 );
 
@@ -176,8 +175,8 @@ DROP TABLE IF EXISTS `deal`;
 CREATE TABLE `deal` (
 	`deal_num`	int primary key auto_increment	NOT NULL,
 	`deal_price`	int	NOT NULL,
-	`deal_yes_or_no`	boolean	NOT NULL,
-	`deal_post_name`	int	NOT NULL,
+	`deal_yes_or_no`	boolean	NOT NULL	DEFAULT false,
+	`deal_post_num`	int	NOT NULL,
 	`deal_member_num`	int	NOT NULL
 );
 
@@ -194,7 +193,7 @@ DROP TABLE IF EXISTS `after`;
 CREATE TABLE `after` (
 	`after_num`	int primary key auto_increment	NOT NULL,
 	`after_member_num`	int	NOT NULL,
-	`after_post_name`	int	NOT NULL,
+	`after_post_num`	int	NOT NULL,
 	`after_message`	varchar(255)	NULL
 );
 
@@ -232,8 +231,8 @@ CREATE TABLE `emd_areas` (
 DROP TABLE IF EXISTS `activity_areas`;
 
 CREATE TABLE `activity_areas` (
-	`activity_emd_num`	int NOT NULL,
-	`activity_member_num`	int NOT NULL,
+	`activity_emd_num`	int	NOT NULL,
+	`activity_member_num`	int	NOT NULL, 
     PRIMARY KEY (`activity_emd_num`, `activity_member_num`)
 );
 
@@ -267,28 +266,28 @@ REFERENCES `member` (
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_position_TO_post_1` FOREIGN KEY (
-	`post_position_num`
+	`post_position_name`
 )
 REFERENCES `position` (
-	`position_num`
+	`position_name`
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_way_TO_post_1` FOREIGN KEY (
-	`post_way_num`
+	`post_way_name`
 )
 REFERENCES `way` (
-	`way_num`
+	`way_name`
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_category_TO_post_1` FOREIGN KEY (
-	`post_category_num`
+	`post_category_name`
 )
 REFERENCES `category` (
-	`category_num`
+	`category_name`
 );
 
 ALTER TABLE `wish` ADD CONSTRAINT `FK_post_TO_wish_1` FOREIGN KEY (
-	`wish_post_name`
+	`wish_post_num`
 )
 REFERENCES `post` (
 	`post_num`
@@ -344,21 +343,21 @@ REFERENCES `report_category` (
 );
 
 ALTER TABLE `chat_room` ADD CONSTRAINT `FK_member_TO_chat_room_1` FOREIGN KEY (
-	`charRoom_member_num`
+	`chatRoom_member_num`
 )
 REFERENCES `member` (
 	`member_num`
 );
 
 ALTER TABLE `chat_room` ADD CONSTRAINT `FK_member_TO_chat_room_2` FOREIGN KEY (
-	`charRoom_member_num2`
+	`chatRoom_member_num2`
 )
 REFERENCES `member` (
 	`member_num`
 );
 
 ALTER TABLE `chat_room` ADD CONSTRAINT `FK_post_TO_chat_room_1` FOREIGN KEY (
-	`charRoom_post_name`
+	`chatRoom_post_num`
 )
 REFERENCES `post` (
 	`post_num`
@@ -400,7 +399,7 @@ REFERENCES `member` (
 );
 
 ALTER TABLE `wallet` ADD CONSTRAINT `FK_post_TO_wallet_1` FOREIGN KEY (
-	`wallet_post_name`
+	`wallet_post_num`
 )
 REFERENCES `post` (
 	`post_num`
@@ -428,7 +427,7 @@ REFERENCES `notification_type` (
 );
 
 ALTER TABLE `deal` ADD CONSTRAINT `FK_post_TO_deal_1` FOREIGN KEY (
-	`deal_post_name`
+	`deal_post_num`
 )
 REFERENCES `post` (
 	`post_num`
@@ -456,7 +455,7 @@ REFERENCES `member` (
 );
 
 ALTER TABLE `after` ADD CONSTRAINT `FK_post_TO_after_1` FOREIGN KEY (
-	`after_post_name`
+	`after_post_num`
 )
 REFERENCES `post` (
 	`post_num`

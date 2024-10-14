@@ -12,9 +12,11 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 
+import com.team3.market.interceptor.MemberInterceptor;
+
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.team3.market.*") 
+@ComponentScan(basePackages = "com.team3.market") 
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
@@ -25,11 +27,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return resolver;
     }
 
-	
-	  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	  registry.addResourceHandler("/resources/**").addResourceLocations(
-	  "/resources/"); }
-	 
+//    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+    }
     
 	// TilesViewResolver 설정
     @Bean

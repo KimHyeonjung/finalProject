@@ -53,9 +53,7 @@ public class MemberService {
             return null;
     }
 	
-
 	public MemberVO getMemberById(String memberId) {
-		
 		return memberDao.getMemberById(memberId);
 	}
 
@@ -144,4 +142,64 @@ public class MemberService {
 	}
 
 	
+	
+	public boolean deleteMember(MemberVO user) {
+		if(user == null) {
+			return false;
+		}
+		return memberDao.deleteMember(user);
+	}
+
+	public boolean changepw(MemberVO user, HttpSession session, String oldPassword, String newPassword) {
+		
+		user.setMember_id(user.getMember_id());
+		
+		if(passwordEncoder.matches(oldPassword, user.getMember_pw())) {
+			user.setMember_pw(passwordEncoder.encode(newPassword));
+			boolean update = memberDao.updatepw(user);
+			if(update) {
+				session.setAttribute("user", user);
+			}
+			return update;
+        }
+		
+		return false;
+	}
+
+	public boolean changeemail(MemberVO user, HttpSession session, String newEmail) {
+		
+		user.setMember_id(user.getMember_id());
+		
+		user.setMember_email(newEmail);
+		
+		System.out.println(user);
+		
+		boolean update = memberDao.updateemail(user);
+		
+		System.out.println(user);
+		
+		if(update) {
+			session.setAttribute("user", user);
+		}
+		return update;
+	}
+
+	public boolean changephone(MemberVO user, HttpSession session, String newPhone) {
+		
+		user.setMember_id(user.getMember_id());
+		
+		user.setMember_phone(newPhone);
+		
+		System.out.println(user);
+		
+		boolean update = memberDao.updatephone(user);
+		
+		System.out.println(user);
+		
+		if(update) {
+			session.setAttribute("user", user);
+		}
+		return update;
+	}
+
 }

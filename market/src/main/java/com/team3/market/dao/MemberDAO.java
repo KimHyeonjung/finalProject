@@ -21,7 +21,12 @@ public interface MemberDAO {
 
 	MemberVO selectMember(String id);
 
-	
+	boolean deleteMember(MemberVO user);
 
-	
+	boolean updatepw(MemberVO user);
+
+	boolean updateemail(MemberVO user);
+
+	boolean updatephone(MemberVO user);
+
 }
