@@ -24,7 +24,7 @@
 			<label class="label-form" for="member_nick">${user.member_nick}</label>
 		</div>
 		
-		<div class="d-flex justify-content-center">
+		<div class="d-flex justify-content-left">
 			<div class="btn btn-dark m-auto" data-toggle="modal" data-target="#modal">비밀번호 변경</div>
 		</div>
 		
@@ -32,22 +32,18 @@
 			<label for="email">이메일 주소:</label>
 			<label class="form-control" for="email">${user.member_email}</label>
 		</div>
-		<div class="form-group">
-			<label class="label-form" for="member_email">새 이메일 주소:</label>
-			<input type="email" class="form-control" name="member_email" id="member_email">
+		<div class="d-flex justify-content-left">
+			<div class="btn btn-dark m-auto" data-toggle="modal" data-target="#modal_email">이메일 변경</div>
 		</div>
 		<div class="form-group">
 			<label for="phone">연락처</label>
 			<label class="form-control" for="phone">${user.member_phone}</label>
 		</div>
-		<div class="form-group">
-			<label class="label-form" for="member_phone">새 연락처:</label>
-			<input type="tel" class="form-control" name="member_phone" id="member_phone">
+		<div class="d-flex justify-content-left">
+			<div class="btn btn-dark m-auto" data-toggle="modal" data-target="#modal_phone">연락처 변경</div>
 		</div>
 		
-		<button type="button" id="click">확인용</button>
-		
-		<button type="submit" class="btn btn-outline-success col-12" id="update">회원 정보 수정</button>
+		<button type="button" onclick="location.href='/market'" class="btn btn-outline-success col-12">나가기</button>
 		
 		<button type="button" class="btn btn-outline-error col-12" id="delete">회원 탈퇴</button>
 		
@@ -61,7 +57,7 @@
 	            <!-- Modal Header -->
 	            <div class="modal-header">
 	                <h5 class="modal-title" id="passwordModalLabel">비밀번호 변경</h5>
-	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage'">&times;</button>
 	            </div>
 	
 	            <!-- Modal body -->
@@ -86,7 +82,69 @@
 	            <!-- Modal footer -->
 	            <div class="modal-footer">
 	                <button type="button" id="submitBtn" class="btn btn-primary">확인</button>
-	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
+	<!-- The Modal -->
+	<div class="modal" id="modal_email">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	
+	            <!-- Modal Header -->
+	            <div class="modal-header">
+	                <h5 class="modal-title" id="emailModalLabel">이메일 변경</h5>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage'">&times;</button>
+	            </div>
+	
+	            <!-- Modal body -->
+	            <div class="modal-body">
+	                <form id="passwordForm" method="post" action="<c:url value="/updateemail"/>">
+	                    <div id="error-message" class="alert alert-danger d-none"></div> <!-- 오류 메시지 표시 -->
+	                    <div class="form-group">
+	                        <label for="member_email">새 이메일 주소 : </label>
+	                        <input type="email" class="form-control" name="member_email" id="member_email" required>
+	                    </div>
+	                </form>
+	            </div>
+	
+	            <!-- Modal footer -->
+	            <div class="modal-footer">
+	                <button type="button" id="submitEmailBtn" class="btn btn-primary">확인</button>
+	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
+	<!-- The Modal -->
+	<div class="modal" id="modal_phone">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	
+	            <!-- Modal Header -->
+	            <div class="modal-header">
+	                <h5 class="modal-title" id="phoneModalLabel">연락처 변경</h5>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage'">&times;</button>
+	            </div>
+	
+	            <!-- Modal body -->
+	            <div class="modal-body">
+	                <form id="passwordForm" method="post" action="<c:url value="/updatephone"/>">
+	                    <div id="error-message" class="alert alert-danger d-none"></div> <!-- 오류 메시지 표시 -->
+	                    <div class="form-group">
+	                        <label for="member_phone">새 연락처 : </label>
+	                       	<input type="tel" class="form-control" name="member_phone" id="member_phone">
+	                    </div>
+	                </form>
+	            </div>
+	
+	            <!-- Modal footer -->
+	            <div class="modal-footer">
+	                <button type="button" id="submitPhoneBtn" class="btn btn-primary">확인</button>
+	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
 	            </div>
 	        </div>
 	    </div>
@@ -174,6 +232,109 @@
 	        body: params.toString()
 	    }) */
 	
+    document.getElementById("submitEmailBtn").addEventListener("click", function() {
+	    // 입력값 가져오기
+	    const newEmail = document.getElementById("member_email").value;
+	    
+	    // 오류 메시지 초기화
+	    const errorMessageElement = document.getElementById("error-message");
+	    errorMessageElement.classList.add("d-none");
+	    errorMessageElement.textContent = "";
+
+	    // 비밀번호 검증
+	   	const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+	    if (!emailPattern.test(newEmail)) {
+	        errorMessageElement.textContent = "올바른 이메일 형식으로 입력하세요.";
+	        errorMessageElement.classList.remove("d-none");
+	        return;
+	    }
+
+	    const formData = new FormData();
+	    
+	    formData.append("member_email", newEmail);
+	    
+	    console.log(formData);
+	    
+	    event.preventDefault(); // 기본 제출 방지
+	    
+	    $.ajax({
+	        method: 'post',
+	        url: '/market/updateemail',
+	        data: {
+	        	member_email: newEmail
+	        },
+	        success: function(data) {
+	            console.log(data);
+	            // 서버에서 문자열을 반환한다고 가정
+	            if (data === '/market/mypage') {
+	                alert("이메일이 성공적으로 변경되었습니다.");
+	                window.location.href = '/market/mypage'; // 페이지 이동
+	            } else {
+	                errorMessageElement.textContent = "이메일 변경 실패: " + data;
+	                errorMessageElement.classList.remove("d-none");
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.log('Eroor : ' + error);
+	            errorMessageElement.textContent = "서버 오류가 발생했습니다.";
+	            errorMessageElement.classList.remove("d-none");
+	        }
+	    })
+	});   
+	    
+    document.getElementById("submitPhoneBtn").addEventListener("click", function() {
+	    // 입력값 가져오기
+	    const newPhone = document.getElementById("member_phone").value;
+	    
+	    // 오류 메시지 초기화
+	    const errorMessageElement = document.getElementById("error-message");
+	    errorMessageElement.classList.add("d-none");
+	    errorMessageElement.textContent = "";
+
+	    // 비밀번호 검증
+	   	const phonePattern = /^^(010)(\d{4})(\d{4})$/;
+
+	    if (!phonePattern.test(newPhone)) {
+	        errorMessageElement.textContent = "반드시 숫자만 입력하세요.";
+	        errorMessageElement.classList.remove("d-none");
+	        return;
+	    }
+
+	    const formData = new FormData();
+	    
+	    formData.append("member_phone", newPhone);
+	    
+	    console.log(formData);
+	    
+	    event.preventDefault(); // 기본 제출 방지
+	    
+	    $.ajax({
+	        method: 'post',
+	        url: '/market/updatephone',
+	        data: {
+	        	member_phone: newPhone
+	        },
+	        success: function(data) {
+	            console.log(data);
+	            // 서버에서 문자열을 반환한다고 가정
+	            if (data === '/market/mypage') {
+	                alert("연락처가 성공적으로 변경되었습니다.");
+	                window.location.href = '/market/mypage'; // 페이지 이동
+	            } else {
+	                errorMessageElement.textContent = "연락처 변경 실패: " + data;
+	                errorMessageElement.classList.remove("d-none");
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.log('Eroor : ' + error);
+	            errorMessageElement.textContent = "서버 오류가 발생했습니다.";
+	            errorMessageElement.classList.remove("d-none");
+	        }
+	    })
+	});   
+	    
+	    
 	$(document).ready(function() {
 	    $('#delete').on('click', function() {
 	        if (confirm('정말로 회원 탈퇴를 하시겠습니까?')) {
@@ -195,32 +356,6 @@
 	        }
 	    });
 	});
-	
-	jQuery(function() {
-		  $.validator.addMethod("regex", function(value, element, regexpr) {          
-            return regexpr.test(value);
-        }, "유효한 형식이 아닙니다.");
-		  
-        const myForm = $('#form');
-        myForm.validate({
-            rules: {                    // 유효성 검사 규칙
-                member_email: {                // 이메일 필드
-                    email: true         // 이메일 형식 검증
-                },
-                member_phone: {                  // 연락처 필드
-                    digits: true        // 숫자 형태로만 입력 가능하도록 설정
-                },
-            },
-            messages: {                 // 오류값 발생시 출력할 메시지 수동 지정
-                member_email: {
-                    email: '올바른 이메일 형식으로 입력하세요.'
-                },
-                member_phone: {
-                    digits: '반드시 숫자만 입력하세요.'
-                },
-            }
-        });
-    });
 	
     </script>
 </body>

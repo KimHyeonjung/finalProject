@@ -90,25 +90,6 @@ public class HomeController {
 		return "/mypage";
 	}
 	
-	@PostMapping("/mypage")
-	public String mypage(Model model, HttpSession session, MemberVO member) {
-		
-		MemberVO user = (MemberVO)session.getAttribute("user");
-		
-		MessageDTO message;
-		
-		boolean res = memberService.updateMember(user, member, session);
-		
-        if(res) {
-            message = new MessageDTO("/", "회원 정보를 수정했습니다.");
-        } else {
-            message = new MessageDTO("/mypage", "회원 정보를 수정하지 못했습니다.");
-        }
-        
-        model.addAttribute("message", message);
-		return "/main/message";
-	}
-	
 	@PostMapping("/delete")
 	public String deleteAccount(Model model, HttpSession session, MemberVO member) {
 		
@@ -141,8 +122,6 @@ public class HomeController {
 		
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		
-		System.out.println(user);
-		
 		MessageDTO message;
 		
 		if(!newPassword.equals(newPasswordConfirm)) {
@@ -156,6 +135,64 @@ public class HomeController {
 		}
 		else {
 			message = new MessageDTO("/updatepw", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
+		}
+		
+		model.addAttribute("message", message);
+	    return "/main/message";
+		
+	}
+	
+	@GetMapping("/updateemail")
+	public String updateemail() {
+		return "/updatepw";
+	}
+	
+	
+	@PostMapping("/updateemail")
+	@ResponseBody
+	public String updateemail(Model model, HttpSession session,
+						@RequestParam("member_email") String newEmail) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		
+		MessageDTO message;
+		
+		boolean change = memberService.changeemail(user, session, newEmail);
+		
+		if(change) {
+			return "/market/mypage";
+		}
+		else {
+			message = new MessageDTO("/updateemail", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
+		}
+		
+		model.addAttribute("message", message);
+	    return "/main/message";
+		
+	}
+	
+	@GetMapping("/updatephone")
+	public String updatephone() {
+		return "/updatepw";
+	}
+	
+	
+	@PostMapping("/updatephone")
+	@ResponseBody
+	public String updatephone(Model model, HttpSession session,
+						@RequestParam("member_phone") String newPhone) {
+		
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		
+		MessageDTO message;
+		
+		boolean change = memberService.changephone(user, session, newPhone);
+		
+		if(change) {
+			return "/market/mypage";
+		}
+		else {
+			message = new MessageDTO("/updatephone", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
 		}
 		
 		System.out.println(user);
