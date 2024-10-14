@@ -37,4 +37,8 @@
 	<select id="selectReport_category" resultType="Report_categoryVO">
 		select * from report_category
 	</select>
+	<insert id="insertReportPost">
+		insert into report(report_member_num, report_post_num, report_category_num, report_content) 
+		values(#{member_num}, #{report.report_post_num}, #{report.report_category_num}, #{report.report_content})
+	</insert>
 </mapper>

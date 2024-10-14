@@ -39,12 +39,15 @@
 						<a class="nav-link" href="<c:url value="/chatRoom"/>">채팅</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="<c:url value="/post/insert"/>">글 쓰기</a>
+						<a class="nav-link" href="<c:url value="/post/insert"/>">판매하기</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="<c:url value="/logout"/>">로그아웃</a>
 					</li>
 					<li class="nav-item">
 						<div class="dropdown">
 							<button data-toggle="collapse" data-target="#demo">
-								<img src="bird.jpg" alt="Logo" style="width:40px;">	
+								<img src="<c:url value="/resources/img/none_profile_image.png"/>" alt="Logo" style="width:40px;">	
 							</button>
 						</div>
 					</li>

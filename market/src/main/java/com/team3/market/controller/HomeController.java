@@ -35,7 +35,7 @@ public class HomeController {
 		List<PostVO> list = postService.getPostList();
 		model.addAttribute("list", list);
 	
-		return "/home";//타일즈에서 /*로 했기 때문에 /를 붙임
+		return "/main/home";//타일즈에서 /*로 했기 때문에 /를 붙임
 	}
 	
 	 @GetMapping("/signup")
@@ -78,7 +78,12 @@ public class HomeController {
     
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate();  // 세션 무효화
+    	 // 세션이 존재하면 무효화
+       // 기존 세션 가져오기 (없으면 null)
+        if (session != null) {
+            session.invalidate(); // 세션 종료
+        }
+        
         return "redirect:/";  // 홈으로 리다이렉트
     }
     

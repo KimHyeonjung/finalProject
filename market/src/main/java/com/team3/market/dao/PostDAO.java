@@ -3,6 +3,8 @@ package com.team3.market.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.Report_categoryVO;
@@ -21,6 +23,6 @@ public interface PostDAO {
 
 	List<Report_categoryVO> selectReport_category();
 
-	boolean insertReportPost(ReportVO report, String member_id);
+	boolean insertReportPost(@Param("report")ReportVO report, @Param("member_num")int member_num);
 
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page session="false" %>
 <!DOCTYPE html>
 <html>
@@ -54,10 +55,15 @@
     		<a href="<c:url value="/post/detail/${post.post_num}"/>">
 	            <img src="https://via.placeholder.com/150" alt="상품 이미지">
 	            <div class="name">${post.post_title }</div>
-	            <div class="price">${post.post_price }</div>
+	            <div class="price">	            
+	            	<fmt:formatNumber value="${post.post_price }" type="number"/>원
+	            </div>
 	            <c:choose>
-	            	<c:when test="${post.post_timepassed > 24 }">
-	            		<div class="time">${post.post_timepassed / 24 }일 전</div>
+	            	<c:when test="${post.post_timepassed > 24 }">	      
+	            		<c:set var="timepassed" value="${post.post_timepassed div 24 }"/>      	
+	            		<div class="time">
+	            			<fmt:formatNumber value="${timepassed - (timepassed mod 1)}" pattern="###"/>일 전
+	            		</div>
 	            	</c:when>
 	            	<c:otherwise>
 			            <div class="time">${post.post_timepassed }시간 전</div>

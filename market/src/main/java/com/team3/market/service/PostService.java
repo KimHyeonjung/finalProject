@@ -60,7 +60,7 @@ public class PostService {
 			return false;
 		}
 		try {
-			return postDao.insertReportPost(report, user.getMember_id());
+			return postDao.insertReportPost(report, user.getMember_num());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
