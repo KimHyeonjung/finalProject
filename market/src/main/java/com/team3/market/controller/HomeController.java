@@ -82,12 +82,14 @@ public class HomeController {
 				response.addCookie(cookie);
 			}
 					
-			redirectAttributes.addFlashAttribute("message", "로그인 성공!");
-			return "redirect:/";  // 홈으로 리다이렉트
-		} else {
-			redirectAttributes.addFlashAttribute("error", "로그인 실패! 아이디 또는 비밀번호가 올바르지 않습니다.");
-			return "redirect:/login"; // 로그인 실패 시 로그인 페이지로 리다이렉트
-		}
+			MessageDTO message = new MessageDTO("/", "로그인에 성공했습니다.");
+			model.addAttribute("message", message);
+			return "/main/message";  // 메시지 페이지로 이동
+		    } else {
+		        // 로그인 실패 시 리다이렉트와 메시지 설정
+		    	redirectAttributes.addFlashAttribute("message", new MessageDTO("/login", "로그인 실패!"));
+		    	return "redirect:/login";
+		    }
 	}
     
     @GetMapping("/logout")
@@ -233,6 +235,52 @@ public class HomeController {
 		model.addAttribute("message", message);
 	    return "/main/message";
 		
+	}
+	
+	@GetMapping("/findId")
+	public String showFindIdForm() {
+	    return "/member/findid";  // 아이디 찾기 폼 페이지로 이동
+	}
+	
+	@PostMapping("/findId")
+	public String findId(@RequestParam("member_nick") String memberNick, 
+	                     @RequestParam("member_email") String memberEmail, Model model) {
+	    
+	    // 닉네임과 이메일을 사용해 아이디 조회
+	    MemberVO member = memberService.findMemberId(memberNick, memberEmail);
+	    
+	    model.addAttribute("findId", member);
+	    
+	    return "/member/findidresult";  // 결과 메시지 페이지로 이동
+	}
+	
+	@GetMapping("/findPassword")
+	public String showFindPwForm() {
+	    return "/member/findpw";  // 비밀번호 찾기 폼 페이지로 이동
+	}
+	
+	@PostMapping("/findPassword")
+	public String findPassword(@RequestParam("member_id") String memberId,
+	                           @RequestParam("member_nick") String memberNick,
+	                           @RequestParam("member_email") String memberEmail,
+	                           Model model) {
+
+	    // 회원 정보 조회
+	    MemberVO user = memberService.findMemberPw(memberId, memberNick, memberEmail);
+
+	    if (user != null) {
+	        // 임시 비밀번호 생성
+	        String tempPassword = memberService.generateTempPassword();
+
+	        // 암호화된 임시 비밀번호 저장
+	        memberService.updatePassword(user, tempPassword);
+
+	        model.addAttribute("tempPassword", tempPassword);
+	    } else {
+	        model.addAttribute("tempPassword", null);
+	    }
+
+	    return "/member/findpwresult";  // 결과 메시지 페이지로 이동
 	}
 	
 }

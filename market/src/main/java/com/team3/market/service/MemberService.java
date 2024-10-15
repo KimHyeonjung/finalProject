@@ -6,6 +6,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -201,5 +202,30 @@ public class MemberService {
 		}
 		return update;
 	}
+
+	public MemberVO findMemberId(String memberNick, String memberEmail) {
+		
+		return memberDao.findMemberId(memberNick, memberEmail);
+	}
+	
+	public MemberVO findMemberPw(String memberId, String memberNick, String memberEmail) {
+        return memberDao.findMemberPw(memberId, memberNick, memberEmail);
+    }
+	
+	// 임시 비밀번호 생성 메서드
+    public String generateTempPassword() {
+        // 길이가 10인 랜덤 알파뉴메릭 문자열 생성
+        return RandomStringUtils.randomAlphanumeric(10);
+    }
+    
+    // 암호화된 비밀번호 업데이트
+    public void updatePassword(MemberVO user, String tempPassword) {
+        String encodedPassword = passwordEncoder.encode(tempPassword);
+        user.setMember_pw(encodedPassword);
+        memberDao.updatepw(user);
+    }
+
+	
+	
 
 }
