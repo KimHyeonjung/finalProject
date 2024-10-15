@@ -18,7 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.MessageDTO;
 import com.team3.market.model.vo.MemberVO;
+import com.team3.market.model.vo.PostVO;
 import com.team3.market.service.MemberService;
+import com.team3.market.service.PostService;
 
 
 @Controller
@@ -26,11 +28,15 @@ public class HomeController {
 	
 	@Autowired
 	MemberService memberService;
+	@Autowired
+	PostService postService;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home() {
+	public String home(Model model) {
+		List<PostVO> list = postService.getPostList();
+		model.addAttribute("list", list);
 	
-		return "/home";//타일즈에서 /*로 했기 때문에 /를 붙임
+		return "/main/home";//타일즈에서 /*로 했기 때문에 /를 붙임
 	}
 	
 	 @GetMapping("/signup")
