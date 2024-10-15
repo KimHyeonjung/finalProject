@@ -8,10 +8,10 @@ DROP TABLE IF EXISTS `member`;
 
 CREATE TABLE `member` (
 	`member_num`	int primary key auto_increment	NOT NULL,
-	`member_id`	varchar(13) unique	NOT NULL,
-	`member_pw`	varchar(255)	NOT NULL,
-	`member_nick`	varchar(10) unique	NOT NULL,
-	`member_phone`	varchar(13) unique	NOT NULL,
+	`member_id`	varchar(50) unique	NOT NULL,
+	`member_pw`	varchar(255)	NULL,
+	`member_nick`	varchar(10) unique	NULL,
+	`member_phone`	varchar(13) unique	NULL,
 	`member_email`	varchar(30) unique	NOT NULL,
 	`member_auth`	varchar(5)	NOT NULL	DEFAULT 'USER',
 	`member_state`	varchar(10)	NULL	DEFAULT '사용',
@@ -19,7 +19,8 @@ CREATE TABLE `member` (
 	`member_score`	double	NULL	DEFAULT 0,
 	`member_money`	int	NULL	DEFAULT 0,
 	`member_fail`	int	NULL	DEFAULT 0,
-	`member_cookie`	varchar(255)	NULL
+	`member_cookie`	varchar(255)	NULL,
+	`member_limit`	DATETIME	NULL
 );
 
 DROP TABLE IF EXISTS `post`;
@@ -27,9 +28,9 @@ DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
 	`post_num`	int primary key auto_increment	NOT NULL,
 	`post_member_num`	int	NOT NULL,
-	`post_position_name`	varchar(10)	NOT NULL,
-	`post_way_name`	varchar(10)	NOT NULL,
-	`post_category_name`	varchar(16)	NOT NULL,
+	`post_position_num`	int	NOT NULL,
+	`post_way_num`	int	NOT NULL,
+	`post_category_num`	int	NOT NULL,
 	`post_title`	varchar(20)	NOT NULL,
 	`post_content`	varchar(500)	NOT NULL,
 	`post_price`	int	NULL,
@@ -43,7 +44,8 @@ CREATE TABLE `post` (
 DROP TABLE IF EXISTS `category`;
 
 CREATE TABLE `category` (
-	`category_name`	varchar(16) primary key	NOT NULL
+	`category_num`	int primary key auto_increment	NOT NULL,
+	`category_name`	varchar(16)	NULL
 );
 
 DROP TABLE IF EXISTS `wish`;
@@ -67,7 +69,8 @@ CREATE TABLE `address` (
 DROP TABLE IF EXISTS `way`;
 
 CREATE TABLE `way` (
-	`way_name`	varchar(10) primary key	NOT NULL
+	`way_num`	int primary key auto_increment	NOT NULL,
+	`way_name`	varchar(10)	NULL
 );
 
 DROP TABLE IF EXISTS `notice`;
@@ -124,7 +127,8 @@ CREATE TABLE `block` (
 DROP TABLE IF EXISTS `position`;
 
 CREATE TABLE `position` (
-	`position_name`	varchar(10) primary key	NOT NULL
+	`position_num`	int primary key auto_increment	NOT NULL,
+	`position_name`	varchar(10)	NULL
 );
 
 DROP TABLE IF EXISTS `file`;
@@ -229,8 +233,7 @@ DROP TABLE IF EXISTS `activity_areas`;
 
 CREATE TABLE `activity_areas` (
 	`activity_emd_num`	int	NOT NULL,
-	`activity_member_num`	int	NOT NULL, 
-    PRIMARY KEY (`activity_emd_num`, `activity_member_num`)
+	`activity_member_num`	int	NOT NULL, PRIMARY KEY (`activity_emd_num`, `activity_member_num`)
 );
 
 DROP TABLE IF EXISTS `notification_type`;
@@ -264,24 +267,24 @@ REFERENCES `member` (
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_position_TO_post_1` FOREIGN KEY (
-	`post_position_name`
+	`post_position_num`
 )
 REFERENCES `position` (
-	`position_name`
+	`position_num`
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_way_TO_post_1` FOREIGN KEY (
-	`post_way_name`
+	`post_way_num`
 )
 REFERENCES `way` (
-	`way_name`
+	`way_num`
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_category_TO_post_1` FOREIGN KEY (
-	`post_category_name`
+	`post_category_num`
 )
 REFERENCES `category` (
-	`category_name`
+	`category_num`
 );
 
 ALTER TABLE `wish` ADD CONSTRAINT `FK_post_TO_wish_1` FOREIGN KEY (

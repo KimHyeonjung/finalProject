@@ -30,7 +30,7 @@ public class ReportController {
 	AdminService adminService;
 	
 	@ResponseBody
-	@PostMapping("/")	
+	@PostMapping("/category")	
 	public List<Report_categoryVO> report(){
 		List<Report_categoryVO> list = postService.getReport_category();
 		return list;

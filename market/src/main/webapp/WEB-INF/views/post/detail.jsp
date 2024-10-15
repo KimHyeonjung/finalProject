@@ -184,7 +184,7 @@
 		
 		$.ajax({
 			async : false, //비동기 : true(비동기), false(동기)
-			url : '<c:url value="/report"/>', 
+			url : '<c:url value="/report/category"/>', 
 			type : 'post',
 			dataType : "json", 
 			success : function (data){
