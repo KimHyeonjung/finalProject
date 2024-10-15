@@ -27,6 +27,7 @@ public class MemberVO {
 	public MemberVO(String id, String email) {
 		this.member_id = id;
 		this.member_email = email;
+		
 	}
     
 }
