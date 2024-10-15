@@ -54,7 +54,6 @@ public class ChatService {
         }
 
         return chatRoomDTOs;
-//        return chatDAO.selectChatsByRoom(chatRoomNum);
     }
 
     
