@@ -55,4 +55,19 @@
 			member_id = #{member_id}
 	</update>
 	
+	<select id="findMemberId" resultType="MemberVO">
+	    SELECT * FROM member 
+	    WHERE 
+	    	member_nick = #{member_nick}
+	     AND 
+	     	member_email = #{member_email}
+	</select>
+	
+	<select id="findMemberPw" resultType="MemberVO">
+	    SELECT * FROM member 
+	    WHERE member_id = #{member_id} 
+	      AND member_nick = #{member_nick} 
+	      AND member_email = #{member_email}
+	</select>
+	
 </mapper>
