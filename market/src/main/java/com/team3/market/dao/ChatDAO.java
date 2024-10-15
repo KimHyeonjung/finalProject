@@ -9,7 +9,6 @@ import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.MemberVO;
 
-@Mapper
 public interface ChatDAO {
 
     List<ChatRoomVO> selectChatRoomsByMember(int member_num);

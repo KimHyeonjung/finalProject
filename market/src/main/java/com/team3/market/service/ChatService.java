@@ -18,10 +18,6 @@ public class ChatService {
     @Autowired
     private ChatDAO chatDAO; // ChatDAO 주입
 
-	public List<ChatRoomVO> getChatRoomsByMember(int member_num) {
-		return chatDAO.selectChatRoomsByMember(member_num);
-	}
-	
 	public List<ChatRoomDTO> getChatRoomsWithMembers(int member_num) {
         List<ChatRoomVO> chatRooms = chatDAO.selectChatRoomsByMember(member_num);
         List<ChatRoomDTO> chatRoomWithMembers = new ArrayList<ChatRoomDTO>();

@@ -25,7 +25,7 @@ public class ChatController {
     @Autowired
     private ChatService chatService; // ChatService 주입
 
-	@GetMapping("/chatRoom")
+	@GetMapping("/chatPage")
 	public String chatRoom(HttpSession session, Model model) {
 		// 세션에서 로그인된 사용자 정보 가져오기
 		MemberVO user = (MemberVO) session.getAttribute("user");
@@ -40,8 +40,9 @@ public class ChatController {
 		List<ChatRoomDTO> chatRoomDTOs = chatService.getChatRoomsWithMembers(user.getMember_num());
 
 		model.addAttribute("chatRooms", chatRoomDTOs);
+		model.addAttribute("member", user);
 
-		return "/chat/chatRoom";
+		return "/chat/chatPage";
 	}
     
 	// 채팅방 클릭 시 해당 채팅방의 채팅 내역을 보여주는 메서드

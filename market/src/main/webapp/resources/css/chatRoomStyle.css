@@ -1,0 +1,79 @@
+/* chatRoomStyle.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7; /* 배경색 */
+}
+
+.chat-room-container {
+    width: 300px; /* 채팅방 리스트 너비 */
+    margin: 20px auto; /* 중앙 정렬 */
+    border: 1px solid #ddd; /* 테두리 */
+    border-radius: 8px; /* 모서리 둥글게 */
+    background-color: #ffffff; /* 카드 배경색 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 */
+}
+
+h2 {
+    text-align: center; /* 제목 중앙 정렬 */
+    padding: 15px 0; /* 패딩 */
+    background-color: #f0f0f0; /* 제목 배경색 */
+    border-bottom: 1px solid #ddd; /* 아래쪽 테두리 */
+}
+
+.chat-room-list {
+    max-height: 400px; /* 최대 높이 */
+    overflow-y: auto; /* 세로 스크롤 */
+}
+
+.chat-room {
+    display: flex; /* 플렉스 박스 사용 */
+    padding: 10px; /* 패딩 */
+    border-bottom: 1px solid #eee; /* 아래쪽 테두리 */
+    align-items: center; /* 아이템 중앙 정렬 */
+}
+
+.chat-room:last-child {
+    border-bottom: none; /* 마지막 채팅방 아래쪽 테두리 제거 */
+}
+
+.chat-room-image {
+    width: 40px; /* 이미지 너비 */
+    height: 40px; /* 이미지 높이 */
+    border-radius: 50%; /* 원형 이미지 */
+    overflow: hidden; /* 오버플로우 숨기기 */
+    margin-right: 10px; /* 오른쪽 여백 */
+}
+
+.chat-room-image img {
+    width: 100%; /* 이미지 너비 100% */
+    height: auto; /* 높이 자동 */
+}
+
+.chat-room-details {
+    flex-grow: 1; /* 남은 공간 차지 */
+}
+
+.chat-room-title {
+    font-weight: bold; /* 제목 두껍게 */
+    color: #333; /* 제목 색상 */
+}
+
+.chat-room-message {
+    color: #777; /* 메시지 색상 */
+    margin-top: 5px; /* 위쪽 여백 */
+}
+
+.chat-room-time {
+    font-size: 12px; /* 시간 폰트 크기 */
+    color: #aaa; /* 시간 색상 */
+}
+
+.chat-room-unread {
+    font-size: 14px; /* 읽지 않은 메시지 수 폰트 크기 */
+    color: #d9534f; /* 빨간색 */
+    margin-left: auto; /* 오른쪽 정렬 */
+    background-color: #f8d7da; /* 배경색 */
+    border-radius: 15px; /* 둥글게 */
+    padding: 5px 10px; /* 패딩 */
+}
