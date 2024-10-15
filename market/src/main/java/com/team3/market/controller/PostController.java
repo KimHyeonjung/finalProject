@@ -1,5 +1,6 @@
 package com.team3.market.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,14 @@ public class PostController {
 	@Autowired
 	PostService postService;
 	
-	@GetMapping("/insert")
-	public String insert() {
-
-		return "/post/insert";
-	}
+    @GetMapping("/insert")
+    public String insert(Model model) {
+        // 카테고리 목록을 가져와서 뷰에 전달
+        List<String> categoryList = postService.getCategoryList();
+        model.addAttribute("categoryList", categoryList);	
+        
+        return "/post/insert";
+    }
 	
     // 게시글 생성 처리
     @PostMapping("/insert")

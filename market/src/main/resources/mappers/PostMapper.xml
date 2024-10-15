@@ -39,4 +39,9 @@
             #{post_title}, #{post_content}, #{post_price}, #{post_deal}, #{post_date}, #{post_refresh}, #{post_address}
         )
     </insert>
+    
+    <!-- 카테고리 목록을 가져오는 쿼리 -->
+    <select id="selectCategoryList" resultType="string">
+        SELECT category_name FROM category
+    </select>
 </mapper>

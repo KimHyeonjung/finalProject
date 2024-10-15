@@ -70,7 +70,7 @@
 <body>
 <div class="container mt-4">
 	<h1>상품 등록</h1>
-	<form action="<c:url value='/post/insert'/>" method="post" enctype="multipart/form-data">
+	<form action="<c:url value='/post/insert'/>" method="post" enctype="multipart/form-data" onsubmit="setPostPosition()">
 		
 		<!-- 사진 첨부 -->
 		<div class="form-group">
@@ -91,24 +91,12 @@
 
 		<!-- 카테고리 드롭다운 -->
 		<div class="form-group">
-			<label for="category">카테고리</label>
-			<select class="form-control" id="category" name="post_category" onchange="categoryChange()" required>
-				<option value="">선택하세요</option>
-				<option value="패션">패션</option>
-				<option value="리빙">리빙</option>
-				<option value="모바일/태블릿">모바일/태블릿</option>
-				<option value="가전제품">가전제품</option>
-				<option value="스포츠">스포츠</option>
-				<option value="도서/음반">도서/음반</option>
-				<option value="반려동물">반려동물</option>
-				<option value="유아/완구">유아/완구</option>
-				<option value="공구/산업용품">공구/산업용품</option>
-				<option value="취미용품">취미용품</option>
-				<option value="여행">여행</option>
-				<option value="중고차">중고차</option>
-				<option value="나눔">나눔</option>
-				<option value="삽니다">삽니다</option>
-			</select>
+		    <label for="category">카테고리 선택:</label>
+		    <select class="form-control" name="category" id="category">
+		        <c:forEach var="category" items="${categoryList}">
+		            <option value="${category}">${category}</option>
+		        </c:forEach>
+		    </select>
 		</div>
 
 		<!-- 금액 입력 및 무료나눔 체크박스 -->
@@ -165,6 +153,9 @@
 			<input type="text" id="sample4_detailAddress" placeholder="상세주소" style="width: 250px">
 			<input type="text" id="sample4_extraAddress" placeholder="참고항목" style="width: 250px">
 		</div>
+		
+		<!-- 숨겨진 필드: post_position_name -->
+		<input type="hidden" id="post_position_name" name="post_position_name" value="sell">
 
 		<!-- 등록 버튼 -->
 		<button type="submit" class="btn btn-primary btn-block" id="submitBtn" disabled>등록</button>
@@ -217,18 +208,6 @@
 			document.getElementById('newBtn').classList.add('btn-selected');
 		}
 	}
-	
-/* 	// 직거래 체크박스 선택 시 주소 입력란 표시/숨김
-	function toggleAddressInput() {
-	    var directCheckbox = document.getElementById('direct');
-	    var addressContainer = document.getElementById('addressContainer');
-
-	    if (directCheckbox.checked) {
-	        addressContainer.style.display = 'block'; // 체크되면 주소 입력란 표시
-	    } else {
-	        addressContainer.style.display = 'none'; // 체크 해제되면 주소 입력란 숨김
-	    }
-	} */
 	
     // 직거래 체크박스 선택 시 주소 입력란 표시/숨김
     function toggleAddressInput() {
@@ -288,12 +267,6 @@
     document.getElementById('sample4_roadAddress').addEventListener('input', checkFormCompletion);
     document.getElementById('sample4_jibunAddress').addEventListener('input', checkFormCompletion);
     document.getElementById('sample4_detailAddress').addEventListener('input', checkFormCompletion);
-
-	
-/* 	// 거래 방법 체크박스에 change 이벤트 리스너 추가
-	document.getElementById('delivery').addEventListener('change', checkFormCompletion);
-	document.getElementById('direct').addEventListener('change', checkFormCompletion); */
-	
 	
 	
     let selectedFiles = [];
@@ -476,6 +449,19 @@
             }
         }).open();
     }
+    	
+	function setPostPosition() {
+		const category = document.getElementById('category').value;
+		const positionInput = document.getElementById('post_position_name');
+
+		if (category === '삽니다') {
+			positionInput.value = 'buy';
+		} else if (category === '나눔') {
+			positionInput.value = 'donate';
+		} else {
+			positionInput.value = 'sell';
+		}
+	}
 </script>
 </body>
 </html>

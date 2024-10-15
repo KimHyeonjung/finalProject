@@ -1,6 +1,7 @@
 package com.team3.market.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,10 @@ public class PostService {
     // 게시글 생성 메서드 추가
     public boolean insertPost(PostVO post) {
         return postDao.insertPost(post);
+    }
+    
+    // 카테고리 목록을 가져오는 메서드 추가
+    public List<String> getCategoryList() {
+        return postDao.selectCategoryList();
     }
 }

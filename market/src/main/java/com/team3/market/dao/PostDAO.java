@@ -1,5 +1,6 @@
 package com.team3.market.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import com.team3.market.model.vo.PostVO;
@@ -15,4 +16,6 @@ public interface PostDAO {
 	boolean deletePost(int post_num);
 
     boolean insertPost(PostVO post);
+    
+    List<String> selectCategoryList();
 }
