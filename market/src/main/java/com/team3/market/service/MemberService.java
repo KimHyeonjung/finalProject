@@ -55,9 +55,14 @@ public class MemberService {
     }
 	
 	public MemberVO getMemberById(String memberId) {
+		
 		return memberDao.getMemberById(memberId);
 	}
 
+	public MemberVO getMemberByNick(String memberNick) {
+		
+		return memberDao.getMemberByNick(memberNick);
+	}
 
 	public Cookie createCookie(MemberVO user, HttpServletRequest request) {
 	    if (user == null) {
@@ -224,6 +229,7 @@ public class MemberService {
         user.setMember_pw(encodedPassword);
         memberDao.updatepw(user);
     }
+
 
 	
 	

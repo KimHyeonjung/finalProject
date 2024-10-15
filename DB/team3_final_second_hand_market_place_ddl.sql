@@ -502,3 +502,5 @@ ALTER TABLE `rating` ADD CONSTRAINT `FK_after_TO_rating_1` FOREIGN KEY (
 REFERENCES `after` (
 	`after_num`
 );
+
+
