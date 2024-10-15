@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class MemberVO {
-	private int member_num;	// 회원 번호
+	private int member_num; //회원 번호
 	private String member_id;   // 아이디
     private String member_pw;   // 비밀번호
     private String member_nick; // 닉네임

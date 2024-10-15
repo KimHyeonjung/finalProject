@@ -1,13 +1,17 @@
 package com.team3.market.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.team3.market.dao.PostDAO;
+import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
+import com.team3.market.model.vo.ReportVO;
+import com.team3.market.model.vo.Report_categoryVO;
 
 @Service
 public class PostService {
@@ -28,8 +32,8 @@ public class PostService {
 		Date writeTime = (Date) post.get("post_date");
 		Date nowTime = new Date();
 		long beforeTimeMs = nowTime.getTime() - writeTime.getTime();		 
-		long beforeTime = beforeTimeMs / 1000 / 60 / 60 ;	
-		post.put("beforeTime", beforeTime);
+		long post_timepassed = beforeTimeMs / 1000 / 60 / 60 ;	
+		post.put("post_timepassed", post_timepassed);
 		 
 		return post;
 	}
@@ -41,6 +45,26 @@ public class PostService {
 
 	public boolean deletePost(int post_num) {
 		return postDao.deletePost(post_num);
+	}
+
+	public List<PostVO> getPostList() {
+		return postDao.selectPostList();
+	}
+
+	public List<Report_categoryVO> getReport_category() {
+		return postDao.selectReport_category();
+	}
+
+	public boolean reportPost(ReportVO report, MemberVO user) {
+		if(report == null || report.getReport_post_num() == 0 || user == null) {
+			return false;
+		}
+		try {
+			return postDao.insertReportPost(report, user.getMember_num());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 }
