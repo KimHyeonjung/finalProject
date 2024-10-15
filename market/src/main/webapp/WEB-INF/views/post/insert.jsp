@@ -92,7 +92,7 @@
 		<!-- 카테고리 드롭다운 -->
 		<div class="form-group">
 		    <label for="category">카테고리 선택:</label>
-		    <select class="form-control" name="category" id="category">
+		    <select class="form-control" name="post_category" id="post_category">
 		        <c:forEach var="category" items="${categoryList}">
 		            <option value="${category}">${category}</option>
 		        </c:forEach>
@@ -154,8 +154,8 @@
 			<input type="text" id="sample4_extraAddress" placeholder="참고항목" style="width: 250px">
 		</div>
 		
-		<!-- 숨겨진 필드: post_position_name -->
-		<input type="hidden" id="post_position_name" name="post_position_name" value="sell">
+		<!-- 숨겨진 필드: post_position_num -->
+		<input type="hidden" id="post_position_num" name="post_position_num" value="1">
 
 		<!-- 등록 버튼 -->
 		<button type="submit" class="btn btn-primary btn-block" id="submitBtn" disabled>등록</button>
@@ -166,7 +166,7 @@
 <script>
 	// 카테고리 변경 시 무료나눔 자동 선택
 	function categoryChange() {
-		var category = document.getElementById('category').value;
+		var category = document.getElementById('post_category').value;
 		if (category === '나눔') {
 			document.getElementById('freeCheckbox').checked = true;
 			toggleFree();
@@ -452,14 +452,14 @@
     	
 	function setPostPosition() {
 		const category = document.getElementById('category').value;
-		const positionInput = document.getElementById('post_position_name');
+		const positionInput = document.getElementById('post_position_num');
 
 		if (category === '삽니다') {
-			positionInput.value = 'buy';
+			positionInput.value = '2';
 		} else if (category === '나눔') {
-			positionInput.value = 'donate';
+			positionInput.value = '3';
 		} else {
-			positionInput.value = 'sell';
+			positionInput.value = '1';
 		}
 	}
 </script>

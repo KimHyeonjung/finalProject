@@ -31,11 +31,11 @@
 	<!-- 게시물 삽입 (생성) -->
     <insert id="insertPost" parameterType="PostVO">
         insert into post (
-            post_member_num, post_position_name, post_way_name, post_category_name, 
+            post_member_num, post_position_num, post_way_num, post_category_num, 
             post_title, post_content, post_price, post_deal, post_date, post_refresh, post_address
         ) 
         values (
-            #{post_member_num}, #{post_position_name}, #{post_way_name}, #{post_category_name}, 
+            #{post_member_num}, #{post_position_num}, #{post_way_num}, #{post_category_num}, 
             #{post_title}, #{post_content}, #{post_price}, #{post_deal}, #{post_date}, #{post_refresh}, #{post_address}
         )
     </insert>
