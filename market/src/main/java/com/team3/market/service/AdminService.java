@@ -14,8 +14,12 @@ public class AdminService {
 	@Autowired
 	AdminDAO adminDao;
 
-	public List<Map<String, Object>> getReportList() {
-		return adminDao.selectReportList();
+	public List<Map<String, Object>> getReportPostList() {
+		return adminDao.selectPostReportList();
+	}
+
+	public List<Map<String, Object>> getReportUserList() {
+		return adminDao.selectUserReportList();
 	}
 
 }

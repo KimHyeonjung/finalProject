@@ -55,16 +55,29 @@ public class PostService {
 		return postDao.selectReport_category();
 	}
 
-	public boolean reportPost(ReportVO report, MemberVO user) {
+	public int reportPost(ReportVO report, MemberVO user) {
 		if(report == null || report.getReport_post_num() == 0 || user == null) {
-			return false;
+			return 0;
+		}
+		// 신고자 중복 체크
+		List<ReportVO> reportPostList = postDao.getReport(report.getReport_post_num());
+		System.out.println("list :" + reportPostList);
+		System.out.println("user :" + user);
+		for(ReportVO reportPost : reportPostList) {
+			if(reportPost.getReport_member_num() == user.getMember_num()) {
+				return 2;
+			}
 		}
 		try {
 			return postDao.insertReportPost(report, user.getMember_num());
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			return 0;
 		}
+	}
+
+	public void updatePostReport(int report_post_num) {
+		postDao.updatePostReport(report_post_num);		
 	}
 	
 }

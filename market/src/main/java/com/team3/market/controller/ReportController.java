@@ -37,19 +37,23 @@ public class ReportController {
 	}
 	
 	@ResponseBody
-	@PostMapping("/post")	
-	public boolean reportPost(@RequestBody ReportVO report, HttpSession session){
+	@PostMapping("/post") // 게시글 신고
+	public int reportPost(@RequestBody ReportVO report, HttpSession session){
 		MemberVO user = (MemberVO)session.getAttribute("user");
-		boolean res = postService.reportPost(report, user);	
-		System.out.println(user);
-		System.out.println(report);
+		int res = postService.reportPost(report, user);	
+		if(res == 1) {
+			postService.updatePostReport(report.getReport_post_num());
+		}
 		return res;
 	}
 	
-	@GetMapping("/list")
+	@GetMapping("/list") // 신고 현황 페이지
 	public String reportList(Model model) {
-		List<Map<String, Object>> list = adminService.getReportList();
-		model.addAttribute("list", list);
+		List<Map<String, Object>> postList = adminService.getReportPostList();
+		List<Map<String, Object>> userList = adminService.getReportUserList();
+		
+		model.addAttribute("postList", postList);
+		model.addAttribute("userList", userList);
 		return "/admin/report";
 	}
 }

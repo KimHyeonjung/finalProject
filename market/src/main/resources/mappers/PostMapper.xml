@@ -41,4 +41,10 @@
 		insert into report(report_member_num, report_post_num, report_category_num, report_content) 
 		values(#{member_num}, #{report.report_post_num}, #{report.report_category_num}, #{report.report_content})
 	</insert>
+	<update id="updatePostReport">
+		update post set post_report = post_report + 1 where post_num = #{report_post_num}
+	</update>
+	<select id="getReport" resultType="ReportVO">
+		select * from report where report_post_num = #{report_post_num}
+	</select>
 </mapper>

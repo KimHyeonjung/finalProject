@@ -180,6 +180,19 @@
 		</div>
 	</div>
 <script>
+	//로그인 상태 체크
+	function checkLogin(){
+		return '${user.member_id}' != '';
+	}
+	function alertLogin(){
+		if(checkLogin()){
+			return false;
+		}
+		if(confirm('로그인이 필요한 서비스입니다.\n로그인 하시겠습니까?')){
+			location.href="<c:url value="/login"/>";
+		}
+		return true;
+	}
 	$('#report').click(function(){
 		
 		$.ajax({
@@ -222,7 +235,7 @@
 	        $reportModal.hide();
 	    });
 	});
-	
+	//신고항목 클릭
 	$(document).on('click','.list-group-item', function(){
 		$('.report-content').remove();
 		var ca_num = $(this).data('ca_num');
@@ -239,28 +252,43 @@
 			`;
 		$(this).after(content);
     });
+	//신고버튼 클릭
 	$(document).on('click', '.report-btn', function(){
-		let ca_num = $(this).data('ca_num');
-		let post_num = $(this).data('post_num');
-		let content = $('.report-content').find('[name=report_content]').val();
-		let report = {
-				report_category_num : ca_num,
-				report_post_num : post_num,
-				report_content : content
+		if(alertLogin()){
+			return;
 		}
-		$.ajax({
-			async : true, //비동기 : true(비동기), false(동기)
-			url : '<c:url value="/report/post"/>', 
-			type : 'post', 
-			data : JSON.stringify(report), 
-			contentType : "application/json; charset=utf-8",
-			dataType : "json", 
-			success : function (data){
-				console.log(data);
-			}, 
-			error : function(jqXHR, textStatus, errorThrown){
+		if(confirm('정말 신고합니까?')){			
+			let ca_num = $(this).data('ca_num');
+			let post_num = $(this).data('post_num');
+			let content = $('.report-content').find('[name=report_content]').val();
+			let report = {
+					report_category_num : ca_num,
+					report_post_num : post_num,
+					report_content : content
 			}
-		});
+			$.ajax({
+				async : true, //비동기 : true(비동기), false(동기)
+				url : '<c:url value="/report/post"/>', 
+				type : 'post', 
+				data : JSON.stringify(report), 
+				contentType : "application/json; charset=utf-8",
+				dataType : "json", 
+				success : function (data){
+					if(data == 1){
+						alert('신고 완료');
+					}
+					else if(data == 2){
+						alert('이미 신고한 게시글입니다.');
+					}else {
+						alert('신고 실패');
+					}
+				}, 
+				error : function(jqXHR, textStatus, errorThrown){
+				}
+			});
+		$("#overlay").hide();
+	    $("#report-modal").hide();
+		}
 	});
 </script>
 </body>

@@ -23,6 +23,10 @@ public interface PostDAO {
 
 	List<Report_categoryVO> selectReport_category();
 
-	boolean insertReportPost(@Param("report")ReportVO report, @Param("member_num")int member_num);
+	int insertReportPost(@Param("report")ReportVO report, @Param("member_num")int member_num);
+
+	void updatePostReport(int report_post_num);
+
+	List<ReportVO> getReport(int report_post_num);
 
 }
