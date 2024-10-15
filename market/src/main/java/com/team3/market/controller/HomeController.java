@@ -112,12 +112,20 @@ public class HomeController {
     // 아이디 중복 체크
     @GetMapping("/checkId")
     @ResponseBody
-    public String checkId(@RequestParam("member_id") String memberId) {
+    public boolean checkId(@RequestParam("member_id") String memberId) {
+    	
         MemberVO member = memberService.getMemberById(memberId);
-        if (member != null) {
-            return "EXISTS"; // 중복된 아이디
-        }
-        return "OK"; // 사용 가능한 아이디
+        
+        return member != null;
+    }
+    
+    @GetMapping("/checkNick")
+    @ResponseBody
+    public boolean checkNick(@RequestParam("member_nick") String memberNick) {
+    	
+        MemberVO member = memberService.getMemberByNick(memberNick);
+        
+        return member != null;  
     }
     
     @GetMapping("/mypage")
