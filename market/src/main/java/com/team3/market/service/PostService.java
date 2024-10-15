@@ -51,4 +51,9 @@ public class PostService {
     public List<String> getCategoryList() {
         return postDao.selectCategoryList();
     }
+
+	public List<PostVO> getPostList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
