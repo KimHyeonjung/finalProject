@@ -6,9 +6,13 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.PostDAO;
+import com.team3.market.model.vo.FileVO;
+import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
+import com.team3.market.utils.UploadFileUtils;
 
 @Service
 public class PostService {
@@ -42,10 +46,26 @@ public class PostService {
 		return postDao.deletePost(post_num);
 	}
 
-    // 게시글 생성 메서드 추가
-    public boolean insertPost(PostVO post) {
-        return postDao.insertPost(post);
-    }
+	public boolean insertPost(PostVO post, MemberVO user, MultipartFile[] fileList) {
+		
+		if(post == null || user == null) {
+			return false;
+		}
+		if(post.getPost_title().length() == 0) {
+			return false;
+		}
+		
+		post.setPost_member_num(user.getMember_num());
+		
+		
+		boolean res = postDao.insertPost(post);
+		
+		if(!res) {
+			return false;
+		}
+		
+		return true;
+	}	
     
     // 카테고리 목록을 가져오는 메서드 추가
     public List<String> getCategoryList() {

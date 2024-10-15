@@ -35,7 +35,7 @@ CREATE TABLE `post` (
 	`post_content`	varchar(500)	NOT NULL,
 	`post_price`	int	NULL,
 	`post_deal`	boolean	NOT NULL,
-	`post_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
+	`post_date`	datetime	NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`post_refresh`	datetime	NULL,
 	`post_address`	varchar(100)	NULL,
 	`post_view`	int	NULL	DEFAULT 0

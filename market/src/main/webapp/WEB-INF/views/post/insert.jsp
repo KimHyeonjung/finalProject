@@ -70,7 +70,7 @@
 <body>
 <div class="container mt-4">
 	<h1>상품 등록</h1>
-	<form action="<c:url value='/post/insert'/>" method="post" enctype="multipart/form-data" onsubmit="setPostPosition()">
+	<form action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()">
 		
 		<!-- 사진 첨부 -->
 		<div class="form-group">
@@ -86,15 +86,25 @@
 		<!-- 상품명 입력 -->
 		<div class="form-group">
 			<label for="title">상품명</label>
-			<input type="text" class="form-control" id="title" name="post_title" required>
+			<input type="text" class="form-control" id="post_title" name="post_title" required>
 		</div>
 
 		<!-- 카테고리 드롭다운 -->
-		<div class="form-group">
+<%-- 		<div class="form-group">
 		    <label for="category">카테고리 선택:</label>
 		    <select class="form-control" name="post_category" id="post_category">
 		        <c:forEach var="category" items="${categoryList}">
 		            <option value="${category}">${category}</option>
+		        </c:forEach>
+		    </select>
+		</div> --%>
+		
+		<!-- 카테고리 드롭다운 -->
+		<div class="form-group">
+		    <label for="post_category_num">카테고리 선택:</label>
+		    <select class="form-control" name="post_category_num" id="post_category_num" required>
+		        <c:forEach var="category" items="${categoryList}">
+		            <option value="${category.category_num}">${category.category_name}</option>
 		        </c:forEach>
 		    </select>
 		</div>
@@ -103,7 +113,7 @@
 		<div class="form-group">
 			<label for="price">금액</label>
 			<div class="input-group">
-				<input type="number" class="form-control" id="price" name="post_price" min="0" required>
+				<input type="number" class="form-control" id="post_price" name="post_price" min="0" required>
 				<div class="input-group-append">
 					<span class="input-group-text">원</span>
 				</div>
@@ -117,7 +127,7 @@
 		<!-- 상품 설명 -->
 		<div class="form-group">
 			<label for="content">상품 설명</label>
-			<textarea class="form-control" id="content" name="post_content" rows="5" oninput="updateCharCount()" maxlength="1000" required 
+			<textarea class="form-control" id="post_content" name="post_content" rows="5" oninput="updateCharCount()" maxlength="1000" required 
 			placeholder="- 상품명(브랜드)&#10;- 구매 시기&#10;- 사용 기간&#10;- 하자 여부&#10;* 실제 촬영한 사진과 함께 상세 정보를 입력해주세요.&#10;* 게시글 규정 위반 시 게시물 삭제 및 이용제재 처리될 수 있어요."></textarea>
 			<div class="char-count">0 / 1000</div>
 		</div>
@@ -125,7 +135,7 @@
 		<!-- 흥정 여부 선택 -->
 		<div class="form-check">
 		  <label class="form-check-label">
-		    <input type="checkbox" class="form-check-input" id="deal" name="post_deal" >흥정 받기
+		    <input type="checkbox" class="form-check-input" id="post_deal" name="post_deal" >흥정 받기
 		  </label>
 		</div><br>
 	
@@ -133,14 +143,17 @@
 		<div class="form-group">
 			<label>거래 방법</label><br>
 			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" id="delivery" name="transaction" value="택배거래">
+				<input class="form-check-input" type="checkbox" id="delivery" name="transaction" value="택배거래" onclick="setPostWayNum()">
 				<label class="form-check-label" for="delivery">택배거래</label>
 			</div>
 			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" id="direct" name="transaction" value="직거래" onclick="toggleAddressInput()">
+				<input class="form-check-input" type="checkbox" id="direct" name="transaction" value="직거래" onclick="setPostWayNum(); toggleAddressInput();">
 				<label class="form-check-label" for="direct">직거래</label>
 			</div>
 		</div>
+		
+		<!-- 숨겨진 필드: post_way_num -->
+		<input type="hidden" id="post_way_num" name="post_way_num" value="0">
 		
 		<!-- 주소 입력란 (초기에는 숨김) -->
 		<div class="form-group" id="addressContainer" style="display: none;">
@@ -182,7 +195,7 @@
 	// 무료나눔 체크박스 클릭 시 가격 변경
 	function toggleFree() {
 		var freeCheckbox = document.getElementById('freeCheckbox');
-		var priceInput = document.getElementById('price');
+		var priceInput = document.getElementById('post_price');
 		if (freeCheckbox.checked) {
 			priceInput.value = 0;
 			priceInput.setAttribute('readonly', 'readonly');
@@ -193,20 +206,8 @@
 
 	// 상품 설명 글자 수 업데이트
 	function updateCharCount() {
-		var content = document.getElementById('po_content').value;
+		var content = document.getElementById('post_content').value;
 		document.querySelector('.char-count').innerText = content.length + " / 1000";
-	}
-
-	// 상품 상태 선택
-	function selectCondition(condition) {
-		document.getElementById('condition').value = condition;
-		document.getElementById('usedBtn').classList.remove('btn-selected');
-		document.getElementById('newBtn').classList.remove('btn-selected');
-		if (condition === '중고') {
-			document.getElementById('usedBtn').classList.add('btn-selected');
-		} else {
-			document.getElementById('newBtn').classList.add('btn-selected');
-		}
 	}
 	
     // 직거래 체크박스 선택 시 주소 입력란 표시/숨김
@@ -239,14 +240,6 @@
 		const directChecked = document.getElementById('direct').checked;
 		return deliveryChecked || directChecked;
 	}
-
-/* 	// 폼 요소 모두가 선택되었는지 확인하는 함수
-	function checkFormCompletion() {
-		const transactionMethodSelected = checkTransactionMethod(); // 거래 방법 체크박스 선택 여부 확인
-		
-		// 조건이 모두 충족되면 등록 버튼 활성화, 그렇지 않으면 비활성화
-		document.getElementById('submitBtn').disabled = ! transactionMethodSelected;
-	} */
 	
     // 폼 완료 상태 확인
     function checkFormCompletion() {
@@ -449,19 +442,37 @@
             }
         }).open();
     }
-    	
+    
 	function setPostPosition() {
-		const category = document.getElementById('category').value;
+		const category = document.getElementById('post_category').value;
 		const positionInput = document.getElementById('post_position_num');
 
 		if (category === '삽니다') {
 			positionInput.value = '2';
-		} else if (category === '나눔') {
+		} else if (category === '무료나눔') {
 			positionInput.value = '3';
 		} else {
 			positionInput.value = '1';
 		}
 	}
+	
+	// 거래 방법 선택에 따라 post_way_num 값 설정
+	function setPostWayNum() {
+	    const deliveryChecked = document.getElementById('delivery').checked;
+	    const directChecked = document.getElementById('direct').checked;
+	    const postWayInput = document.getElementById('post_way_num');
+
+	    if (deliveryChecked && directChecked) {
+	        postWayInput.value = '3'; // 택배거래와 직거래 둘 다 선택됨
+	    } else if (deliveryChecked) {
+	        postWayInput.value = '1'; // 택배거래만 선택됨
+	    } else if (directChecked) {
+	        postWayInput.value = '2'; // 직거래만 선택됨
+	    }
+
+	    checkFormCompletion(); // 폼의 완료 상태 재검증
+	}
+	
 </script>
 </body>
 </html>

@@ -3,6 +3,8 @@ package com.team3.market.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.model.dto.MessageDTO;
+import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.service.PostService;
 
@@ -32,18 +37,25 @@ public class PostController {
 	
     // 게시글 생성 처리
     @PostMapping("/insert")
-    public String insertPost(PostVO post) {
-        try {
-            boolean res = postService.insertPost(post);
-            if (res) {
-                return "redirect:/post/list";
-            } else {
-                return "redirect:/post/insert";
-            }
-        } catch (Exception e) {
-            e.printStackTrace(); // 또는 logger.error(e.getMessage());
-            return "redirect:/post/insert"; // 오류 발생 시 다시 작성 폼으로 리다이렉트
-        }
+    public String insertPost(Model model, PostVO post, HttpSession session, MultipartFile[] fileList) {
+    	
+    	MemberVO user = (MemberVO)session.getAttribute("user");
+    	
+    	System.out.println(post);
+		
+    	boolean res = postService.insertPost(post, user, fileList);
+
+		MessageDTO message;
+		
+		if(res) {
+			message = new MessageDTO("/post/list", "게시글을 등록했습니다.");
+		}else {
+			message = new MessageDTO("/post/insert", "게시글을 등록하지 못했습니다.");
+		}
+		
+		model.addAttribute("message",message);
+		
+		return "/main/message";
     }
 	
 	@GetMapping("/detail")
