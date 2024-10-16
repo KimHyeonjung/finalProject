@@ -70,7 +70,7 @@
 <body>
 <div class="container mt-4">
 	<h1>상품 등록</h1>
-	<form action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()">
+	<form action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8">
 		
 		<!-- 사진 첨부 -->
 		<div class="form-group">
@@ -88,16 +88,6 @@
 			<label for="title">상품명</label>
 			<input type="text" class="form-control" id="post_title" name="post_title" required>
 		</div>
-
-		<!-- 카테고리 드롭다운 -->
-<%-- 		<div class="form-group">
-		    <label for="category">카테고리 선택:</label>
-		    <select class="form-control" name="post_category" id="post_category">
-		        <c:forEach var="category" items="${categoryList}">
-		            <option value="${category}">${category}</option>
-		        </c:forEach>
-		    </select>
-		</div> --%>
 		
 		<!-- 카테고리 드롭다운 -->
 		<div class="form-group">
@@ -180,7 +170,7 @@
 	// 카테고리 변경 시 무료나눔 자동 선택
 	function categoryChange() {
 		var category = document.getElementById('post_category').value;
-		if (category === '나눔') {
+		if (category === '무료나눔') {
 			document.getElementById('freeCheckbox').checked = true;
 			toggleFree();
 		}
@@ -196,6 +186,7 @@
 	function toggleFree() {
 		var freeCheckbox = document.getElementById('freeCheckbox');
 		var priceInput = document.getElementById('post_price');
+		
 		if (freeCheckbox.checked) {
 			priceInput.value = 0;
 			priceInput.setAttribute('readonly', 'readonly');
@@ -211,9 +202,11 @@
 	}
 	
     // 직거래 체크박스 선택 시 주소 입력란 표시/숨김
-    function toggleAddressInput() {
+/*     function toggleAddressInput() {
         var directCheckbox = document.getElementById('direct');
         var addressContainer = document.getElementById('addressContainer');
+        
+        console.log('toggleAddressInput called');
 
         if (directCheckbox.checked) {
             addressContainer.style.display = 'block'; // 체크되면 주소 입력란 표시
@@ -223,7 +216,7 @@
         }
 
         checkFormCompletion(); // 체크박스 변경 시 폼 상태 재검증
-    }
+    } */
 	
     // 주소 필드 초기화
     function clearAddressFields() {
@@ -461,7 +454,17 @@
 	    const deliveryChecked = document.getElementById('delivery').checked;
 	    const directChecked = document.getElementById('direct').checked;
 	    const postWayInput = document.getElementById('post_way_num');
+	    
+        var directCheckbox = document.getElementById('direct');
+        var addressContainer = document.getElementById('addressContainer');
 
+        if (directCheckbox.checked) {
+            addressContainer.style.display = 'block'; // 체크되면 주소 입력란 표시
+        } else {
+            addressContainer.style.display = 'none'; // 체크 해제되면 주소 입력란 숨김
+            clearAddressFields(); // 체크 해제 시 주소 필드 초기화
+        }
+	    
 	    if (deliveryChecked && directChecked) {
 	        postWayInput.value = '3'; // 택배거래와 직거래 둘 다 선택됨
 	    } else if (deliveryChecked) {
