@@ -38,6 +38,6 @@ public interface PostDAO {
 
 	boolean deleteWish(@Param("post_num")int post_num, @Param("member_num")int member_num);
 
-	List<PostVO> selectWishPostList(int member_num);
+	List<PostVO> selectWishPostList(@Param("member_num")int member_num, @Param("sort_type")String sort_type);
 
 }

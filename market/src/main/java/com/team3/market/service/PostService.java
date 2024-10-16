@@ -107,11 +107,31 @@ public class PostService {
 		return postDao.deleteWish(post_num, user.getMember_num());
 	}
 
-	public List<PostVO> getWishPostList(MemberVO user) {
+	public List<PostVO> getWishPostList(MemberVO user, String sort_type) {
 		if(user == null) {
 			return null;
 		}
-		return postDao.selectWishPostList(user.getMember_num());
+		return postDao.selectWishPostList(user.getMember_num(), sort_type);
+	}
+	//찜 목록에서 삭제
+	public boolean deleteWishList(List<String> post_nums, MemberVO user) {
+		if(post_nums == null || user == null) {
+			return false;
+		}
+		if(post_nums.size() == 0) {
+			return false;
+		}else {
+			boolean res = false;
+			for(String post_numStr : post_nums) {
+				res = false;
+				int post_num = Integer.parseInt(post_numStr);
+				res = postDao.deleteWish(post_num, user.getMember_num());
+			}
+			if(res) {
+				return true;
+			}
+			return false;
+		}
 	}
 	
 }

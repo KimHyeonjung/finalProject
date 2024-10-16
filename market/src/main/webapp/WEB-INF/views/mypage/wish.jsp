@@ -66,7 +66,9 @@ body {
     font-size: 14px;
     color: gray;
 }
-
+.select-all {
+	width: 15px; height: 15px;
+}
 .select {
 	width: 40px; height: 40px;
     position: absolute;
@@ -77,12 +79,41 @@ body {
 	position: absolute;
 	bottom: -5px;
 }
-
+.nav-link {
+	cursor: pointer;
+}
 </style>
 </head>
 <body>
-	<div class="container">		
-		<h2>찜 목록</h2>
+	<div class="container">				
+		<h2>찜 목록 ${list.size()}</h2>
+		<div class="d-flex justify-content-between">
+			<ul class="nav">
+				<li class="nav-item">
+					<span class="nav-link">
+						<input type="checkbox" class="select-all" id="select-all">
+						<label for="select-all" style="cursor: pointer;">전체선택</label>						
+					</span>
+				</li>
+				<li class="nav-item">
+					<span class="nav-link" id="select-delete">선택삭제</span>
+				</li>
+			</ul>
+			<ul class="nav">
+				<li class="nav-item">
+					<a class="nav-link" href="<c:url value="/mypage/wish/list/view"/>">인기순/</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="<c:url value="/mypage/wish/list/date"/>">등록순/</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="<c:url value="/mypage/wish/list/low"/>">저가순/</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="<c:url value="/mypage/wish/list/hight"/>">고가순</a>
+				</li>
+			</ul>
+		</div>
 		<div class="container-product">		
 			<c:forEach items="${list }" var="post"> 
 				<div class="product">
@@ -114,17 +145,54 @@ body {
 		                	</c:choose>
 		                </p>
 		            </div>	
-		            <input type="checkbox" class="select">	            
+		            <input type="checkbox" class="select" name="products" value="${post.post_num}">	            
 	            </div>
-		              		    		
 	    	</c:forEach>    
 		</div>
 	</div>
 <script>
+$(function(){
 	$('.product-click').click(function(){
 		let post_num = $(this).data('post_num');
 		location.href = `<c:url value="/post/detail/\${post_num}"/>`;
+	});	
+	
+	//전체 선택
+	$('#select-all').change(function(){
+		$('.select').prop('checked', this.checked);
 	});
+	//개별 체크박스 상태가 변경될 때 전체 선택 체크박스 업데이트
+	$('.select').change(function(){
+		const allChecked = $('.select').length === $('.select:checked').length;
+		$('#select-all').prop('checked', allChecked);
+	})
+	//선택 삭제
+	$('#select-delete').click(function(){
+		if(confirm('삭제하시겠습니까?')){
+			// 선택된 체크박스들의 값을 배열로 수집
+			let selectProducts = [];
+			$('input[name=products]:checked').each(function(){
+				selectProducts.push($(this).val());
+			});
+			$.ajax({
+				async : false, //비동기 : true(비동기), false(동기)
+				url : '<c:url value="/mypage/wish/delete"/>', 
+				type : 'post', 
+				data : JSON.stringify({post_nums : selectProducts}), 
+				contentType : "application/json; charset=utf-8",
+				success : function (data){
+					console.log(data);				
+				}, 
+				error : function(jqXHR, textStatus, errorThrown){
+
+				}
+			});
+			window.location.reload();
+		}
+	});
+});
+	
+	
 </script>
 </body>
 </html>
