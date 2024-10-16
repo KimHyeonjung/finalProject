@@ -51,7 +51,7 @@
     display: none;
 }
 .list-group {margin-top: 20px;}
-.list-group-item.list-group-item-action {
+.click {
 	cursor: pointer;
 }
 .btn-close {
@@ -125,7 +125,22 @@
 					<div id="article-profile-left">
 						<div id="nickname">${post.member_nick }</div>
 						<div id="region-name">${post.post_address }</div>
-						<div id="report">신고하기</div>
+						<div id="btn-group">
+							<c:choose>
+								<c:when test="${user ne null}">
+									<div class="btn btn-outline-success <c:if test="${wish.wish_member_num == user.member_num}">active</c:if>" 
+										id="wish" data-post_num="${post.post_num}">찜하기</div>
+									<div class="btn btn-outline-danger <c:if test="${report.report_member_num == user.member_num}">active</c:if>" 
+										id="report" data-post_num="${post.post_num}">신고하기</div>
+								</c:when>
+								<c:otherwise>
+									<div class="btn btn-dark" 
+										id="wish">찜하기</div>
+									<div class="btn btn-dark" 
+										id="report">신고하기</div>
+								</c:otherwise>
+							</c:choose>
+						</div>
 					</div>
 				</div>
 				<div id="article-profile-right">
@@ -180,48 +195,10 @@
 		</div>
 	</div>
 <script>
-	//로그인 상태 체크
-	function checkLogin(){
-		return '${user.member_id}' != '';
-	}
-	function alertLogin(){
-		if(checkLogin()){
-			return false;
-		}
-		if(confirm('로그인이 필요한 서비스입니다.\n로그인 하시겠습니까?')){
-			location.href="<c:url value="/login"/>";
-		}
-		return true;
-	}
-	$('#report').click(function(){
-		
-		$.ajax({
-			async : false, //비동기 : true(비동기), false(동기)
-			url : '<c:url value="/report/category"/>', 
-			type : 'post',
-			dataType : "json", 
-			success : function (data){
-				var list = data;
-				var str = '';
-				for(category of list){
-					str += `<div class="list-group-item list-group-item-action"
-							data-ca_num="\${category.report_category_num}">
-							<span>\${category.report_category_name}</span>
-							</div>
-					`;
-				}
-				$('.list-group').html(str);
-			}, 
-			error : function(jqXHR, textStatus, errorThrown){
-			}
-		});
-		$('#overlay').show();
-		$('#report-modal').show();
-	})
-	
+
 	$(document).ready(function () {
-    const $overlay = $("#overlay");
-    const $reportModal = $("#report-modal");
+	const $overlay = $("#overlay");
+	const $reportModal = $("#report-modal");
 	   
 	    // 닫기 버튼 클릭 시 모달을 닫기
 	    $("#closeBtn").click(function () {
@@ -235,6 +212,59 @@
 	        $reportModal.hide();
 	    });
 	});
+	//로그인 상태 체크
+	function checkLogin(){
+		return '${user.member_id}' != '';
+	}
+	function alertLogin(){
+		if(checkLogin()){
+			return false;
+		}
+		if(confirm('로그인이 필요한 서비스입니다.\n로그인 하시겠습니까?')){
+			location.href="<c:url value="/login"/>";
+		}
+		return true;
+	}
+	//신고하기 클릭
+	var res = false;
+	$(document).on('click','#report',function(){
+		if(alertLogin()){
+			return;
+		}
+		let post_num = $(this).data('post_num');
+		$.ajax({
+			async : false, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/report/category"/>', 
+			type : 'post',
+			data : {post_num : post_num},
+			dataType : "json", 
+			success : function (data){
+				res = data.res;
+				if(res){
+					alert('이미 신고한 게시글입니다.');
+					return;
+				}
+				var list = data.list;
+				var str = '';
+				for(category of list){
+					str += `<div class="list-group-item list-group-item-action click"
+							data-ca_num="\${category.report_category_num}">
+							<span>\${category.report_category_name}</span>
+							</div>
+					`;
+				}
+				$('.list-group').html(str);
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+			}
+		});
+		if(res){
+			return;
+		}
+		$('#overlay').show();
+		$('#report-modal').show();
+	})
+	
 	//신고항목 클릭
 	$(document).on('click','.list-group-item', function(){
 		$('.report-content').remove();
@@ -253,10 +283,7 @@
 		$(this).after(content);
     });
 	//신고버튼 클릭
-	$(document).on('click', '.report-btn', function(){
-		if(alertLogin()){
-			return;
-		}
+	$(document).on('click', '.report-btn', function(){		
 		if(confirm('정말 신고합니까?')){			
 			let ca_num = $(this).data('ca_num');
 			let post_num = $(this).data('post_num');
@@ -272,16 +299,16 @@
 				type : 'post', 
 				data : JSON.stringify(report), 
 				contentType : "application/json; charset=utf-8",
-				dataType : "json", 
 				success : function (data){
 					if(data == 1){
 						alert('신고 완료');
+						$('#report').addClass('active');
 					}
 					else if(data == 2){
 						alert('이미 신고한 게시글입니다.');
 					}else {
 						alert('신고 실패');
-					}
+					}					
 				}, 
 				error : function(jqXHR, textStatus, errorThrown){
 				}
@@ -289,6 +316,29 @@
 		$("#overlay").hide();
 	    $("#report-modal").hide();
 		}
+	});
+	//찜하기 클릭
+	$(document).on('click', '#wish', function(){	
+		if(alertLogin()){
+			return;
+		}
+		let post_num = $(this).data("post_num");
+		$.ajax({
+			async : true, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/post/wish"/>', 
+			type : 'post', 
+			data : {post_num : post_num}, 
+			success : function (data){	
+				if(data){
+					$('#wish').addClass('active');
+				}else{
+					$('#wish').removeClass('active');
+				}
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+			}
+		});	
 	});
 </script>
 </body>

@@ -12,6 +12,7 @@ import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.Report_categoryVO;
+import com.team3.market.model.vo.WishVO;
 
 @Service
 public class PostService {
@@ -54,15 +55,13 @@ public class PostService {
 	public List<Report_categoryVO> getReport_category() {
 		return postDao.selectReport_category();
 	}
-
+	// 게시글 신고
 	public int reportPost(ReportVO report, MemberVO user) {
 		if(report == null || report.getReport_post_num() == 0 || user == null) {
 			return 0;
 		}
 		// 신고자 중복 체크
 		List<ReportVO> reportPostList = postDao.getReport(report.getReport_post_num());
-		System.out.println("list :" + reportPostList);
-		System.out.println("user :" + user);
 		for(ReportVO reportPost : reportPostList) {
 			if(reportPost.getReport_member_num() == user.getMember_num()) {
 				return 2;
@@ -78,6 +77,61 @@ public class PostService {
 
 	public void updatePostReport(int report_post_num) {
 		postDao.updatePostReport(report_post_num);		
+	}
+
+	public ReportVO getReportPost(int post_num, MemberVO user) {
+		if(user == null) {
+			return null;
+		}
+		return postDao.selectReportPost(post_num, user.getMember_num());
+	}
+
+	public WishVO getWish(int post_num, MemberVO user) {
+		if(user == null) {
+			return null;
+		}
+		return postDao.selectWish(post_num, user.getMember_num());
+	}
+
+	public boolean insertWish(int post_num, MemberVO user) {
+		if(user == null) {
+			return false;
+		}
+		return postDao.insertWish(post_num, user.getMember_num());
+	}
+
+	public boolean deleteWish(int post_num, MemberVO user) {
+		if(user == null) {
+			return false;
+		}
+		return postDao.deleteWish(post_num, user.getMember_num());
+	}
+
+	public List<PostVO> getWishPostList(MemberVO user, String sort_type) {
+		if(user == null) {
+			return null;
+		}
+		return postDao.selectWishPostList(user.getMember_num(), sort_type);
+	}
+	//찜 목록에서 삭제
+	public boolean deleteWishList(List<String> post_nums, MemberVO user) {
+		if(post_nums == null || user == null) {
+			return false;
+		}
+		if(post_nums.size() == 0) {
+			return false;
+		}else {
+			boolean res = false;
+			for(String post_numStr : post_nums) {
+				res = false;
+				int post_num = Integer.parseInt(post_numStr);
+				res = postDao.deleteWish(post_num, user.getMember_num());
+			}
+			if(res) {
+				return true;
+			}
+			return false;
+		}
 	}
 	
 }
