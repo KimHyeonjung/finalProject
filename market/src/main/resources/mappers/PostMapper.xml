@@ -47,4 +47,23 @@
 	<select id="getReport" resultType="ReportVO">
 		select * from report where report_post_num = #{report_post_num}
 	</select>
+	<select id="selectReportPost" resultType="ReportVO">
+		select * from report where report_post_num = #{post_num} and report_member_num = #{member_num}
+	</select>
+	<select id="selectWish" resultType="WishVO">
+		select * from wish where wish_post_num = #{post_num} and wish_member_num = #{member_num}
+	</select>
+	<insert id="insertWish">
+		insert into wish(wish_post_num, wish_member_num) values
+		(#{post_num}, #{member_num})
+	</insert>
+	<delete id="deleteWish">
+		delete from wish where wish_post_num = #{post_num} and wish_member_num = #{member_num}
+	</delete>
+	<select id="selectWishPostList" resultType="PostVO">
+		select (select hour(TIMEDIFF(current_timestamp, post_date))) as post_timepassed, post.* from wish join post
+			on wish_post_num = post_num
+		where wish_member_num = #{member_num}
+		order by wish_date desc
+	</select>
 </mapper>

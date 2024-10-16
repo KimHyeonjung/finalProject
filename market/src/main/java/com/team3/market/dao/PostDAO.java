@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.Report_categoryVO;
+import com.team3.market.model.vo.WishVO;
 
 public interface PostDAO {
 
@@ -28,5 +29,15 @@ public interface PostDAO {
 	void updatePostReport(int report_post_num);
 
 	List<ReportVO> getReport(int report_post_num);
+
+	ReportVO selectReportPost(@Param("post_num")int post_num, @Param("member_num")int member_num);
+
+	WishVO selectWish(@Param("post_num")int post_num, @Param("member_num")int member_num);
+
+	boolean insertWish(@Param("post_num")int post_num, @Param("member_num")int member_num);
+
+	boolean deleteWish(@Param("post_num")int post_num, @Param("member_num")int member_num);
+
+	List<PostVO> selectWishPostList(int member_num);
 
 }
