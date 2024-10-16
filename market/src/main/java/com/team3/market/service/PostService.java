@@ -9,10 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.PostDAO;
-import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
-import com.team3.market.utils.UploadFileUtils;
 
 @Service
 public class PostService {
@@ -65,7 +63,7 @@ public class PostService {
 		}
 		
 		return true;
-	}	
+	}
     
     // 카테고리 목록을 가져오는 메서드 추가
     public List<String> getCategoryList() {
@@ -76,4 +74,5 @@ public class PostService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

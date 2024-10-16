@@ -70,7 +70,7 @@
 <body>
 <div class="container mt-4">
 	<h1>상품 등록</h1>
-	<form action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8">
+	<form action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
 		
 		<!-- 사진 첨부 -->
 		<div class="form-group">
