@@ -77,7 +77,7 @@
 		    <label>사진 첨부 (최대 10장)</label>
 		    <div class="image-upload" onclick="document.getElementById('fileInput').click();">
 		        <span>사진 추가</span>
-		        <input type="file" id="fileInput" name="fileList" multiple accept="image/*" style="display: none;" onchange="handleFiles(this.files)">
+		        <input type="file" id="fileInput" name="fileList[]" multiple accept="image/*" style="display: none;" onchange="handleFiles(this.files)">
 		    </div>
 		    <div id="previewContainer" style="display: flex; flex-wrap: wrap; margin-top: 10px;"></div>
 		    <small id="fileCount" class="form-text text-muted">0/10 사진 선택됨</small>
