@@ -9,6 +9,7 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.Report_categoryVO;
 import com.team3.market.model.vo.WishVO;
+import com.team3.market.pagination.MyPostCriteria;
 
 public interface PostDAO {
 
@@ -39,5 +40,11 @@ public interface PostDAO {
 	boolean deleteWish(@Param("post_num")int post_num, @Param("member_num")int member_num);
 
 	List<PostVO> selectWishPostList(@Param("member_num")int member_num, @Param("sort_type")String sort_type);
+
+	List<PostVO> selectMyPostList(MyPostCriteria cri);
+
+	int selectTotalCountMyPost(MyPostCriteria cri);
+
+	void updatePosition(PostVO post);
 
 }

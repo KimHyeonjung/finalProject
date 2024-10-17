@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
+import com.team3.market.pagination.MyPostCriteria;
+import com.team3.market.pagination.PageMaker;
 import com.team3.market.service.PostService;
 
 @Controller
@@ -40,5 +42,24 @@ public class MyPageController {
 		List<String> post_nums = nums.get("post_nums");
 		boolean res = postService.deleteWishList(post_nums, user);
 		return res;
+	}
+	@GetMapping("/post/list")
+	public String postList(Model model, HttpSession session, MyPostCriteria cri) {
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(user != null) {
+			cri.setMember_num(user.getMember_num());
+		}
+		System.out.println(cri);
+		List<PostVO> list = postService.getMyPostList(cri);
+		PageMaker pm = postService.getPageMaker(cri);
+		model.addAttribute("list", list);
+		model.addAttribute("cri", cri);
+		model.addAttribute("pm", pm);
+		return "/mypage/post_list";
+	}
+	@PostMapping("/post/state")
+	@ResponseBody
+	public PostVO postState(@RequestBody PostVO post) {
+		return postService.updatePosition(post);
 	}
 }

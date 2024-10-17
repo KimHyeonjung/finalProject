@@ -13,6 +13,8 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.Report_categoryVO;
 import com.team3.market.model.vo.WishVO;
+import com.team3.market.pagination.MyPostCriteria;
+import com.team3.market.pagination.PageMaker;
 
 @Service
 public class PostService {
@@ -131,6 +133,34 @@ public class PostService {
 				return true;
 			}
 			return false;
+		}
+	}
+
+	public List<PostVO> getMyPostList(MyPostCriteria cri) {
+		if(cri == null || cri.getMember_num() == 0) {
+			return null;
+		}
+		return postDao.selectMyPostList(cri);
+	}
+
+	public PageMaker getPageMaker(MyPostCriteria cri) {
+		if(cri == null || cri.getMember_num() == 0) {
+			return null;
+		}
+		int totalCount = postDao.selectTotalCountMyPost(cri);
+		return new PageMaker(3, totalCount, cri);
+	}
+
+	public PostVO updatePosition(PostVO post) {
+		if(post == null) {
+			return null;
+		}
+		try {
+			postDao.updatePosition(post);
+			return postDao.selectPost(post.getPost_num());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
