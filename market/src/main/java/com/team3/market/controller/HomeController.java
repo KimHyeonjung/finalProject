@@ -33,21 +33,22 @@ public class HomeController {
 		return "/home";//타일즈에서 /*로 했기 때문에 /를 붙임
 	}
 	
-	 @GetMapping("/signup")
-	    public String showSignupForm() {
-	        return "/member/signup";
-	    }
+	@GetMapping("/signup")
+	public String showSignupForm() {
+		
+	    return "/member/signup";
+	}
 
     @PostMapping("/signup")
-    public String processSignup(Model model, MemberVO member) {
+	public String processSignup(Model model, MemberVO member, @RequestParam("verificationCode") String enteredCode, HttpSession session) {
         
-        boolean res = memberService.signup(member);
+        boolean res = memberService.signup(member, session, enteredCode);
         
         MessageDTO message;
         if(res) {
             message = new MessageDTO("/", "회원가입에 성공했습니다.");
         } else {
-            message = new MessageDTO("/signup", "아이디나 이메일이 중복되었습니다.");
+            message = new MessageDTO("/signup", "회원가입에 실패했습니다.");
         }
         
         model.addAttribute("message", message);
@@ -68,7 +69,6 @@ public class HomeController {
 			
 			// 자동 로그인 체크 여부 확인
 			String auto = request.getParameter("autoLogin");
-			System.out.println("AutoLogin Parameter: " + auto);
 			if (auto != null && auto.equals("Y")) {
 				Cookie cookie = memberService.createCookie(user, request);
 				response.addCookie(cookie);
@@ -116,6 +116,13 @@ public class HomeController {
     public boolean checkNick(@RequestParam("member_nick") String memberNick) {
     	
         MemberVO member = memberService.getMemberByNick(memberNick);
+        
+        return member != null;  
+    }
+    @GetMapping("/checkPhone")
+    @ResponseBody
+    public boolean checkPhone(@RequestParam("member_phone") String memberPhone) {
+        MemberVO member = memberService.getMemberByPhone(memberPhone);
         
         return member != null;  
     }
