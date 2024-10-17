@@ -3,6 +3,9 @@ package com.team3.market.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.PostVO;
 
 public interface PostDAO {
@@ -18,4 +21,5 @@ public interface PostDAO {
     boolean insertPost(PostVO post);
     
     List<String> selectCategoryList();
+    
 }

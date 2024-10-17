@@ -70,14 +70,14 @@
 <body>
 <div class="container mt-4">
 	<h1>상품 등록</h1>
-	<form action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
+	<form action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()" enctype="multipart/form-data" id="a">
 		
 		<!-- 사진 첨부 -->
 		<div class="form-group">
 		    <label>사진 첨부 (최대 10장)</label>
 		    <div class="image-upload" onclick="document.getElementById('fileInput').click();">
 		        <span>사진 추가</span>
-		        <input type="file" id="fileInput" name="fileList[]" multiple accept="image/*" style="display: none;" onchange="handleFiles(this.files)">
+		        <input type="file" id="fileInput" name="fileList" multiple accept="image/*" style="display: none;" onchange="handleFiles(this.files)">
 		    </div>
 		    <div id="previewContainer" style="display: flex; flex-wrap: wrap; margin-top: 10px;"></div>
 		    <small id="fileCount" class="form-text text-muted">0/10 사진 선택됨</small>
@@ -264,6 +264,8 @@
         
         // 새로 선택된 파일을 배열로 변환
         let newFiles = Array.from(files);
+        
+        console.log(files); // 선택된 파일들을 확인하기 위한 디버깅
         
         // 기존 파일과 합쳐서 10장까지만 허용
         if (selectedFiles.length + newFiles.length > 10) {

@@ -135,6 +135,7 @@ DROP TABLE IF EXISTS `file`;
 
 CREATE TABLE `file` (
 	`file_num`	int primary key auto_increment	NOT NULL,
+    `file_ori_name`	varchar(255)	NULL,
 	`file_name`	varchar(255)	NULL,
 	`file_target_table`	varchar(10)	NULL,
 	`file_target_num`	int	NULL

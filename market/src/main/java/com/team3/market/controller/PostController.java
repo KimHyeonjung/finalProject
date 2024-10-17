@@ -1,5 +1,10 @@
 package com.team3.market.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +43,7 @@ public class PostController {
     // 게시글 생성 처리
     @PostMapping("/insert")
     public String insertPost(Model model, PostVO post, HttpSession session, MultipartFile[] fileList) {
-    	
+    	System.out.println("파일 길이 : " +fileList.length);
 	    // 파일 선택 체크
 	    if (fileList == null || fileList.length == 0) {
 	        model.addAttribute("message", new MessageDTO("/post/insert", "파일을 선택하지 않았습니다."));
