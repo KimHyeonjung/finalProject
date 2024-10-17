@@ -24,10 +24,15 @@ public class MemberService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	public boolean signup(MemberVO member) {
+	public boolean signup(MemberVO member, HttpSession session, String enteredCode) {
+		
+		if (!verifyCode(enteredCode, session)) {
+            return false;  // 인증번호가 일치하지 않으면 회원가입 실패 처리
+        }
         // 아이디나 이메일 중복 체크
         if(memberDao.getMemberById(member.getMember_id()) != null || 
-           memberDao.getMemberByEmail(member.getMember_email()) != null) {
+           memberDao.getMemberByEmail(member.getMember_email()) != null ||
+           memberDao.getMemberByPhone(member.getMember_phone()) != null) {
             return false; // 중복되면 회원가입 실패
         }
         //비밀번호 암호화
@@ -35,6 +40,15 @@ public class MemberService {
 		member.setMember_pw(encPw);
         // 회원가입 처리
         return memberDao.insertMember(member);
+    }
+	
+	public boolean verifyCode(String enteredCode, HttpSession session) {
+        // 세션에서 저장된 인증번호를 가져옴
+        String sessionCode = (String) session.getAttribute("verificationCode");
+        
+
+        // 인증번호가 일치하는지 확인
+        return enteredCode != null && enteredCode.equals(sessionCode);
     }
 
 	public MemberVO login(MemberVO member) {
@@ -64,6 +78,11 @@ public class MemberService {
 		return memberDao.getMemberByNick(memberNick);
 	}
 
+	public MemberVO getMemberByPhone(String memberPhone) {
+		
+		return memberDao.getMemberByPhone(memberPhone);
+	}
+	
 	public Cookie createCookie(MemberVO user, HttpServletRequest request) {
 	    if (user == null) {
 	        return null;
@@ -90,13 +109,11 @@ public class MemberService {
 	}
 
 	public void clearAutoLogin(String member_id) {
-		System.out.println("Clearing auto-login for member: " + member_id);
 		 MemberVO user = new MemberVO();
 		    user.setMember_id(member_id);
 		    user.setMember_cookie(null); // 쿠키 정보 삭제
 		    user.setMember_limit(null); // 만료 시간 정보 삭제
 		    memberDao.updateMemberCookie(user); // 데이터베이스 업데이트
-		    System.out.println("Auto-login data cleared for member: " + member_id);
 		
 	}
 
@@ -114,7 +131,6 @@ public class MemberService {
 			id = sns + "!" + id;
 		}
 		MemberVO user = memberDao.selectMember(id);
-		System.out.println(id);
 		return user != null;
 	}
 

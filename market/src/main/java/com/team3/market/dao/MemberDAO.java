@@ -15,6 +15,8 @@ public interface MemberDAO {
     
     MemberVO getMemberByNick(String member_nick);
     // 회원 정보 삽입
+    MemberVO getMemberByPhone(String member_phone);
+    
     boolean insertMember(MemberVO member);
 
 	void updateMemberCookie(MemberVO user);
@@ -37,5 +39,5 @@ public interface MemberDAO {
 			 @Param("member_nick") String memberNick, 
              @Param("member_email") String memberEmail);
 
-	
+
 }

@@ -18,6 +18,11 @@
     <select id="getMemberByEmail" parameterType="String" resultType="MemberVO">
         SELECT * FROM member WHERE member_email = #{member_email}
     </select>
+    
+    <select id="getMemberByPhone" parameterType="String" resultType="MemberVO">
+	  SELECT * FROM member WHERE member_phone = #{member_phone}
+	</select>
+	
     <update id="updateMemberCookie" parameterType="com.team3.market.model.vo.MemberVO">
 	    UPDATE member
 	    SET member_cookie = #{member_cookie}, member_limit = #{member_limit}
