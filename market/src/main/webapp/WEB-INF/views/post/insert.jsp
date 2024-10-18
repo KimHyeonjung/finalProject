@@ -147,7 +147,7 @@
 		<input type="hidden" id="post_way_num" name="post_way_num" value="0">
 		
 		<!-- 주소 입력란 (초기에는 숨김) -->
-		<div class="form-group" id="addressContainer" style="display: none;">
+<!-- 		<div class="form-group" id="addressContainer" style="display: none;">
 		    <label for="address">직거래 주소</label><br>
 		    <input type="text" id="sample4_postcode" placeholder="우편번호">
 			<input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
@@ -156,7 +156,54 @@
 			<span id="guide" style="color:#999;display:none"></span>
 			<input type="text" id="sample4_detailAddress" placeholder="상세주소" style="width: 250px">
 			<input type="text" id="sample4_extraAddress" placeholder="참고항목" style="width: 250px">
-		</div>
+		</div> -->
+		
+		
+		<div id="map" style="width:500px;height:400px;margin-bottom:10px"></div>
+		<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=55f22ec08aea99a6511585b99e78d0d6"></script>
+		<script>
+			var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+			    mapOption = { 
+			        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+			        level: 3 // 지도의 확대 레벨
+			    };
+			
+			var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+			
+			// 지도를 클릭한 위치에 표출할 마커입니다
+			var marker = new kakao.maps.Marker({ 
+			    // 지도 중심좌표에 마커를 생성합니다 
+			    position: map.getCenter() 
+			}); 
+			// 지도에 마커를 표시합니다
+			marker.setMap(map);
+			
+			// 지도에 클릭 이벤트를 등록합니다
+			// 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
+			kakao.maps.event.addListener(map, 'click', function(mouseEvent) {        
+			    
+			    // 클릭한 위도, 경도 정보를 가져옵니다 
+			    var latlng = mouseEvent.latLng; 
+			    
+			    // 마커 위치를 클릭한 위치로 옮깁니다
+			    marker.setPosition(latlng);
+			    
+			    var resultDiv = document.getElementById('clickLatlng');
+			    
+			});
+			
+			// 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+			var mapTypeControl = new kakao.maps.MapTypeControl();
+			
+			// 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+			// kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+			map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+			
+			// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+			var zoomControl = new kakao.maps.ZoomControl();
+			map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+		</script>
+		<!-- <button onclick="panTo()" style="margin-bottom:20px">내 위치로 이동</button> --> 
 		
 		<!-- 숨겨진 필드: post_position_num -->
 		<input type="hidden" id="post_position_num" name="post_position_num" value="1">
@@ -201,23 +248,6 @@
 		var content = document.getElementById('post_content').value;
 		document.querySelector('.char-count').innerText = content.length + " / 1000";
 	}
-	
-    // 직거래 체크박스 선택 시 주소 입력란 표시/숨김
-/*     function toggleAddressInput() {
-        var directCheckbox = document.getElementById('direct');
-        var addressContainer = document.getElementById('addressContainer');
-        
-        console.log('toggleAddressInput called');
-
-        if (directCheckbox.checked) {
-            addressContainer.style.display = 'block'; // 체크되면 주소 입력란 표시
-        } else {
-            addressContainer.style.display = 'none'; // 체크 해제되면 주소 입력란 숨김
-            clearAddressFields(); // 체크 해제 시 주소 필드 초기화
-        }
-
-        checkFormCompletion(); // 체크박스 변경 시 폼 상태 재검증
-    } */
 	
     // 주소 필드 초기화
     function clearAddressFields() {
@@ -457,12 +487,13 @@
 	    const postWayInput = document.getElementById('post_way_num');
 	    
         var directCheckbox = document.getElementById('direct');
-        var addressContainer = document.getElementById('addressContainer');
+        //var addressContainer = document.getElementById('addressContainer');
+        var map = document.getElementById('map');
 
         if (directCheckbox.checked) {
-            addressContainer.style.display = 'block'; // 체크되면 주소 입력란 표시
+            map.style.display = 'block'; // 체크되면 주소 입력란 표시
         } else {
-            addressContainer.style.display = 'none'; // 체크 해제되면 주소 입력란 숨김
+            map.style.display = 'none'; // 체크 해제되면 주소 입력란 숨김
             clearAddressFields(); // 체크 해제 시 주소 필드 초기화
         }
 	    
@@ -477,6 +508,14 @@
 	    checkFormCompletion(); // 폼의 완료 상태 재검증
 	}
 	
+	function panTo() {
+	    // 이동할 위도 경도 위치를 생성합니다 
+	    var moveLatLon = new kakao.maps.LatLng(33.450580, 126.574942);
+	    
+	    // 지도 중심을 부드럽게 이동시킵니다
+	    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+	    map.panTo(moveLatLon);            
+	}      
 </script>
 </body>
 </html>
