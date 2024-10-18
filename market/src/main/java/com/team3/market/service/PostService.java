@@ -55,7 +55,6 @@ public class PostService {
 		return postDao.deletePost(post_num);
 	}
 
-	
 	public boolean insertPost(PostVO post, MemberVO user, MultipartFile[] fileList) {
 		
 		if(post == null || user == null) {
@@ -98,9 +97,6 @@ public class PostService {
 
                     // FileVO 객체 생성 및 데이터 설정
                     FileVO fileVO = new FileVO(uuidFileName, originalFileName, "post", post.getPost_num());
-                    
-                    // 파일 정보를 DB에 저장
-                    postDao.insertFile(fileVO);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -113,7 +109,6 @@ public class PostService {
 		
 		return true;
 	}
-	
     
     // 카테고리 목록을 가져오는 메서드 추가
     public List<String> getCategoryList() {
