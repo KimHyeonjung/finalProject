@@ -46,8 +46,16 @@ public class PostService {
 		
 	}
 
-	public boolean deletePost(int post_num) {
-		return postDao.deletePost(post_num);
+	public boolean deletePost(int post_num, MemberVO user) {
+		if(user == null || user.getMember_num() == 0) {
+			return false;
+		}
+		try {
+			return postDao.deletePost(post_num);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public List<PostVO> getPostList() {

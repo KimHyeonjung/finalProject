@@ -10,58 +10,63 @@
 <script src="https://kit.fontawesome.com/c9d8812a57.js"
 	crossorigin="anonymous"></script>
  <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
-        img {
-            width: 100px;
-            height: auto;
-        }
-        .up-button, .edit-button, .hide-button {
-            padding: 5px 10px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
-        .page-number {
-            text-align: center;
-            margin-top: 10px;
-        }
-        .page-number span {
-            padding: 5px 10px;
-            background-color: #ff5252;
-            color: white;
-            border-radius: 3px;
-        }
-        .type-selected {
-        	color: red;
-        }
-    </style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+    img {
+        width: 100px;
+        height: auto;
+    }
+    .up-button, .edit-button, .hide-button {
+        padding: 5px 10px;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        cursor: pointer;
+    }
+    .page-number {
+        text-align: center;
+        margin-top: 10px;
+    }
+    .page-number span {
+        padding: 5px 10px;
+        background-color: #ff5252;
+        color: white;
+        border-radius: 3px;
+    }
+    .type-selected {
+    	color: red;
+    }
+    .btn-func {
+    	margin-top: 5px; 
+    	border: 1px solid black; border-radius: 2px;
+    	cursor: pointer;
+    }
+</style>
 </head>
 <body>
 <div class="container">
 	<h2>내 상점관리 ${list.size()}</h2>
     <form action="<c:url value="/mypage/post/list"/>" id="form">
 	    <div>
-	    	<input type="hidden" name="type">
-	    	<input type="hidden" name="page">
-	        <input type="text" name="search" value="${cri.search }" placeholder="상품명을 입력해주세요."/>
+	    	<input type="hidden" name="type" value="${pm.cri.page}">
+	    	<input type="hidden" name="page" value="${pm.cri.page}">
+	        <input type="text" name="search" value="${pm.cri.search}" placeholder="상품명을 입력해주세요."/>
 	        <button id="btn-search" type="submit">검색</button>
 	        <select id="perPageSelect" name="perPageNum">
-	            <option value="2" <c:if test="${cri.perPageNum == 2}">selected</c:if>>10개씩</option>
-	            <option value="3" <c:if test="${cri.perPageNum == 3}">selected</c:if>>20개씩</option>
-	            <option value="4" <c:if test="${cri.perPageNum == 4}">selected</c:if>>50개씩</option>
+	            <option value="2" <c:if test="${pm.cri.perPageNum == 2}">selected</c:if>>10개씩</option>
+	            <option value="3" <c:if test="${pm.cri.perPageNum == 3}">selected</c:if>>20개씩</option>
+	            <option value="4" <c:if test="${pm.cri.perPageNum == 4}">selected</c:if>>50개씩</option>
 	        </select>
-	        <button id="btn-all" class="<c:if test="${cri.type == '' }">type-selected</c:if>">전체</button>
-	        <button id="btn-selling" class="<c:if test="${cri.type == 'selling' }">type-selected</c:if>">판매중</button>
-	        <button id="btn-reserved" class="<c:if test="${cri.type == 'reserved' }">type-selected</c:if>">예약중</button>
-	        <button id="btn-soldout" class="<c:if test="${cri.type == 'soldout' }">type-selected</c:if>">거래완료</button>
+	        <button id="btn-all" class="<c:if test="${pm.cri.type == '' }">type-selected</c:if>">전체</button>
+	        <button id="btn-selling" class="<c:if test="${pm.cri.type == 'selling' }">type-selected</c:if>">판매중</button>
+	        <button id="btn-reserved" class="<c:if test="${pm.cri.type == 'reserved' }">type-selected</c:if>">예약중</button>
+	        <button id="btn-soldout" class="<c:if test="${pm.cri.type == 'soldout' }">type-selected</c:if>">거래완료</button>
 	    </div>
     </form>
     <table>
@@ -79,7 +84,7 @@
         <tbody>
         <c:forEach items="${list }"	var="post">
             <tr>
-                <td><img src="<c:url value="/post/detail/${post.post_num}"/>" alt="카피바라" /></td>
+                <td><img src="https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg" alt="카피바라" /></td>
                 <td>
                     <select class="state" data-post_num="${post.post_num}">
                         <option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
@@ -92,9 +97,9 @@
                 <td>${post.post_view}</td>
                 <td>${post.post_date}</td>
                 <td>
-                    <div class="refresh">끌올</div>
-                    <div class="edit">수정</div>
-                    <div class="delete">삭제</div>
+                    <div class="btn-func refresh" data-post_num="${post.post_num}">끌올</div>
+                    <div class="btn-func edit" data-post_num="${post.post_num}">수정</div>
+                    <div class="btn-func delete" data-post_num="${post.post_num}">삭제</div>
                 </td>
             </tr>
 		</c:forEach>
@@ -124,7 +129,13 @@
     </div>
 </div>	
 <script>
-	// 표시 개수 선택
+$(document).ready(function() {	
+	// 선택된 거래상태 항목 안보이게
+    $('.state').each(function (){
+    	$(this).find('option[selected]').hide();
+    });	    
+    
+ 	// 표시 개수 선택
 	$('#perPageSelect').change(function(){
 		var perPageNum = $(this).val();
 		if(perPageNum){
@@ -150,36 +161,8 @@
 	$('#btn-soldout').click(function(){
 		$('[name=type]').val('soldout');
 		$('#form').submit();
-	});
-	// 선택된 거래상태 항목 안보이게
-	$(document).ready(function() {		
-	    $('.state').each(function (){
-	    	$(this).find('option[selected]').hide();
-	    });	    
-	    
-    });
-	// 거래 상태 변경
-	$(document).on('change','.state', function(){
-		let state = $(this).val();
-		let post_num = $(this).data('post_num');
-		$(this).find('option').show();
-		$(this).find('option[value="' + state + '"]').hide();
-		let obj = {
-				post_num : post_num,
-				post_position_num : state
-		}
-		$.ajax({
-			async : true, //비동기 : true(비동기), false(동기)
-			url : '<c:url value="/mypage/post/state"/>', 
-			type : 'post', 
-			data : JSON.stringify(obj), 
-			contentType : "application/json; charset=utf-8",
-			success : function (data){
-			}, 
-			error : function(jqXHR, textStatus, errorThrown){
-			}
-		});
-	});
+	});  
+	
 	// 페이지 네이션
 	$('.page-link').click(function(){
 		var page = $(this).data('page');
@@ -196,6 +179,38 @@
 		$('[name=page]').val(page);
 		$('#form').submit();
 	});
+	//삭제
+	$('.btn-func.delete').click(function(){
+		var post_num = $(this).data('post_num');
+		alert(post_num);
+		$('#form').attr('action', `<c:url value="/mypage/post/delete/\${post_num}"/>`);
+		$('#form').submit();
+	});
+
+});
+// 거래 상태 변경
+$(document).on('change','.state', function(){
+	var state = $(this).val();
+	var post_num = $(this).data('post_num');
+	$(this).find('option').show();
+	$(this).find('option[value="' + state + '"]').hide();
+	let obj = {
+			post_num : post_num,
+			post_position_num : state
+	}
+	$.ajax({
+		async : true, //비동기 : true(비동기), false(동기)
+		url : '<c:url value="/mypage/post/state"/>', 
+		type : 'post', 
+		data : JSON.stringify(obj), 
+		contentType : "application/json; charset=utf-8",
+		success : function (data){
+		}, 
+		error : function(jqXHR, textStatus, errorThrown){
+		}
+	});
+});
+	
 </script>
 </body>
 </html>

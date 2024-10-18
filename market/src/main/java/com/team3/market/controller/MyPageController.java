@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.team3.market.model.dto.MessageDTO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.pagination.MyPostCriteria;
@@ -49,12 +50,11 @@ public class MyPageController {
 		if(user != null) {
 			cri.setMember_num(user.getMember_num());
 		}
-		System.out.println(cri);
 		List<PostVO> list = postService.getMyPostList(cri);
 		PageMaker pm = postService.getPageMaker(cri);
 		model.addAttribute("list", list);
-		model.addAttribute("cri", cri);
 		model.addAttribute("pm", pm);
+		
 		return "/mypage/post_list";
 	}
 	@PostMapping("/post/state")
@@ -62,4 +62,20 @@ public class MyPageController {
 	public PostVO postState(@RequestBody PostVO post) {
 		return postService.updatePosition(post);
 	}
+	@GetMapping("post/delete/{post_num}")
+	public String delete(Model model, @PathVariable("post_num") int post_num, MyPostCriteria cri, HttpSession session) {
+		MemberVO user = (MemberVO)session.getAttribute("user");	
+		boolean res = postService.deletePost(post_num, user);
+		MessageDTO msg;
+		if(res) {
+			msg = new MessageDTO("/mypage/post/list"+ cri.toString(), "삭제 하였습니다.");
+			model.addAttribute("message", msg);
+			return "main/message";
+		} else {
+			msg = new MessageDTO("/mypage/post/list"+ cri.toString(), "삭제하지 못했습니다.");
+			model.addAttribute("message", msg);
+			return "main/message";
+		}
+	}
+	
 }
