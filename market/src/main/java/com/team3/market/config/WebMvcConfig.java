@@ -66,6 +66,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public String uploadPath() {
         return "D:\\uploads"; // 서버에 저장할 경로
     }
+    
     @Bean
 	public PasswordEncoder passwordEncoder() {
 	    return new BCryptPasswordEncoder();  // BCryptPasswordEncoder 빈 등록
