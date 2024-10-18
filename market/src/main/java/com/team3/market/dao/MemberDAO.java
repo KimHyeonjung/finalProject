@@ -39,5 +39,9 @@ public interface MemberDAO {
 			 @Param("member_nick") String memberNick, 
              @Param("member_email") String memberEmail);
 
+	void updateMemberFail(MemberVO user);
+
+
+
 
 }

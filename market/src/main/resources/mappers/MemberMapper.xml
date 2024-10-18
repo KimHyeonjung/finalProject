@@ -78,5 +78,15 @@
 	      AND member_nick = #{member_nick} 
 	      AND member_email = #{member_email}
 	</select>
+	<update id="updateMemberFail" parameterType="MemberVO">
+	    UPDATE member
+	    SET member_fail = #{member_fail}, 
+	        member_locked = #{member_locked},
+	        member_state = case
+	        	when #{member_fail}>=3 then '정지'
+	        	else member_state
+	        end
+	    WHERE member_id = #{member_id}
+	</update>
 	
 </mapper>
