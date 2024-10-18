@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.Report_categoryVO;
@@ -39,5 +40,11 @@ public interface PostDAO {
 	boolean deleteWish(@Param("post_num")int post_num, @Param("member_num")int member_num);
 
 	List<PostVO> selectWishPostList(@Param("member_num")int member_num, @Param("sort_type")String sort_type);
-
+	
+    boolean insertPost(PostVO post);
+    
+    List<String> selectCategoryList();
+	
+    // 파일 정보를 DB에 저장하는 메서드
+    boolean insertFile(FileVO file);
 }

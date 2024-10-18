@@ -82,4 +82,26 @@
 			</otherwise>
 		</choose>
 	</select>
+	
+		<!-- 게시물 삽입 (생성) -->
+    <insert id="insertPost" parameterType="PostVO" useGeneratedKeys="true" keyProperty="post_num">
+        insert into post (
+            post_member_num, post_position_num, post_way_num, post_category_num, 
+            post_title, post_content, post_price, post_deal, post_refresh, post_address
+        ) 
+        values (
+            #{post_member_num}, #{post_position_num}, #{post_way_num}, #{post_category_num}, 
+            #{post_title}, #{post_content}, #{post_price}, #{post_deal}, #{post_refresh}, #{post_address}
+        )
+    </insert>
+    
+    <insert id="insertFile">
+		insert into file(file_name, file_ori_name, file_target_table, file_target_num)
+		values(#{file_name},#{file_ori_name},#{file_target_table},#{file_target_num})
+	</insert>
+    
+    <!-- 카테고리 목록을 가져오는 쿼리 -->
+	<select id="selectCategoryList" resultType="com.team3.market.model.vo.CategoryVO">
+	    SELECT category_num, category_name FROM category
+	</select>
 </mapper>
