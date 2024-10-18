@@ -28,7 +28,7 @@
 		.form-field {
 		    display: flex;
 		    flex-wrap: wrap;
-		    margin-bottom: 15px;
+		    margin-bottom: 30px;
 		    align-items: center;
 		}
 		
@@ -36,25 +36,6 @@
 		    font-weight: 600;
 		    color: #000;
 		    margin-bottom: 8px;
-		}
-		
-		.checkbox-and-links {
-		    display: flex;
-		    justify-content: space-between;
-		    align-items: center;
-		    width: 100%;
-		}
-
-		.checkbox-and-links .left {
-		    display: flex;
-		    align-items: center;
-		}
-
-		.checkbox-and-links a {
-		    text-decoration: none;
-		    color: #333;
-		    font-weight: 600;
-		    margin-left: 10px;
 		}
 		
 		.form-control {
@@ -90,7 +71,6 @@
 		    background-color: #333;
 		    outline: 0;
 		    cursor: pointer;
-		    margin-top: 15px;
 		}
 		
 		.button-submit:hover {
@@ -109,34 +89,22 @@
                 <label class="label-form" for="member_pw">비밀번호</label>
                 <input type="password" class="form-control" name="member_pw" id="member_pw" required>
             </div>
-             
-			<div class="checkbox-and-links">
-                <div class="left">
-                    <input type="checkbox" name="autoLogin" value="Y"> 로그인 유지
-                </div>
-                <div class="right">
-                   <a href="<c:url value='/findId'/>">아이디 찾기</a>
-                   <a href="<c:url value='/findPassword'/>">비밀번호 찾기</a>
-                </div>
+              <div class="form-field">
+                <input type="checkbox" name="autoLogin" value="Y">자동 로그인
             </div>
-            
+
             <div class="form-field">
                 <button type="submit" class="button-submit">로그인</button>
             </div>
+			
 		</form>
 		<a id="kakao-login-btn" href="javascript:loginWithKakao()">
 		  <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222"
 		    alt="카카오 로그인 버튼" />
 		</a>
-        <div class="form-field">
-            <p>계정이 없으신가요? <a href="<c:url value='/signup'/>">회원가입</a></p>
-        </div>
-		<c:if test="${not empty message}">
-            <script type="text/javascript">
-                alert('${message.msg}');
-            </script>
-        </c:if>
-       
+            <div class="form-field">
+                <p>계정이 없으신가요? <a href="<c:url value='/signup'/>">회원가입</a></p>
+            </div>
         <!--카카오 스크립트 -->
 		<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 		<script type="text/javascript">
