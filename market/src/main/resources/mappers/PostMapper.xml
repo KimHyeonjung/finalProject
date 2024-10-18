@@ -3,13 +3,6 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team3.market.dao.PostDAO">
-	<select id="selectPostList" resultType="PostVO">
-		select 
-			(select hour(TIMEDIFF(current_timestamp, post_date))) as post_timepassed, post.*
-		from
-			post
-		order by post_view desc, post_date desc		
-	</select>
 	<select id="selectPost" resultType="PostVO">
 		select * 
 		from 
@@ -33,54 +26,28 @@
 	</update>
 	<delete id="deletePost">
 		delete from post where post_num = #{post_num}
-	</delete>	
-	<select id="selectReport_category" resultType="Report_categoryVO">
-		select * from report_category
-	</select>
-	<insert id="insertReportPost">
-		insert into report(report_member_num, report_post_num, report_category_num, report_content) 
-		values(#{member_num}, #{report.report_post_num}, #{report.report_category_num}, #{report.report_content})
-	</insert>
-	<update id="updatePostReport">
-		update post set post_report = post_report + 1 where post_num = #{report_post_num}
-	</update>
-	<select id="getReport" resultType="ReportVO">
-		select * from report where report_post_num = #{report_post_num}
-	</select>
-	<select id="selectReportPost" resultType="ReportVO">
-		select * from report where report_post_num = #{post_num} and report_member_num = #{member_num}
-	</select>
-	<select id="selectWish" resultType="WishVO">
-		select * from wish where wish_post_num = #{post_num} and wish_member_num = #{member_num}
-	</select>
-	<insert id="insertWish">
-		insert into wish(wish_post_num, wish_member_num) values
-		(#{post_num}, #{member_num})
-	</insert>
-	<delete id="deleteWish">
-		delete from wish where wish_post_num = #{post_num} and wish_member_num = #{member_num}
 	</delete>
-	<select id="selectWishPostList" resultType="PostVO">
-		select (select hour(TIMEDIFF(current_timestamp, post_date))) as post_timepassed, post.* from wish join post
-			on wish_post_num = post_num
-		where wish_member_num = #{member_num}
-		<choose>
-			<when test="sort_type == 'date'">
-				order by wish_date asc
-			</when>
-			<when test="sort_type == 'view'">
-				order by post_view desc
-			</when>
-			<when test="sort_type == 'hight'">
-				order by post_price desc, post_view desc
-			</when>
-			<when test="sort_type == 'low'">
-				order by post_price asc, post_view desc
-			</when>
-			<otherwise>
-				order by wish_date desc
-			</otherwise>
-		</choose>
+	
+	<!-- 게시물 삽입 (생성) -->
+    <insert id="insertPost" parameterType="PostVO" useGeneratedKeys="true" keyProperty="post_num">
+        insert into post (
+            post_member_num, post_position_num, post_way_num, post_category_num, 
+            post_title, post_content, post_price, post_deal, post_refresh, post_address
+        ) 
+        values (
+            #{post_member_num}, #{post_position_num}, #{post_way_num}, #{post_category_num}, 
+            #{post_title}, #{post_content}, #{post_price}, #{post_deal}, #{post_refresh}, #{post_address}
+        )
+    </insert>
+    
+    <insert id="insertFile">
+		insert into file(file_name, file_ori_name, file_target_table, file_target_num)
+		values(#{file_name},#{file_ori_name},#{file_target_table},#{file_target_num})
+	</insert>
+    
+    <!-- 카테고리 목록을 가져오는 쿼리 -->
+	<select id="selectCategoryList" resultType="com.team3.market.model.vo.CategoryVO">
+	    SELECT category_num, category_name FROM category
 	</select>
 	<select id="selectMyPostList" resultType="PostVO">
 		select 

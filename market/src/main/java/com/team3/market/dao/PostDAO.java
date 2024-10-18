@@ -3,8 +3,7 @@ package com.team3.market.dao;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
-
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.Report_categoryVO;
@@ -47,4 +46,10 @@ public interface PostDAO {
 
 	void updatePosition(PostVO post);
 
+	boolean insertPost(PostVO post);
+	
+	List<String> selectCategoryList();
+	
+	// 파일 정보를 DB에 저장하는 메서드
+	boolean insertFile(FileVO file);
 }

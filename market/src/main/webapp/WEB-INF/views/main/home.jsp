@@ -70,7 +70,37 @@
 	            	</c:otherwise>
 	            </c:choose>
 	        </div>    		
-    	</c:forEach>        
+    	</c:forEach>
+        <div class="product-item">
+            <img src="https://via.placeholder.com/150" alt="상품 이미지">
+            <div class="name">비투비 이창섭 씨어터플러스 화보</div>
+            <div class="price">10,000 원</div>
+            <div class="time">16시간 전</div>
+        </div>
+        <div class="product-item">
+            <img src="https://via.placeholder.com/150" alt="상품 이미지">
+            <div class="name">라코스테 클러치백</div>
+            <div class="price">79,000 원</div>
+            <div class="time">9시간 전</div>
+        </div>
+        <div class="product-item">
+            <img src="https://via.placeholder.com/150" alt="상품 이미지">
+            <div class="name">벨킨 2in1 무선충전기</div>
+            <div class="price">40,000 원</div>
+            <div class="time">6일 전</div>
+        </div>
+        <div class="product-item">
+            <img src="https://via.placeholder.com/150" alt="상품 이미지">
+            <div class="name">데님앤서플라이 밀리터리 파카</div>
+            <div class="price">140,000 원</div>
+            <div class="time">16시간 전</div>
+        </div>
+        <div class="product-item">
+            <img src="https://via.placeholder.com/150" alt="상품 이미지">
+            <div class="name">맨유 23/24 FA컵 어센틱 져지</div>
+            <div class="price">175,000 원</div>
+            <div class="time">22시간 전</div>
+        </div>
         <!-- 추가 상품 -->
     </div>
 </div>

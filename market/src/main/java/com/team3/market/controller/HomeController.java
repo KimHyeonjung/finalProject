@@ -120,7 +120,7 @@ public class HomeController {
     
     @GetMapping("/mypage")
 	public String mypage() {
-		return "/member/mypage";
+		return "/mypage";
 	}
 	
 	@PostMapping("/delete")
