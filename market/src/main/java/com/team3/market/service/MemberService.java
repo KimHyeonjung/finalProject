@@ -61,13 +61,45 @@ public class MemberService {
 		if(user == null) {
 			return null;
 		}
+		
+		if (user.getMember_locked() != null && user.getMember_locked().after(new Date())) {
+	        // 계정 잠금이 현재 시간보다 이후일 경우
+	        return null;  // 계정이 잠긴 상태로 로그인 불가
+	    }
+		
 		//비번 확인
-		if(passwordEncoder.matches(member.getMember_pw(), user.getMember_pw())) {
-			return user;
-		}
-            return null;
-    }
+		if (passwordEncoder.matches(member.getMember_pw(), user.getMember_pw())) {
+	        // 로그인 성공 시 실패 횟수 초기화
+	        resetFailAttempts(user);
+	        return user;
+	    } else {
+	        // 로그인 실패 처리
+	        handleFailedLogin(user);
+	        return null;
+	    }
+	}
+   
 	
+	private void handleFailedLogin(MemberVO user) {
+		int failAttempts = user.getMember_fail() + 1;
+	    user.setMember_fail(failAttempts);
+
+	    if (failAttempts >= 3) {  // 3회 이상 실패하면 계정 잠금
+	        int lockTime = 30 * 60 * 1000; // 30분 동안 잠금
+	        Date lockUntil = new Date(System.currentTimeMillis() + lockTime);
+	        user.setMember_locked(lockUntil);  
+	    }
+	    memberDao.updateMemberFail(user);  
+		
+	}
+
+	private void resetFailAttempts(MemberVO user) {
+		user.setMember_fail(0);  // 실패 횟수 초기화
+	    user.setMember_locked(null);  // 계정 잠금 해제
+	    memberDao.updateMemberFail(user);
+		
+	}
+
 	public MemberVO getMemberById(String memberId) {
 		
 		return memberDao.getMemberById(memberId);

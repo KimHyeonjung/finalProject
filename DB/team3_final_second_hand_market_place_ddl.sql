@@ -10,6 +10,7 @@ CREATE TABLE `member` (
 	`member_num`	int primary key auto_increment	NOT NULL,
 	`member_id`	varchar(50) unique	NOT NULL,
 	`member_pw`	varchar(255)	NULL,
+<<<<<<< Updated upstream
 	`member_nick`	varchar(10)	NULL,
 	`member_phone`	varchar(13)	NULL,
 	`member_email`	varchar(30)	NOT NULL,
@@ -21,6 +22,20 @@ CREATE TABLE `member` (
     `member_fail`  int NULL DEFAULT 0,
     `member_cookie` varchar(255) NULL,
     `member_limit` datetime NULL
+=======
+	`member_nick`	varchar(10) unique	NULL,
+	`member_phone`	varchar(13) unique	NULL,
+	`member_email`	varchar(30) unique	NOT NULL,
+	`member_auth`	varchar(5)	NOT NULL	DEFAULT 'USER',
+	`member_state`	varchar(10)	NULL	DEFAULT '사용',
+	`member_report`	int	NULL	DEFAULT 0,
+	`member_score`	double	NULL	DEFAULT 0,
+	`member_money`	int	NULL	DEFAULT 0,
+	`member_fail`	int	NULL	DEFAULT 0,
+	`member_cookie`	varchar(255)	NULL,
+	`member_limit`	DATETIME	NULL,
+    `member_locked` DATETIME NULL
+>>>>>>> Stashed changes
 );
 
 DROP TABLE IF EXISTS `post`;

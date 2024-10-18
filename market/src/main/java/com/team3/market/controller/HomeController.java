@@ -1,5 +1,12 @@
 package com.team3.market.controller;
 
+<<<<<<< Updated upstream
+=======
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+>>>>>>> Stashed changes
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,8 +85,16 @@ public class HomeController {
 			model.addAttribute("message", message);
 			return "/main/message";  // 메시지 페이지로 이동
 		    } else {
-		        // 로그인 실패 시 리다이렉트와 메시지 설정
-		    	redirectAttributes.addFlashAttribute("message", new MessageDTO("/login", "로그인 실패!"));
+		    	MemberVO failedUser = memberService.getMemberById(member.getMember_id());
+		    	if (failedUser != null && failedUser.getMember_locked() != null && failedUser.getMember_locked().after(new Date())) {
+		            // 계정이 잠긴 경우
+		            String lockTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(failedUser.getMember_locked());
+		            redirectAttributes.addFlashAttribute("message", new MessageDTO("/login", 
+		                "계정이 잠겼습니다. " + lockTime + "까지 로그인이 불가능합니다."));
+		    	}else {
+		    		// 로그인 실패 시 리다이렉트와 메시지 설정
+		    		redirectAttributes.addFlashAttribute("message", new MessageDTO("/login", "아이디 혹은 비밀번호가 맞지 않습니다. 3회연속 로그인 실패시 계정이 30분동안 비활성화 됩니다."));
+		    	}
 		    	return "redirect:/login";
 		    }
 	}
