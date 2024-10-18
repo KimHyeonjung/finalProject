@@ -1,10 +1,5 @@
 package com.team3.market.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.dao.PostDAO;
 import com.team3.market.model.dto.MessageDTO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
@@ -30,6 +26,13 @@ public class PostController {
 	
 	@Autowired
 	PostService postService;
+	
+    @Autowired
+    private PostDAO postDao;  // PostDAO 주입
+
+    @Autowired
+    private String uploadPath;  // WebMvcConfig에서 설정된 파일 저장 경로 주입
+    
 	
     @GetMapping("/insert")
     public String insert(Model model) {
@@ -72,6 +75,8 @@ public class PostController {
 		
 		return "/main/message";
     }
+    
+    
 	
 	@GetMapping("/detail")
 	public String detail(Model model) {

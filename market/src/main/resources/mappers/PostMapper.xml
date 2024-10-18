@@ -41,8 +41,8 @@
     </insert>
     
     <insert id="insertFile">
-		insert into file(file_name, file_target_table, file_target_num)
-		values(#{file_name},#{file_target_table},#{file_target_num})
+		insert into file(file_name, file_ori_name, file_target_table, file_target_num)
+		values(#{file_name},#{file_ori_name},#{file_target_table},#{file_target_num})
 	</insert>
     
     <!-- 카테고리 목록을 가져오는 쿼리 -->
