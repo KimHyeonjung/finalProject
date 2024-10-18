@@ -70,7 +70,7 @@
 			<a href="#">충전</a>
 		</div>
 		<div>
-			<a href="#">게시글 관리</a>
+			<a href="<c:url value="/mypage/post/list"/>">게시글 관리</a>
 			<a href="<c:url value="/mypage/wish/list"/>">찜목록</a>
 		</div>
 		<div>

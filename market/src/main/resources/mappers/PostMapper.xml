@@ -5,10 +5,10 @@
 <mapper namespace="com.team3.market.dao.PostDAO">
 	<select id="selectPostList" resultType="PostVO">
 		select 
-			(select hour(TIMEDIFF(current_timestamp, post_date))) as post_timepassed, post.*
+			(select hour(TIMEDIFF(current_timestamp, post_refresh))) as post_timepassed, post.*
 		from
 			post
-		order by post_view desc, post_date desc		
+		order by post_view desc, post_refresh desc		
 	</select>
 	<select id="selectPost" resultType="PostVO">
 		select * 
@@ -61,7 +61,7 @@
 		delete from wish where wish_post_num = #{post_num} and wish_member_num = #{member_num}
 	</delete>
 	<select id="selectWishPostList" resultType="PostVO">
-		select (select hour(TIMEDIFF(current_timestamp, post_date))) as post_timepassed, post.* from wish join post
+		select (select hour(TIMEDIFF(current_timestamp, post_refresh))) as post_timepassed, post.* from wish join post
 			on wish_post_num = post_num
 		where wish_member_num = #{member_num}
 		<choose>
@@ -82,4 +82,50 @@
 			</otherwise>
 		</choose>
 	</select>
+	<select id="selectMyPostList" resultType="PostVO">
+		select 
+			*
+		from
+			post
+		where post_member_num = #{member_num}
+		<choose>
+			<when test="type == 'selling'">
+				and post_position_num = 1
+			</when>
+			<when test="type == 'reserved'">
+				and post_position_num = 2
+			</when>
+			<when test="type == 'soldout'">
+				and post_position_num = 3
+			</when>
+		</choose>
+		and post_title like concat('%', #{search}, '%')
+		order by post_refresh desc 
+		limit #{pageStart}, #{perPageNum}
+	</select>	
+	<select id="selectTotalCountMyPost" resultType="int">
+		select 
+			count(*)
+		from
+			post
+		where post_member_num = #{member_num}
+		<choose>
+			<when test="type == 'selling'">
+				and post_position_num = 1
+			</when>
+			<when test="type == 'reserved'">
+				and post_position_num = 2
+			</when>
+			<when test="type == 'soldout'">
+				and post_position_num = 3
+			</when>
+		</choose>
+		and post_title like concat('%', #{search}, '%')
+	</select>
+	<update id="updatePosition">
+		update post set post_position_num = #{post_position_num} where post_num = #{post_num}
+	</update>
+	<update id="updateRefresh">
+		update post set post_refresh = current_timestamp where post_num = #{post_num}
+	</update>
 </mapper>

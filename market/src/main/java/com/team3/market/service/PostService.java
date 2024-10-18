@@ -13,6 +13,8 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.Report_categoryVO;
 import com.team3.market.model.vo.WishVO;
+import com.team3.market.pagination.MyPostCriteria;
+import com.team3.market.pagination.PageMaker;
 
 @Service
 public class PostService {
@@ -30,10 +32,10 @@ public class PostService {
 	public Map<String, Object> getPostMap(int post_num) {
 		Map<String, Object> post = postDao.selectPostMap(post_num);
 		//지난 시간 구해서 map에 추가
-		Date writeTime = (Date) post.get("post_date");
+		Date updateTime = (Date) post.get("post_refresh");
 		Date nowTime = new Date();
-		long beforeTimeMs = nowTime.getTime() - writeTime.getTime();		 
-		long post_timepassed = beforeTimeMs / 1000 / 60 / 60 ;	
+		long TimeMs = nowTime.getTime() - updateTime.getTime();		 
+		long post_timepassed = TimeMs / 1000 / 60 / 60 ;	
 		post.put("post_timepassed", post_timepassed);
 		 
 		return post;
@@ -44,8 +46,16 @@ public class PostService {
 		
 	}
 
-	public boolean deletePost(int post_num) {
-		return postDao.deletePost(post_num);
+	public boolean deletePost(int post_num, MemberVO user) {
+		if(user == null || user.getMember_num() == 0) {
+			return false;
+		}
+		try {
+			return postDao.deletePost(post_num);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public List<PostVO> getPostList() {
@@ -133,5 +143,41 @@ public class PostService {
 			return false;
 		}
 	}
+
+	public List<PostVO> getMyPostList(MyPostCriteria cri) {
+		if(cri == null || cri.getMember_num() == 0) {
+			return null;
+		}
+		return postDao.selectMyPostList(cri);
+	}
+
+	public PageMaker getPageMaker(MyPostCriteria cri) {
+		if(cri == null || cri.getMember_num() == 0) {
+			return null;
+		}
+		int totalCount = postDao.selectTotalCountMyPost(cri);
+		return new PageMaker(3, totalCount, cri);
+	}
+
+	public PostVO updatePosition(PostVO post) {
+		if(post == null) {
+			return null;
+		}
+		try {
+			postDao.updatePosition(post);
+			return postDao.selectPost(post.getPost_num());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public boolean refresh(int post_num, MemberVO user) {
+		if(user == null) {
+			return false;
+		}
+		return postDao.updateRefresh(post_num);
+	}
+	
 	
 }

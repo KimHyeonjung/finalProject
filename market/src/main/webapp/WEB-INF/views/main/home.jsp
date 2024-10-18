@@ -52,24 +52,24 @@
     <div class="product-grid">
     	<c:forEach items="${list }" var="post">    		
     		<div class="product-item">
-    		<a href="<c:url value="/post/detail/${post.post_num}"/>">
-	            <img src="https://via.placeholder.com/150" alt="상품 이미지">
-	            <div class="name">${post.post_title }</div>
-	            <div class="price">	            
-	            	<fmt:formatNumber value="${post.post_price }" type="number"/>원
-	            </div>
-	            <c:choose>
-	            	<c:when test="${post.post_timepassed > 24 }">	      
-	            		<c:set var="timepassed" value="${post.post_timepassed div 24 }"/>      	
-	            		<div class="time">
-	            			<fmt:formatNumber value="${timepassed - (timepassed mod 1)}" pattern="###"/>일 전
-	            		</div>
-	            	</c:when>
-	            	<c:otherwise>
-			            <div class="time">${post.post_timepassed }시간 전</div>
-	            	</c:otherwise>
-	            </c:choose>
-            </a>
+	    		<a href="<c:url value="/post/detail/${post.post_num}"/>">
+		            <img src="https://via.placeholder.com/150" alt="상품 이미지">
+		            <div class="name">${post.post_title }</div>
+		            <div class="price">	            
+		            	<fmt:formatNumber value="${post.post_price }" type="number"/>원
+		            </div>
+		            <c:choose>
+		            	<c:when test="${post.post_timepassed > 24 }">	      
+		            		<c:set var="timepassed" value="${post.post_timepassed div 24 }"/>      	
+		            		<div class="time">
+		            			<fmt:formatNumber value="${timepassed - (timepassed mod 1)}" pattern="###"/>일 전
+		            		</div>
+		            	</c:when>
+		            	<c:otherwise>
+				            <div class="time">${post.post_timepassed }시간 전</div>
+		            	</c:otherwise>
+		            </c:choose>
+	            </a>
 	        </div>    		
     	</c:forEach>        
         <!-- 추가 상품 -->

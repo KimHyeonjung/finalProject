@@ -36,11 +36,13 @@ VALUES
 -- post 테이블에 대한 샘플 데이터 삽입category
 INSERT INTO `post` 
 (`post_num`, `post_member_num`, `post_position_num`, `post_way_num`, `post_category_num`, 
-`post_title`, `post_content`, `post_price`, `post_deal`, `post_refresh`, `post_address`)
+`post_title`, `post_content`, `post_price`, `post_deal`, `post_address`)
 VALUES 
-(1, 1, 1	, 1	, 	3	, '핸드폰 팝니다'		, '핸드폰'	, 10000, true, 	 NULL, '서울, 한국'),
-(2, 1, 1	, 2	, 	1	, '바지 팝니다'		, '바지'		, 10000, true, 	 NULL, '서울, 한국'),
-(3, 2, 3	, 1	, 	4	, '전자레인지 팝니다'	, '전자레인지'	, 20000, false,  NULL, '부산, 한국'),
-(4, 2, 1	, 2	, 	6	, '노인과바다 팔아요'	, '노인과바다'	, 15000, true, 	 NUll, '인천, 한국'),
-(5, 3, 1	, 1	, 	7	, '목줄 팔아요'		, '목줄'		, 20000, false,  NULL, '부산, 한국'),
-(6, 3, 1	, 3	, 	9	, '드라이버 팝니다'		, '드라이버'	, 20000, false,  NULL, '부산, 한국');
+(1, 1, 1	, 1	, 	3	, '핸드폰 팝니다'		, '핸드폰'	, 10000, true,	'서울, 한국'),
+(2, 1, 1	, 2	, 	1	, '바지 팝니다'		, '바지'		, 10000, true,	'서울, 한국'),
+(3, 2, 3	, 1	, 	4	, '전자레인지 팝니다'	, '전자레인지'	, 20000, false,	'부산, 한국'),
+(4, 2, 1	, 2	, 	6	, '노인과바다 팔아요'	, '노인과바다'	, 15000, true,	'인천, 한국'),
+(5, 3, 1	, 1	, 	7	, '목줄 팔아요'		, '목줄'		, 20000, false,	'부산, 한국'),
+(6, 3, 1	, 3	, 	9	, '드라이버 팝니다'		, '드라이버'	, 20000, false,	'부산, 한국');
+
+
