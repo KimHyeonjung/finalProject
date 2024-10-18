@@ -22,4 +22,6 @@ public interface PostDAO {
     
     List<String> selectCategoryList();
     
+    // 파일 정보를 DB에 저장하는 메서드 추가
+    boolean insertFile(FileVO file);
 }
