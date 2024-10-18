@@ -1,12 +1,9 @@
 package com.team3.market.controller;
 
-<<<<<<< Updated upstream
-=======
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
->>>>>>> Stashed changes
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
