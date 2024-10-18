@@ -35,10 +35,11 @@ CREATE TABLE `post` (
 	`post_content`	varchar(500)	NOT NULL,
 	`post_price`	int	NULL,
 	`post_deal`	boolean	NOT NULL,
-	`post_date`	datetime	NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`post_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
 	`post_refresh`	datetime	NULL,
 	`post_address`	varchar(100)	NULL,
-	`post_view`	int	NULL	DEFAULT 0
+	`post_view`	int	NULL	DEFAULT 0,
+    `post_report`	int	NULL	DEFAULT 0
 );
 
 DROP TABLE IF EXISTS `category`;
@@ -54,7 +55,7 @@ CREATE TABLE `wish` (
 	`wish_num`	int primary key auto_increment	NOT NULL,
 	`wish_post_num`	int	NOT NULL,
 	`wish_member_num`	int	NOT NULL,
-	`wish_date`	datetime	NULL	DEFAULT CURRENT_TIMESTAMP
+	`wish_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `address`;
@@ -91,7 +92,7 @@ CREATE TABLE `report` (
 	`report_post_num`	int	NULL,
 	`report_category_num`	int	NOT NULL,
 	`report_content`	varchar(100)	NULL,
-	`report_date`	datetime	NULL	DEFAULT CURRENT_TIMESTAMP
+	`report_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `chat_room`;
@@ -101,7 +102,7 @@ CREATE TABLE `chat_room` (
 	`chatRoom_member_num`	int	NOT NULL,
 	`chatRoom_member_num2`	int	NOT NULL,
 	`chatRoom_post_num`	int	NOT NULL,
-	`chatRoom_date`	datetime	NULL	DEFAULT CURRENT_TIMESTAMP
+	`chatRoom_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `chat`;
@@ -112,7 +113,7 @@ CREATE TABLE `chat` (
 	`chat_chatRoom_num`	int	NOT NULL,
 	`chat_content`	varchar(100)	NULL,
 	`chat_read`	boolean	NULL	DEFAULT false,
-	`chat_date`	datetime	NULL	DEFAULT CURRENT_TIMESTAMP
+	`chat_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `block`;
@@ -121,7 +122,7 @@ CREATE TABLE `block` (
 	`block_num`	int primary key auto_increment	NOT NULL,
 	`block_member_num`	int	NOT NULL,
 	`block_member_num2`	int	NOT NULL,
-	`block_date`	datetime	NULL	DEFAULT CURRENT_TIMESTAMP
+	`block_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `position`;
@@ -135,7 +136,6 @@ DROP TABLE IF EXISTS `file`;
 
 CREATE TABLE `file` (
 	`file_num`	int primary key auto_increment	NOT NULL,
-    `file_ori_name`	varchar(255)	NULL,
 	`file_name`	varchar(255)	NULL,
 	`file_target_table`	varchar(10)	NULL,
 	`file_target_num`	int	NULL
@@ -148,7 +148,7 @@ CREATE TABLE `wallet` (
 	`wallet_member_num`	int	NOT NULL,
 	`wallet_post_num`	int	NOT NULL,
 	`wallet_money`	int	NULL,
-	`wallet_date`	datetime	NULL	DEFAULT CURRENT_TIMESTAMP
+	`wallet_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `point`;
@@ -157,7 +157,7 @@ CREATE TABLE `point` (
 	`point_num`	int primary key auto_increment	NOT NULL,
 	`point_member_num`	int	NOT NULL,
 	`point_money`	int	NULL,
-	`point_date`	datetime	NULL	DEFAULT CURRENT_TIMESTAMP,
+	`point_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
 	`point_type`	varchar(20)	NOT NULL
 );
 

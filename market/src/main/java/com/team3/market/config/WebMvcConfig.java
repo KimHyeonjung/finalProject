@@ -5,13 +5,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
+
+import com.team3.market.interceptor.MemberInterceptor;
 
 @Configuration
 @EnableWebMvc
@@ -54,19 +55,18 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	 * "/logout"); //제외할 경로 // 특정 경로 제외 }
 	 */
     
-    @Bean
-    public CommonsMultipartResolver multipartResolver() {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        // 업로드 최대 크기 10Mb 설정
-        resolver.setMaxUploadSize(10485760);
-        return resolver;
-    }
-    
-    @Bean
-    public String uploadPath() {
-        return "D:\\uploads"; // 서버에 저장할 경로
-    }
-    
+//    @Bean
+//    public CommonsMultipartResolver multipartResolver() {
+//        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+//        // 업로드 최대 크기 10Mb 설정
+//        resolver.setMaxUploadSize(10485760);
+//        return resolver;
+//    }
+//    
+//    @Bean
+//    public String uploadPath() {
+//        return "C:\\git\\uploadfiles"; // 서버에 저장할 경로
+//    }
     @Bean
 	public PasswordEncoder passwordEncoder() {
 	    return new BCryptPasswordEncoder();  // BCryptPasswordEncoder 빈 등록
