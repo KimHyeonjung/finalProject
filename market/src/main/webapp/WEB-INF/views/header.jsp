@@ -51,6 +51,9 @@
 							</button>
 						</div>
 					</li>
+					<li class="nav-item">
+						<span class="nav-link" id="profile_nick">[${user.member_nick}]</span>
+					</li>
 			    <%-- </c:if> --%>
 			</ul>
 		</div>  

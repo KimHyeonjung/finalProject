@@ -77,7 +77,7 @@
                 <th>상품명</th>
                 <th>가격</th>
                 <th>찜</th>
-                <th>등록일 (끌올일)</th>
+                <th>등록일</th>
                 <th>기능</th>
             </tr>
         </thead>
@@ -100,8 +100,7 @@
                 <td>${post.post_price}</td>
                 <td>${post.post_view}</td>
                 <td>
-                	<fmt:formatDate value="${post.post_date}" pattern="yyy-MM-dd hh:mm"/>
-                	(<fmt:formatDate value="${post.post_refresh}" pattern="yyy-MM-dd hh:mm"/>)
+                	<fmt:formatDate value="${post.post_refresh}" pattern="yyy-MM-dd hh:mm"/>
                 	
                 </td>
                 <td>

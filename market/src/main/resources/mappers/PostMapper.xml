@@ -8,6 +8,7 @@
 			(select hour(TIMEDIFF(current_timestamp, post_refresh))) as post_timepassed, post.*
 		from
 			post
+		where post_state_num = 1
 		order by post_view desc, post_refresh desc		
 	</select>
 	<select id="selectPost" resultType="PostVO">
@@ -87,7 +88,9 @@
 			*
 		from
 			post
-		where post_member_num = #{member_num}
+		where 
+			post_state_num = 1 and
+			post_member_num = #{member_num}
 		<choose>
 			<when test="type == 'selling'">
 				and post_position_num = 1
@@ -128,4 +131,22 @@
 	<update id="updateRefresh">
 		update post set post_refresh = current_timestamp where post_num = #{post_num}
 	</update>
+	<update id="updateDelPost">
+		update post set post_state_num = 3 where post_num = #{post_num}
+	</update>
+	<select id="selectChatRoomChk" resultType="Chat_roomVO">
+		select * from chat_room where chatRoom_post_num = #{post_num}
+	</select>
+	<select id="selectWalletChk" resultType="WalletVO">
+		select * from wallet where wallet_post_num = #{post_num}
+	</select>
+	<select id="selectAfterChk" resultType="AfterVO">
+		select * from after where after_post_num = #{post_num}
+	</select>
+	<select id="selectReportChk" resultType="ReportVO">
+		select * from report where report_post_num = #{post_num}
+	</select>
+	<delete id="deletePostAllWish">
+		delete from wish where wish_post_num = #{post_num}
+	</delete>
 </mapper>

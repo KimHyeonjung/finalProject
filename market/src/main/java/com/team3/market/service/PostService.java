@@ -11,10 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.team3.market.dao.PostDAO;
+import com.team3.market.model.vo.AfterVO;
+import com.team3.market.model.vo.Chat_roomVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.Report_categoryVO;
+import com.team3.market.model.vo.WalletVO;
 import com.team3.market.model.vo.WishVO;
 import com.team3.market.pagination.MyPostCriteria;
 import com.team3.market.pagination.PageMaker;
@@ -53,12 +56,23 @@ public class PostService {
 		if(user == null || user.getMember_num() == 0) {
 			return false;
 		}
-		try {
-			return postDao.deletePost(post_num);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
+		// 참조 체크
+		Chat_roomVO chatRoom = postDao.selectChatRoomChk(post_num); 
+//		WishVO wish = postDao.selectWishChk(post_num);
+		WalletVO wallet = postDao.selectWalletChk(post_num);
+		AfterVO after = postDao.selectAfterChk(post_num);
+		ReportVO report = postDao.selectReportChk(post_num);
+		if(chatRoom == null && wallet == null && after == null && report == null) {
+			try {
+				postDao.deletePostAllWish(post_num);
+				return postDao.deletePost(post_num);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
+		postDao.deletePostAllWish(post_num); 
+		return postDao.updateDelPost(post_num);
 	}
 
 	public List<PostVO> getPostList() {
@@ -194,8 +208,6 @@ public class PostService {
         
 		long limit = ChronoUnit.MONTHS.between(currentDateTime, date);
 		long passedDay = ChronoUnit.DAYS.between(currentDateTime, refresh);
-		System.out.println("리밋 :" + limit);
-		System.out.println("패스드데이 :" + passedDay);
 		if(limit > 5) {
 			return -1;
 		}
