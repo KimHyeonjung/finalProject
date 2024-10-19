@@ -1,5 +1,8 @@
 package com.team3.market.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -177,6 +180,29 @@ public class PostService {
 			return false;
 		}
 		return postDao.updateRefresh(post_num);
+	}
+
+	public int refreshCheck(int post_num) {
+		PostVO post = postDao.selectPost(post_num);
+		// 현재 Date 객체 생성		
+        Date refreshDate = post.getPost_refresh();
+        Date writeDate = post.getPost_date();
+        // Date를 LocalDate로 변환
+        LocalDateTime refresh = refreshDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime date = writeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        
+		long limit = ChronoUnit.MONTHS.between(currentDateTime, date);
+		long passedDay = ChronoUnit.DAYS.between(currentDateTime, refresh);
+		System.out.println("리밋 :" + limit);
+		System.out.println("패스드데이 :" + passedDay);
+		if(limit > 5) {
+			return -1;
+		}
+		if(passedDay < 7) {			
+			return 7 - (int)passedDay;
+		}
+		return -2;
 	}
 	
 	

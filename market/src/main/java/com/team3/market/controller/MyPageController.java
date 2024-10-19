@@ -68,7 +68,6 @@ public class MyPageController {
 	public boolean postDelete(@RequestParam("post_num") int post_num, HttpSession session) {
 		MemberVO user = (MemberVO)session.getAttribute("user");	
 		boolean res = postService.deletePost(post_num, user);
-			
 		return res;
 	}
 	@PostMapping("/post/refresh") // 끌올
@@ -76,7 +75,12 @@ public class MyPageController {
 	public boolean postRefresh(@RequestParam("post_num") int post_num, HttpSession session) {
 		MemberVO user = (MemberVO)session.getAttribute("user");	
 		boolean res = postService.refresh(post_num, user);
-			
+		return res;
+	}
+	@PostMapping("/refresh/check") // 끌올 가능 체크
+	@ResponseBody
+	public int refreshCheck(@RequestParam("post_num") int post_num) {
+		int res = postService.refreshCheck(post_num);
 		return res;
 	}
 	
