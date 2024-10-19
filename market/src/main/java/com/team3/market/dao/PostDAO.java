@@ -47,4 +47,6 @@ public interface PostDAO {
 
 	void updatePosition(PostVO post);
 
+	boolean updateRefresh(int post_num);
+
 }

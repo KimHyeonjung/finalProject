@@ -20,7 +20,9 @@ CREATE TABLE `member` (
 	`member_money`	int	NULL	DEFAULT 0,
 	`member_fail`	int	NULL	DEFAULT 0,
 	`member_cookie`	varchar(255)	NULL,
-	`member_limit`	DATETIME	NULL
+	`member_limit`	DATETIME	NULL,
+  `member_locked` DATETIME NULL
+
 );
 
 DROP TABLE IF EXISTS `post`;
@@ -36,7 +38,7 @@ CREATE TABLE `post` (
 	`post_price`	int	NULL,
 	`post_deal`	boolean	NOT NULL,
 	`post_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
-	`post_refresh`	datetime	NULL,
+	`post_refresh`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
 	`post_address`	varchar(100)	NULL,
 	`post_view`	int	NULL	DEFAULT 0,
     `post_report`	int	NULL	DEFAULT 0
@@ -505,6 +507,5 @@ ALTER TABLE `rating` ADD CONSTRAINT `FK_after_TO_rating_1` FOREIGN KEY (
 REFERENCES `after` (
 	`after_num`
 );
-
 
 

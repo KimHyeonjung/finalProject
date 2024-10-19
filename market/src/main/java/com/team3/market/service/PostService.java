@@ -32,10 +32,10 @@ public class PostService {
 	public Map<String, Object> getPostMap(int post_num) {
 		Map<String, Object> post = postDao.selectPostMap(post_num);
 		//지난 시간 구해서 map에 추가
-		Date writeTime = (Date) post.get("post_date");
+		Date updateTime = (Date) post.get("post_refresh");
 		Date nowTime = new Date();
-		long beforeTimeMs = nowTime.getTime() - writeTime.getTime();		 
-		long post_timepassed = beforeTimeMs / 1000 / 60 / 60 ;	
+		long TimeMs = nowTime.getTime() - updateTime.getTime();		 
+		long post_timepassed = TimeMs / 1000 / 60 / 60 ;	
 		post.put("post_timepassed", post_timepassed);
 		 
 		return post;
@@ -46,8 +46,16 @@ public class PostService {
 		
 	}
 
-	public boolean deletePost(int post_num) {
-		return postDao.deletePost(post_num);
+	public boolean deletePost(int post_num, MemberVO user) {
+		if(user == null || user.getMember_num() == 0) {
+			return false;
+		}
+		try {
+			return postDao.deletePost(post_num);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public List<PostVO> getPostList() {
@@ -163,5 +171,13 @@ public class PostService {
 			return null;
 		}
 	}
+
+	public boolean refresh(int post_num, MemberVO user) {
+		if(user == null) {
+			return false;
+		}
+		return postDao.updateRefresh(post_num);
+	}
+	
 	
 }

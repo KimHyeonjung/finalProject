@@ -36,7 +36,7 @@ VALUES
 -- post 테이블에 대한 샘플 데이터 삽입category
 INSERT INTO `post` 
 (`post_num`, `post_member_num`, `post_position_num`, `post_way_num`, `post_category_num`, 
-`post_title`, `post_content`, `post_price`, `post_deal`, `post_refresh`, `post_address`)
+`post_title`, `post_content`, `post_price`, `post_deal`, `post_address`)
 VALUES 
 (1, 1, 1	, 1	, 	3	, '핸드폰 팝니다'		, '핸드폰'	, 10000, true, 	 NULL, '서울, 한국'),
 (2, 1, 1	, 2	, 	1	, '바지 팝니다'		, '바지'		, 10000, true, 	 NULL, '서울, 한국'),

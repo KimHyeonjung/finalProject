@@ -10,7 +10,7 @@ public class MyPostCriteria extends Criteria{
 
 	@Override
 	public String toString() {
-		return super.toString() + "MyPostCriteria [member_num=" + member_num + "]";
+		return super.toString() + "&member_num=" + member_num;
 	}
 	
 }

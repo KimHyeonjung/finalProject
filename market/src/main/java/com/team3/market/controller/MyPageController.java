@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.team3.market.model.dto.MessageDTO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.pagination.MyPostCriteria;
@@ -49,12 +51,11 @@ public class MyPageController {
 		if(user != null) {
 			cri.setMember_num(user.getMember_num());
 		}
-		System.out.println(cri);
 		List<PostVO> list = postService.getMyPostList(cri);
 		PageMaker pm = postService.getPageMaker(cri);
 		model.addAttribute("list", list);
-		model.addAttribute("cri", cri);
 		model.addAttribute("pm", pm);
+		
 		return "/mypage/post_list";
 	}
 	@PostMapping("/post/state")
@@ -62,4 +63,21 @@ public class MyPageController {
 	public PostVO postState(@RequestBody PostVO post) {
 		return postService.updatePosition(post);
 	}
+	@PostMapping("/post/delete") // 게시글 삭제
+	@ResponseBody
+	public boolean postDelete(@RequestParam("post_num") int post_num, HttpSession session) {
+		MemberVO user = (MemberVO)session.getAttribute("user");	
+		boolean res = postService.deletePost(post_num, user);
+			
+		return res;
+	}
+	@PostMapping("/post/refresh") // 끌올
+	@ResponseBody
+	public boolean postRefresh(@RequestParam("post_num") int post_num, HttpSession session) {
+		MemberVO user = (MemberVO)session.getAttribute("user");	
+		boolean res = postService.refresh(post_num, user);
+			
+		return res;
+	}
+	
 }
