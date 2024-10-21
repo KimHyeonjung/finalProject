@@ -22,5 +22,12 @@
         FROM member
         WHERE member_num = #{member_num}
     </select>
+    
+    <select id="pointList" resultType="PointVO">
+        SELECT point_num, point_money, point_date, point_type
+        FROM point
+        WHERE point_member_num = #{member_num}
+        ORDER BY point_date DESC
+    </select>
 
 </mapper>

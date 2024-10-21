@@ -1,6 +1,7 @@
 package com.team3.market.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -103,6 +104,10 @@ public class WalletService {
         // 업데이트된 포인트 저장
         walletDao.updatePoint(member);
 		
+	}
+
+	public List<PointVO> PointList(int member_num) {
+		return walletDao.pointList(member_num);
 	}
     
 

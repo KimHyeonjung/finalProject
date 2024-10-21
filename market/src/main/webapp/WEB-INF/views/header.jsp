@@ -66,7 +66,7 @@
 		</div>
 		<div>
 			<p>포인트</p>
-			<a href="#">내역</a>
+			<a href="<c:url value="/wallet/list"/>">내역</a>
 			<a href="<c:url value="/wallet/point"/>">충전</a>
 		</div>
 		<div>

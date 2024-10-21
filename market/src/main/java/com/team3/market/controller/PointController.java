@@ -1,6 +1,7 @@
 package com.team3.market.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -55,10 +56,25 @@ public class PointController {
     }
      
     
-    
     @GetMapping("/paymentResult")
     public String result() {
     	return "/wallet/paymentResult";
+    }
+    
+    @GetMapping("/list")
+    public String viewPointHistory(Model model, HttpSession session) {
+        
+        // 세션에서 사용자 정보 가져오기
+        MemberVO user = (MemberVO) session.getAttribute("user");
+        
+        // 사용자의 포인트 충전 기록 조회
+        List<PointVO> pointList = walletService.PointList(user.getMember_num());
+        
+        // 조회된 기록을 모델에 추가
+        model.addAttribute("pointList", pointList);
+
+        // JSP로 이동
+        return "/wallet/list";
     }
 }
 	
