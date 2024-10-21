@@ -20,7 +20,9 @@ CREATE TABLE `member` (
 	`member_money`	int	NULL	DEFAULT 0,
 	`member_fail`	int	NULL	DEFAULT 0,
 	`member_cookie`	varchar(255)	NULL,
-	`member_limit`	DATETIME	NULL
+	`member_limit`	DATETIME	NULL,
+    `member_locked` DATETIME NULL
+
 );
 
 DROP TABLE IF EXISTS `post`;

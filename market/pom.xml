@@ -227,13 +227,22 @@
 		    <artifactId>jackson-annotations</artifactId>
 		    <version>2.15.2</version>
 		</dependency>
-		
-		<!-- DB콘솔 확인 -->
 		<dependency>
-			<groupId>org.bgee.log4jdbc-log4j2</groupId>
-			<artifactId>log4jdbc-log4j2-jdbc4</artifactId>
-			<version>1.16</version>
-		</dependency>	
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		    <version>3.12.0</version>
+		</dependency>
+		<!-- 문자발송 의존성 -->
+		<dependency>
+		    <groupId>net.nurigo</groupId>
+		    <artifactId>sdk</artifactId>
+		    <version>4.3.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.module</groupId>
+		    <artifactId>jackson-module-kotlin</artifactId>
+		    <version>2.18.0</version>
+		</dependency>
 		
 	</dependencies>
     <build>
