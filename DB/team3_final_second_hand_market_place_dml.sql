@@ -14,8 +14,8 @@ INSERT INTO `position` (`position_name`) VALUES
 ('판매중'), ('예약중'), ('거래완료');
 
 -- 거래 방식
-INSERT INTO `way` (`way_num`, `way_name`) VALUES 
-(1, '직거래'), (2, '택배 거래'), (3, '직거래+택배거래');
+INSERT INTO `way` (`way_name`) VALUES 
+('직거래'), ('택배거래'), ('희망거래');
 
 -- 카테고리
 INSERT INTO `category` (`category_name`) VALUES 
@@ -27,12 +27,11 @@ INSERT INTO `category` (`category_name`) VALUES
 
 -- member 테이블에 대한 샘플 데이터 삽입
 INSERT INTO `member` 
-(`member_num`, `member_id`, `member_pw`, `member_nick`, `member_phone`, `member_email`, 
-`member_auth`, `member_state`, `member_report`, `member_score`, `member_money`)
+(`member_id`, `member_pw`, `member_nick`, `member_phone`, `member_email`)
 VALUES 
-('qwe', 'qweqwe', '큐더블유디', '01012345678', 'qwe@example.com'),
-('asd', 'asdasd', '에이에스디', '01087654321', 'asd@example.com'),
-('zxc', 'zxczxc', '즈엑스씨', '01013572468', 'zxc@example.com');
+('qwe', 'qweqwe', '큐더블유디', '010-1234-5678', 'qwe@example.com'),
+('asd', 'asdasd', '에이에스디', '010-8765-4321', 'asd@example.com'),
+('zxc', 'zxczxc', '즈엑스씨', '010-1357-2468', 'zxc@example.com');
 
 -- post 테이블에 대한 샘플 데이터 삽입
 INSERT INTO `post` 
