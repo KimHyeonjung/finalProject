@@ -117,7 +117,7 @@ body {
 		<div class="container-product">		
 			<c:forEach items="${list }" var="post"> 
 				<div class="product">
-		            <img class="product-click" src="https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg" alt="뉴에라 스카잔"
+		            <img class="product-click thumbnail" src="<c:url value="/resources/img/none_image.jpg"/>" alt="none"
 		            	 data-post_num="${post.post_num}">
 		            <div class="product-info product-click" data-post_num="${post.post_num}">		            	
 		                <h2>${post.post_title }</h2> 
@@ -152,6 +152,28 @@ body {
 	</div>
 <script>
 $(function(){
+	// 썸네일 불러오기
+	$('.thumbnail').each(function (){
+		var post_num = $(this).data('post_num');
+		var thumbnail = $(this);
+		$.ajax({
+			async : false, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/mypage/post/thumbnail"/>', 
+			type : 'post', 
+			data : {post_num : post_num}, 
+			success : function (data){				
+				if(data.file_name != null){
+					var str = `<c:url value="/uploads/\${data.file_name}"/>`;
+					$(thumbnail).attr('src', str);
+					$(thumbnail).attr('alt', data.file_ori_name);
+				}
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+			}
+		});
+	});
+	
+	
 	$('.product-click').click(function(){
 		let post_num = $(this).data('post_num');
 		location.href = `<c:url value="/post/detail/\${post_num}"/>`;

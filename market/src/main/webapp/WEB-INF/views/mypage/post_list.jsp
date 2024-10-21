@@ -86,7 +86,9 @@
             <tr>
                 <td>
 	                <a href="<c:url value="/post/detail/${post.post_num}"/>">
-		                <img src="https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg" alt="카피바라" />
+		                <img class="thumbnail" data-post_num="${post.post_num}"
+			                src="<c:url value="/resources/img/none_image.jpg"/>" 
+			                alt="none" />
 	                </a>
 	            </td>
                 <td>
@@ -137,10 +139,32 @@
 </div>	
 <script>
 $(document).ready(function() {	
-	// 선택된 거래상태 항목 안보이게
-    $('.state').each(function (){
-    	$(this).find('option[selected]').hide();
-    });	    
+	
+	// 썸네일 불러오기
+	$('.thumbnail').each(function (){
+		var post_num = $(this).data('post_num');
+		var thumbnail = $(this);
+		// 선택된 거래상태 항목 안보이게
+		var state = $(this).closest('tr').find('.state');
+		if(state.data('post_num') == post_num){
+			state.find('option[selected]').hide();
+		}
+		$.ajax({
+			async : false, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/mypage/post/thumbnail"/>', 
+			type : 'post', 
+			data : {post_num : post_num}, 
+			success : function (data){
+				if(data.file_name != null){
+					var str = `<c:url value="/uploads/\${data.file_name}"/>`;
+					$(thumbnail).attr('src', str);
+					$(thumbnail).attr('alt', data.file_ori_name);
+				}
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+			}
+		});
+	});
     
  	// 표시 개수 선택
 	$('#perPageSelect').change(function(){
@@ -243,7 +267,7 @@ $(document).ready(function() {
 					}else {
 						alert('삭제하지 못했어요');
 					}
-					
+					location.reload();
 				}, 
 				error : function(jqXHR, textStatus, errorThrown){
 				}

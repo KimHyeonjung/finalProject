@@ -88,11 +88,11 @@
     <insert id="insertPost" parameterType="PostVO" useGeneratedKeys="true" keyProperty="post_num">
         insert into post (
             post_member_num, post_position_num, post_way_num, post_category_num, 
-            post_title, post_content, post_price, post_deal, post_refresh, post_address
+            post_title, post_content, post_price, post_deal, post_address
         ) 
         values (
             #{post_member_num}, #{post_position_num}, #{post_way_num}, #{post_category_num}, 
-            #{post_title}, #{post_content}, #{post_price}, #{post_deal}, #{post_refresh}, #{post_address}
+            #{post_title}, #{post_content}, #{post_price}, #{post_deal}, #{post_address}
         )
     </insert>
     
@@ -171,4 +171,15 @@
 	<delete id="deletePostAllWish">
 		delete from wish where wish_post_num = #{post_num}
 	</delete>
+	<delete id="deleteFile">
+		delete from file where file_num = #{file_num}
+	</delete>
+	<select id="selectFileList" resultType="FileVO">
+		select * from file where file_target_table = #{target} and file_target_num = #{post_num}
+	</select>
+	<select id="selectFile" resultType="FileVO">
+		select * from file where file_target_table = #{target} and file_target_num = #{post_num}
+		order by file_num
+		limit 0, 1
+	</select>
 </mapper>

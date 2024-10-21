@@ -76,34 +76,33 @@
 			<h3 class="hide">이미지</h3>
 			<div id="carousel-indicators" class="carousel slide">
 				<!-- Indicators -->
-				<ul class="carousel-indicators">
-					<li data-target="#carousel-indicators" data-slide-to="0"
-						class="active"></li>
-					<li data-target="#carousel-indicators" data-slide-to="1"></li>
-					<li data-target="#carousel-indicators" data-slide-to="2"></li>
-					<li data-target="#carousel-indicators" data-slide-to="3"></li>
+				<ul class="carousel-indicators"> 
+					<c:if test="${fileList.size() != 0 }">
+						<c:forEach begin="0" end="${fileList.size() - 1}" var="i" varStatus="status">
+							<li data-target="#carousel-indicators" data-slide-to="${i}"
+								class="<c:if test="${status.first}">active</c:if>"></li>
+						</c:forEach>
+					</c:if>
+					<c:if test="${fileList.size() == 0 }">
+						<li data-target="#carousel-indicators" data-slide-to="0"
+								class="active"></li>
+					</c:if>
 				</ul>
-
 				<!-- The slideshow -->
 				<div class="carousel-inner">
-					<div class="carousel-item active">
-						<img src="<c:url value="/resources/img/g1.webp"/>"
-							alt="Los Angeles" width="800" height="500">
-					</div>
-					<div class="carousel-item">
-						<img src="<c:url value="/resources/img/g2.webp"/>" alt="Chicago"
-							width="800" height="500">
-					</div>
-					<div class="carousel-item">
-						<img src="<c:url value="/resources/img/g3.webp"/>" alt="New York"
-							width="800" height="500">
-					</div>
-					<div class="carousel-item">
-						<img src="<c:url value="/resources/img/g4.webp"/>" alt="New York"
-							width="800" height="500">
-					</div>
+					<c:forEach items="${fileList}" var="file" varStatus="status">
+						<div class="carousel-item <c:if test="${status.first}">active</c:if>"> 
+							<img src="<c:url value="/uploads/${file.file_name}"/>"
+								alt="${file.file_ori_name}" width="800" height="500"> 
+						</div>
+					</c:forEach>
+					<c:if test="${fileList.size() == 0 }">
+						<div class="carousel-item active"> 
+							<img src="<c:url value="/resources/img/none_image.jpg"/>"
+								alt="none" width="800" height="500"> 
+						</div>
+					</c:if>
 				</div>
-
 				<!-- Left and right controls -->
 				<a class="carousel-control-prev" href="#carousel-indicators"
 					data-slide="prev"> <i class="fas fa-chevron-left"

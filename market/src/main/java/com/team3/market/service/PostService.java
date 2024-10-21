@@ -27,6 +27,8 @@ import com.team3.market.model.vo.WishVO;
 import com.team3.market.pagination.MyPostCriteria;
 import com.team3.market.pagination.PageMaker;
 
+import com.team3.market.utils.UploadFileUtils;
+
 @Service
 public class PostService {
 
@@ -123,19 +125,36 @@ public class PostService {
 		
 	}
 
+	private boolean checkWriter(int post_num, int member_num) {
+		PostVO post = postDao.selectPost(post_num);
+		if(post == null) {
+			return false;
+		}
+		return post.getPost_member_num() == member_num;
+	}
+	
 	public boolean deletePost(int post_num, MemberVO user) {
 		if(user == null || user.getMember_num() == 0) {
 			return false;
 		}
-		// 참조 체크
+		//작성자인지 확인
+		if(!checkWriter(post_num, user.getMember_num())) {
+			return false;
+		}
+		// 게시글 참조 체크
 		Chat_roomVO chatRoom = postDao.selectChatRoomChk(post_num); 
-//		WishVO wish = postDao.selectWishChk(post_num);
 		WalletVO wallet = postDao.selectWalletChk(post_num);
 		AfterVO after = postDao.selectAfterChk(post_num);
 		ReportVO report = postDao.selectReportChk(post_num);
+		// 없으면 실제 DB에서 삭제
 		if(chatRoom == null && wallet == null && after == null && report == null) {
 			try {
 				postDao.deletePostAllWish(post_num);
+				//서버에서 첨부파일 삭제
+				List<FileVO> list = postDao.selectFileList(post_num, "post");
+				for(FileVO file : list) {
+					deleteFile(file);
+				}
 				return postDao.deletePost(post_num);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -144,6 +163,20 @@ public class PostService {
 		}
 		postDao.deletePostAllWish(post_num); 
 		return postDao.updateDelPost(post_num);
+	}
+	private void deleteFile(FileVO file) {
+		if(file == null) {
+			return;
+		}
+		//첨부파일을 서버에서 삭제
+		UploadFileUtils.delteFile(uploadPath, file.getFile_name());
+		//첨부파일 정보를 DB에서 삭제
+		postDao.deleteFile(file.getFile_num());
+	}
+
+	public List<FileVO> selectFileList(int post_num, String target) {
+		
+		return postDao.selectFileList(post_num, target);
 	}
 
 	public List<PostVO> getPostList() {
@@ -287,6 +320,11 @@ public class PostService {
 		}
 		return -2;
 	}
-	
+
+	public FileVO getFile(int post_num, String target) {
+		
+		return postDao.selectFile(post_num, target);
+	}
+
 	
 }

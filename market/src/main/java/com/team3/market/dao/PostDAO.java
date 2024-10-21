@@ -63,11 +63,16 @@ public interface PostDAO {
 	boolean updateDelPost(int post_num);
 
 	Chat_roomVO selectChatRoomChk(int post_num);
-//	WishVO selectWishChk(int post_num);
 	WalletVO selectWalletChk(int post_num);
 	AfterVO selectAfterChk(int post_num);
 	ReportVO selectReportChk(int post_num);
 
 	void deletePostAllWish(int post_num);
+
+	void deleteFile(int file_num);
+
+	List<FileVO> selectFileList(@Param("post_num")int post_num, @Param("target")String target);
+
+	FileVO selectFile(@Param("post_num")int post_num, @Param("target")String target);
 
 }
