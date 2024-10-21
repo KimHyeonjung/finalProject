@@ -1,5 +1,7 @@
 package com.team3.market.controller;
 
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -175,7 +177,7 @@ public class HomeController {
 	
 	@GetMapping("/updateemail")
 	public String updateemail() {
-		return "/updatepw";
+		return "/updateemail";
 	}
 	
 	
@@ -204,7 +206,7 @@ public class HomeController {
 	
 	@GetMapping("/updatephone")
 	public String updatephone() {
-		return "/updatepw";
+		return "/updatephone";
 	}
 	
 	
