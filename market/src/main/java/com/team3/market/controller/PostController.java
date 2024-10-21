@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.model.dto.MessageDTO;
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
@@ -77,11 +78,13 @@ public class PostController {
 		postService.updateView(post_num);
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		Map<String, Object> post = postService.getPostMap(post_num);
+		List<FileVO> fileList = postService.selectFileList(post_num, "post");
 		WishVO wish = postService.getWish(post_num, user);
 		ReportVO report = postService.getReportPost(post_num, user);
 		model.addAttribute("report", report);		
 		model.addAttribute("wish", wish);
 		model.addAttribute("post", post);
+		model.addAttribute("fileList", fileList);
 		return "/post/detail";
 	}	
 	
