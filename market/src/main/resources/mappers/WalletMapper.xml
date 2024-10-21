@@ -6,7 +6,21 @@
 
 	<insert id="insertPayment">
 	    INSERT INTO point (point_member_num, point_money, point_date, point_type) 
-	    VALUES (#{point_member_num}, #{point_money}, #{point_date}, #{point_type});
+	    VALUES (#{point_member_num}, #{point_money}, #{point_date}, '충전');
 	</insert>
+	
+	<update id="updatePoint">
+		update member
+		set
+			member_money = #{member_money}
+		where
+			member_id = #{member_id}
+	</update>
+	
+	 <select id="selectMemberById" parameterType="int" resultType="MemberVO">
+        SELECT *
+        FROM member
+        WHERE member_num = #{member_num}
+    </select>
 
 </mapper>

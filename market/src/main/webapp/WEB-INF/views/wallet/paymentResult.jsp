@@ -8,14 +8,12 @@
 </head>
 <body>
 
-	<h2>결제 결과</h2>
-	
 	<!-- 결제 성공 여부에 따라 메시지 표시 -->
 	<c:choose>
 	    <c:when test="${not empty point.point_num}">
 	        <!-- 결제가 성공한 경우 -->
 	        <h3>결제가 성공했습니다!</h3>
-	        <p>결제 타입: ${point.point_type == 'charge' ? '포인트 충전' : '포인트 사용'}</p>
+	        <p>결제 타입: 포인트 충전</p>
 	        <p>금액: ${point.point_money}원</p>
 	        <p>결제일: ${point.point_date}</p>
 	    </c:when>
