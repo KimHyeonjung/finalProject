@@ -5,10 +5,11 @@
 <mapper namespace="com.team3.market.dao.PostDAO">
 	<select id="selectPostList" resultType="PostVO">
 		select 
-			(select hour(TIMEDIFF(current_timestamp, post_date))) as post_timepassed, post.*
+			(select hour(TIMEDIFF(current_timestamp, post_refresh))) as post_timepassed, post.*
 		from
 			post
-		order by post_view desc, post_date desc		
+		where post_state_num = 1
+		order by post_view desc, post_refresh desc		
 	</select>
 	<select id="selectPost" resultType="PostVO">
 		select * 
@@ -61,7 +62,7 @@
 		delete from wish where wish_post_num = #{post_num} and wish_member_num = #{member_num}
 	</delete>
 	<select id="selectWishPostList" resultType="PostVO">
-		select (select hour(TIMEDIFF(current_timestamp, post_date))) as post_timepassed, post.* from wish join post
+		select (select hour(TIMEDIFF(current_timestamp, post_refresh))) as post_timepassed, post.* from wish join post
 			on wish_post_num = post_num
 		where wish_member_num = #{member_num}
 		<choose>
@@ -82,12 +83,36 @@
 			</otherwise>
 		</choose>
 	</select>
+	
+		<!-- 게시물 삽입 (생성) -->
+    <insert id="insertPost" parameterType="PostVO" useGeneratedKeys="true" keyProperty="post_num">
+        insert into post (
+            post_member_num, post_position_num, post_way_num, post_category_num, 
+            post_title, post_content, post_price, post_deal, post_refresh, post_address
+        ) 
+        values (
+            #{post_member_num}, #{post_position_num}, #{post_way_num}, #{post_category_num}, 
+            #{post_title}, #{post_content}, #{post_price}, #{post_deal}, #{post_refresh}, #{post_address}
+        )
+    </insert>
+    
+    <insert id="insertFile">
+		insert into file(file_name, file_ori_name, file_target_table, file_target_num)
+		values(#{file_name},#{file_ori_name},#{file_target_table},#{file_target_num})
+	</insert>
+    
+    <!-- 카테고리 목록을 가져오는 쿼리 -->
+	<select id="selectCategoryList" resultType="com.team3.market.model.vo.CategoryVO">
+	    SELECT category_num, category_name FROM category
+	</select>
 	<select id="selectMyPostList" resultType="PostVO">
 		select 
 			*
 		from
 			post
-		where post_member_num = #{member_num}
+		where 
+			post_state_num = 1 and
+			post_member_num = #{member_num}
 		<choose>
 			<when test="type == 'selling'">
 				and post_position_num = 1
@@ -100,7 +125,7 @@
 			</when>
 		</choose>
 		and post_title like concat('%', #{search}, '%')
-		order by post_date desc 
+		order by post_refresh desc 
 		limit #{pageStart}, #{perPageNum}
 	</select>	
 	<select id="selectTotalCountMyPost" resultType="int">
@@ -121,9 +146,29 @@
 			</when>
 		</choose>
 		and post_title like concat('%', #{search}, '%')
-		order by post_date desc 
 	</select>
 	<update id="updatePosition">
 		update post set post_position_num = #{post_position_num} where post_num = #{post_num}
 	</update>
+	<update id="updateRefresh">
+		update post set post_refresh = current_timestamp where post_num = #{post_num}
+	</update>
+	<update id="updateDelPost">
+		update post set post_state_num = 3 where post_num = #{post_num}
+	</update>
+	<select id="selectChatRoomChk" resultType="Chat_roomVO">
+		select * from chat_room where chatRoom_post_num = #{post_num}
+	</select>
+	<select id="selectWalletChk" resultType="WalletVO">
+		select * from wallet where wallet_post_num = #{post_num}
+	</select>
+	<select id="selectAfterChk" resultType="AfterVO">
+		select * from after where after_post_num = #{post_num}
+	</select>
+	<select id="selectReportChk" resultType="ReportVO">
+		select * from report where report_post_num = #{post_num}
+	</select>
+	<delete id="deletePostAllWish">
+		delete from wish where wish_post_num = #{post_num}
+	</delete>
 </mapper>
