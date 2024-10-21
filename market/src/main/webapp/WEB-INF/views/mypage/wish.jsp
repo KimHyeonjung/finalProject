@@ -117,7 +117,7 @@ body {
 		<div class="container-product">		
 			<c:forEach items="${list }" var="post"> 
 				<div class="product">
-		            <img class="product-click" src="https://via.placeholder.com/150" alt="뉴에라 스카잔"
+		            <img class="product-click" src="https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg" alt="뉴에라 스카잔"
 		            	 data-post_num="${post.post_num}">
 		            <div class="product-info product-click" data-post_num="${post.post_num}">		            	
 		                <h2>${post.post_title }</h2> 

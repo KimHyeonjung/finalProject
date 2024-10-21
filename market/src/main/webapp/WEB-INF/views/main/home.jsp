@@ -24,6 +24,7 @@
             border: 1px solid #ccc;
             padding: 10px;
             text-align: center;
+            cursor: pointer;
         }
         .product-item img {
             width: 100%;
@@ -51,9 +52,8 @@
     <h3>오늘의 상품 추천</h3>
     <div class="product-grid">
     	<c:forEach items="${list }" var="post">    		
-    		<div class="product-item">
-    		<a href="<c:url value="/post/detail/${post.post_num}"/>">
-	            <img src="https://via.placeholder.com/150" alt="상품 이미지">
+    		<div class="product-item" data-post_num="${post.post_num}">
+	            <img src="https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg" alt="상품 이미지">
 	            <div class="name">${post.post_title }</div>
 	            <div class="price">	            
 	            	<fmt:formatNumber value="${post.post_price }" type="number"/>원
@@ -69,11 +69,16 @@
 			            <div class="time">${post.post_timepassed }시간 전</div>
 	            	</c:otherwise>
 	            </c:choose>
-            </a>
 	        </div>    		
     	</c:forEach>        
         <!-- 추가 상품 -->
     </div>
 </div>
+<script>
+	$('.product-item').click(function(){
+		let post_num = $(this).data('post_num')
+		location.href = `<c:url value="/post/detail/\${post_num}"/>`;	
+	});
+</script>
 </body>
 </html>
