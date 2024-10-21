@@ -128,11 +128,18 @@
 						<div id="btn-group">
 							<c:choose>
 								<c:when test="${user ne null}">
-									<div class="btn btn-outline-success <c:if test="${wish.wish_member_num == user.member_num}">active</c:if>" 
-										id="wish" data-post_num="${post.post_num}">찜하기</div>
-									<div class="btn btn-outline-danger <c:if test="${report.report_member_num == user.member_num}">active</c:if>" 
-										id="report" data-post_num="${post.post_num}">신고하기</div>
-								</c:when>
+									<c:if test="${user.member_num ne post.post_member_num }">
+										<div class="btn btn-outline-success <c:if test="${wish.wish_member_num == user.member_num}">active</c:if>" 
+											id="wish" data-post_num="${post.post_num}">찜하기</div>
+										<div class="btn btn-outline-danger <c:if test="${report.report_member_num == user.member_num}">active</c:if>" 
+											id="report" data-post_num="${post.post_num}">신고하기</div>
+									</c:if>
+									<c:if test="${user.member_num eq post.post_member_num }">
+										<div>
+											<a class="btn btn-outline-info" href="<c:url value="/mypage/post/list"/>">내 상점 관리</a>
+										</div>
+									</c:if>
+								</c:when>								
 								<c:otherwise>
 									<div class="btn btn-dark" 
 										id="wish">찜하기</div>

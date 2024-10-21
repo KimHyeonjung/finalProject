@@ -59,9 +59,9 @@
 	        <input type="text" name="search" value="${pm.cri.search}" placeholder="상품명을 입력해주세요."/>
 	        <button id="btn-search" type="submit">검색</button>
 	        <select id="perPageSelect" name="perPageNum">
-	            <option value="2" <c:if test="${pm.cri.perPageNum == 2}">selected</c:if>>10개씩</option>
-	            <option value="3" <c:if test="${pm.cri.perPageNum == 3}">selected</c:if>>20개씩</option>
-	            <option value="4" <c:if test="${pm.cri.perPageNum == 4}">selected</c:if>>50개씩</option>
+	            <option value="10" <c:if test="${pm.cri.perPageNum == 10}">selected</c:if>>10개씩</option>
+	            <option value="20" <c:if test="${pm.cri.perPageNum == 20}">selected</c:if>>20개씩</option>
+	            <option value="50" <c:if test="${pm.cri.perPageNum == 50}">selected</c:if>>50개씩</option>
 	        </select>
 	        <button id="btn-all" class="<c:if test="${pm.cri.type == '' }">type-selected</c:if>">전체</button>
 	        <button id="btn-selling" class="<c:if test="${pm.cri.type == 'selling' }">type-selected</c:if>">판매중</button>
@@ -84,7 +84,11 @@
         <tbody>
         <c:forEach items="${list }"	var="post">
             <tr>
-                <td><img src="https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg" alt="카피바라" /></td>
+                <td>
+	                <a href="<c:url value="/post/detail/${post.post_num}"/>">
+		                <img src="https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg" alt="카피바라" />
+	                </a>
+	            </td>
                 <td>
                     <select class="state" data-post_num="${post.post_num}">
                         <option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
@@ -95,7 +99,10 @@
                 <td><a href="<c:url value="/post/detail/${post.post_num}"/>">${post.post_title}</a></td>
                 <td>${post.post_price}</td>
                 <td>${post.post_view}</td>
-                <td>${post.post_date}</td>
+                <td>
+                	<fmt:formatDate value="${post.post_refresh}" pattern="yyy-MM-dd hh:mm"/>
+                	
+                </td>
                 <td>
                     <div class="btn-func refresh" data-post_num="${post.post_num}">끌올</div>
                     <div class="btn-func edit" data-post_num="${post.post_num}">수정</div>
@@ -179,12 +186,69 @@ $(document).ready(function() {
 		$('[name=page]').val(page);
 		$('#form').submit();
 	});
+	//끌올
+	$('.btn-func.refresh').click(function(){
+		var renewal = false;
+		var post_num = $(this).data('post_num');
+		$.ajax({
+			async : false, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/mypage/refresh/check"/>', 
+			type : 'post', 
+			data : {post_num : post_num}, 
+			success : function (data){
+				if(data == -1){
+					alert('더 이상 끌올을 할 수 없습니다.');
+				} else if(data == -2){
+					renewal = true;					
+				} else {
+					alert(data + '일 후에 가능합니다.');
+				}
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+			}
+		});
+		if(renewal){
+			if(confirm('끌어 올립니까?')){			
+				$.ajax({
+					async : true, //비동기 : true(비동기), false(동기)
+					url : '<c:url value="/mypage/post/refresh"/>', 
+					type : 'post', 
+					data : {post_num : post_num}, 
+					success : function (data){
+						if(data){
+							alert('끌올 성공.');
+						}else {
+							alert('끌올 실패');
+						}
+						location.reload();
+					}, 
+					error : function(jqXHR, textStatus, errorThrown){
+					}
+				});
+			}		
+		}
+	});
 	//삭제
 	$('.btn-func.delete').click(function(){
-		var post_num = $(this).data('post_num');
-		alert(post_num);
-		$('#form').attr('action', `<c:url value="/mypage/post/delete/\${post_num}"/>`);
-		$('#form').submit();
+		if(confirm('정말 삭제하시겠습니까?')){
+			var post_num = $(this).data('post_num');
+			$.ajax({
+				async : true, //비동기 : true(비동기), false(동기)
+				url : '<c:url value="/mypage/post/delete"/>', 
+				type : 'post', 
+				data : {post_num : post_num}, 
+				success : function (data){
+					if(data){
+						alert('삭제하였습니다.');
+					}else {
+						alert('삭제하지 못했어요');
+					}
+					
+				}, 
+				error : function(jqXHR, textStatus, errorThrown){
+				}
+			});
+		}		
 	});
 
 });

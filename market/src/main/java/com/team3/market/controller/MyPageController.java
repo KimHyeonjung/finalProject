@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.team3.market.model.dto.MessageDTO;
@@ -62,20 +63,25 @@ public class MyPageController {
 	public PostVO postState(@RequestBody PostVO post) {
 		return postService.updatePosition(post);
 	}
-	@GetMapping("post/delete/{post_num}")
-	public String delete(Model model, @PathVariable("post_num") int post_num, MyPostCriteria cri, HttpSession session) {
+	@PostMapping("/post/delete") // 게시글 삭제
+	@ResponseBody
+	public boolean postDelete(@RequestParam("post_num") int post_num, HttpSession session) {
 		MemberVO user = (MemberVO)session.getAttribute("user");	
 		boolean res = postService.deletePost(post_num, user);
-		MessageDTO msg;
-		if(res) {
-			msg = new MessageDTO("/mypage/post/list"+ cri.toString(), "삭제 하였습니다.");
-			model.addAttribute("message", msg);
-			return "main/message";
-		} else {
-			msg = new MessageDTO("/mypage/post/list"+ cri.toString(), "삭제하지 못했습니다.");
-			model.addAttribute("message", msg);
-			return "main/message";
-		}
+		return res;
+	}
+	@PostMapping("/post/refresh") // 끌올
+	@ResponseBody
+	public boolean postRefresh(@RequestParam("post_num") int post_num, HttpSession session) {
+		MemberVO user = (MemberVO)session.getAttribute("user");	
+		boolean res = postService.refresh(post_num, user);
+		return res;
+	}
+	@PostMapping("/refresh/check") // 끌올 가능 체크
+	@ResponseBody
+	public int refreshCheck(@RequestParam("post_num") int post_num) {
+		int res = postService.refreshCheck(post_num);
+		return res;
 	}
 	
 }

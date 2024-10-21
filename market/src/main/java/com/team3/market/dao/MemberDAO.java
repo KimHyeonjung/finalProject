@@ -1,6 +1,7 @@
 package com.team3.market.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.team3.market.model.vo.MemberVO;
 
@@ -12,7 +13,10 @@ public interface MemberDAO {
     // 이메일로 회원 조회
     MemberVO getMemberByEmail(String member_email);
     
+    MemberVO getMemberByNick(String member_nick);
     // 회원 정보 삽입
+    MemberVO getMemberByPhone(String member_phone);
+    
     boolean insertMember(MemberVO member);
 
 	void updateMemberCookie(MemberVO user);
@@ -40,5 +44,4 @@ public interface MemberDAO {
 
 
 
-	
 }
