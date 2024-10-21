@@ -14,8 +14,13 @@ INSERT INTO `position` (`position_name`) VALUES
 ('판매중'), ('예약중'), ('거래완료');
 
 -- 거래 방식
+<<<<<<< HEAD
 INSERT INTO `way` (`way_name`) VALUES 
 ('직거래'), ('택배거래'), ('희망거래');
+=======
+INSERT INTO `way` (`way_num`, `way_name`) VALUES 
+(1, '직거래'), (2, '택배 거래'), (3, '희망거래');
+>>>>>>> main
 
 -- 카테고리
 INSERT INTO `category` (`category_name`) VALUES 
@@ -29,11 +34,17 @@ INSERT INTO `category` (`category_name`) VALUES
 INSERT INTO `member` 
 (`member_id`, `member_pw`, `member_nick`, `member_phone`, `member_email`)
 VALUES 
+<<<<<<< HEAD
 ('qwe', 'qweqwe', '큐더블유디', '010-1234-5678', 'qwe@example.com'),
 ('asd', 'asdasd', '에이에스디', '010-8765-4321', 'asd@example.com'),
 ('zxc', 'zxczxc', '즈엑스씨', '010-1357-2468', 'zxc@example.com');
+=======
+('qweqwe', '$2a$10$5dh4gkVX9JewxXDGja2ny.h1V9NeqQ8/9prqwISJX0coPFZKBaaeO', '큐더블유디', '01012345678', 'qwe@example.com'),
+('asdasd', '$2a$10$2nko/eZx0pBwdF6fKJKSge74qbcCbCl.1KBiC3r6mQwWDkKaLDTee', '에이에스디', '01087654321', 'asd@example.com'),
+('zxczxc', '$2a$10$jLT.E7GaqFq3upcpNFugxedd/cVrQ4FKS/0y86J4e7dT04lHcY1qi', '즈엑스씨', '01013572468', 'zxc@example.com');
+>>>>>>> main
 
--- post 테이블에 대한 샘플 데이터 삽입
+-- post 테이블에 대한 샘플 데이터 삽입category
 INSERT INTO `post` 
 (`post_num`, `post_member_num`, `post_position_num`, `post_way_num`, `post_category_num`, 
 `post_title`, `post_content`, `post_price`, `post_deal`, `post_refresh`, `post_address`)

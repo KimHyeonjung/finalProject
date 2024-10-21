@@ -5,6 +5,8 @@ import java.util.Map;
 
 public interface AdminDAO {
 
-	List<Map<String, Object>> selectReportList();
+	List<Map<String, Object>> selectPostReportList();
+
+	List<Map<String, Object>> selectUserReportList();
 
 }
