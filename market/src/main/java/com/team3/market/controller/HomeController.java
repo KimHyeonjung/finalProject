@@ -59,7 +59,7 @@ public class HomeController {
         if(res) {
             message = new MessageDTO("/", "회원가입에 성공했습니다.");
         } else {
-            message = new MessageDTO("/signup", "회원가입에 실패했습니다.");
+            message = new MessageDTO("/signup", "아이디나 이메일이 중복되었습니다.");
         }
         
         model.addAttribute("message", message);

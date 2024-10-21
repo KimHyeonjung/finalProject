@@ -10,6 +10,12 @@
 	<select id="getMemberById" parameterType="String" resultType="MemberVO">
         SELECT * FROM member WHERE member_id = #{member_id}
     </select>
+    <select id="getMemberByNick" parameterType="String" resultType="MemberVO">
+	    SELECT * FROM member WHERE member_nick = #{member_nick}
+	</select>
+	<select id="getMemberByPhone" parameterType="String" resultType="MemberVO">
+	    SELECT * FROM member WHERE member_phone = #{member_phone}
+	</select>
 
     <select id="getMemberByEmail" parameterType="String" resultType="MemberVO">
         SELECT * FROM member WHERE member_email = #{member_email}
