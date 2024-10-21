@@ -10,7 +10,6 @@ CREATE TABLE `member` (
 	`member_num`	int primary key auto_increment	NOT NULL,
 	`member_id`	varchar(50) unique	NOT NULL,
 	`member_pw`	varchar(255)	NULL,
-=======
 	`member_nick`	varchar(10) unique	NULL,
 	`member_phone`	varchar(13) unique	NULL,
 	`member_email`	varchar(30) unique	NOT NULL,
@@ -22,7 +21,7 @@ CREATE TABLE `member` (
 	`member_fail`	int	NULL	DEFAULT 0,
 	`member_cookie`	varchar(255)	NULL,
 	`member_limit`	DATETIME	NULL,
-  `member_locked` DATETIME NULL
+    `member_locked` DATETIME NULL
 
 );
 
@@ -31,6 +30,7 @@ DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
 	`post_num`	int primary key auto_increment	NOT NULL,
 	`post_member_num`	int	NOT NULL,
+    `post_state_num`	int	NOT NULL	DEFAULT 1,
 	`post_position_num`	int	NOT NULL,
 	`post_way_num`	int	NOT NULL,
 	`post_category_num`	int	NOT NULL,
@@ -39,10 +39,17 @@ CREATE TABLE `post` (
 	`post_price`	int	NULL,
 	`post_deal`	boolean	NOT NULL,
 	`post_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
-	`post_refresh`	datetime	NULL,
+	`post_refresh`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
 	`post_address`	varchar(100)	NULL,
 	`post_view`	int	NULL	DEFAULT 0,
     `post_report`	int	NULL	DEFAULT 0
+);
+
+DROP TABLE IF EXISTS `state`;
+
+CREATE TABLE `state` (
+	`state_num`	int primary key auto_increment	NOT NULL,
+	`state_name`	varchar(10)	NULL
 );
 
 DROP TABLE IF EXISTS `category`;
@@ -140,7 +147,7 @@ DROP TABLE IF EXISTS `file`;
 CREATE TABLE `file` (
 	`file_num`	int primary key auto_increment	NOT NULL,
 	`file_name`	varchar(255)	NULL,
-	`file_ori_name`	varchar(255)	NULL,
+    `file_ori_name`	varchar(255)	NULL,
 	`file_target_table`	varchar(10)	NULL,
 	`file_target_num`	int	NULL
 );
@@ -291,6 +298,13 @@ ALTER TABLE `post` ADD CONSTRAINT `FK_category_TO_post_1` FOREIGN KEY (
 )
 REFERENCES `category` (
 	`category_num`
+);
+
+ALTER TABLE `post` ADD CONSTRAINT `FK_state_TO_post_1` FOREIGN KEY (
+	`post_state_num`
+)
+REFERENCES `state` (
+	`state_num`
 );
 
 ALTER TABLE `wish` ADD CONSTRAINT `FK_post_TO_wish_1` FOREIGN KEY (
