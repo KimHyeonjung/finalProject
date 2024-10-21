@@ -84,15 +84,7 @@ public class PostController {
 		model.addAttribute("post", post);
 		return "/post/detail";
 	}	
-	@GetMapping("/delete/{post_num}")
-	public String delete(@PathVariable("post_num") int post_num) {
-		boolean res = postService.deletePost(post_num);
-		if(res) {
-			return "redirect:/post/list";
-		} else {
-			return "redirect:/post/detail/"+ post_num;
-		}
-	}
+	
 	@ResponseBody
 	@PostMapping("/wish")
 	public boolean wish(Model model, @RequestParam("post_num") int post_num, HttpSession session) {

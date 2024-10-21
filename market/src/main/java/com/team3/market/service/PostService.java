@@ -2,6 +2,9 @@ package com.team3.market.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +16,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.PostDAO;
 import com.team3.market.model.vo.FileVO;
+import com.team3.market.model.vo.AfterVO;
+import com.team3.market.model.vo.Chat_roomVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.Report_categoryVO;
+import com.team3.market.model.vo.WalletVO;
 import com.team3.market.model.vo.WishVO;
+import com.team3.market.pagination.MyPostCriteria;
+import com.team3.market.pagination.PageMaker;
 
 @Service
 public class PostService {
@@ -101,10 +109,10 @@ public class PostService {
 	public Map<String, Object> getPostMap(int post_num) {
 		Map<String, Object> post = postDao.selectPostMap(post_num);
 		//지난 시간 구해서 map에 추가
-		Date writeTime = (Date) post.get("post_date");
+		Date updateTime = (Date) post.get("post_refresh");
 		Date nowTime = new Date();
-		long beforeTimeMs = nowTime.getTime() - writeTime.getTime();		 
-		long post_timepassed = beforeTimeMs / 1000 / 60 / 60 ;	
+		long TimeMs = nowTime.getTime() - updateTime.getTime();		 
+		long post_timepassed = TimeMs / 1000 / 60 / 60 ;	
 		post.put("post_timepassed", post_timepassed);
 		 
 		return post;
@@ -115,8 +123,27 @@ public class PostService {
 		
 	}
 
-	public boolean deletePost(int post_num) {
-		return postDao.deletePost(post_num);
+	public boolean deletePost(int post_num, MemberVO user) {
+		if(user == null || user.getMember_num() == 0) {
+			return false;
+		}
+		// 참조 체크
+		Chat_roomVO chatRoom = postDao.selectChatRoomChk(post_num); 
+//		WishVO wish = postDao.selectWishChk(post_num);
+		WalletVO wallet = postDao.selectWalletChk(post_num);
+		AfterVO after = postDao.selectAfterChk(post_num);
+		ReportVO report = postDao.selectReportChk(post_num);
+		if(chatRoom == null && wallet == null && after == null && report == null) {
+			try {
+				postDao.deletePostAllWish(post_num);
+				return postDao.deletePost(post_num);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		postDao.deletePostAllWish(post_num); 
+		return postDao.updateDelPost(post_num);
 	}
 
 	public List<PostVO> getPostList() {
@@ -204,5 +231,62 @@ public class PostService {
 			return false;
 		}
 	}
+
+	public List<PostVO> getMyPostList(MyPostCriteria cri) {
+		if(cri == null || cri.getMember_num() == 0) {
+			return null;
+		}
+		return postDao.selectMyPostList(cri);
+	}
+
+	public PageMaker getPageMaker(MyPostCriteria cri) {
+		if(cri == null || cri.getMember_num() == 0) {
+			return null;
+		}
+		int totalCount = postDao.selectTotalCountMyPost(cri);
+		return new PageMaker(3, totalCount, cri);
+	}
+
+	public PostVO updatePosition(PostVO post) {
+		if(post == null) {
+			return null;
+		}
+		try {
+			postDao.updatePosition(post);
+			return postDao.selectPost(post.getPost_num());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public boolean refresh(int post_num, MemberVO user) {
+		if(user == null) {
+			return false;
+		}
+		return postDao.updateRefresh(post_num);
+	}
+
+	public int refreshCheck(int post_num) {
+		PostVO post = postDao.selectPost(post_num);
+		// 현재 Date 객체 생성		
+        Date refreshDate = post.getPost_refresh();
+        Date writeDate = post.getPost_date();
+        // Date를 LocalDate로 변환
+        LocalDateTime refresh = refreshDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime date = writeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        
+		long limit = ChronoUnit.MONTHS.between(currentDateTime, date);
+		long passedDay = ChronoUnit.DAYS.between(currentDateTime, refresh);
+		if(limit > 5) {
+			return -1;
+		}
+		if(passedDay < 7) {			
+			return 7 - (int)passedDay;
+		}
+		return -2;
+	}
+	
 	
 }

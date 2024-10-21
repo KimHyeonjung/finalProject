@@ -19,7 +19,9 @@ public class MyBatisConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//        dataSource.setDriverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
         dataSource.setUrl("jdbc:mysql://localhost:3306/marketplace?useSSL=false&serverTimezone=Asia/Seoul");
+//        dataSource.setUrl("jdbc:log4jdbc:mysql://localhost:3306/marketplace?useSSL=false&serverTimezone=Asia/Seoul");
         dataSource.setUsername("root");
         dataSource.setPassword("root");
         return dataSource;
