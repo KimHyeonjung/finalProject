@@ -14,14 +14,14 @@
 	object-fit: contain; /* 이미지 비율 유지하면서 컨테이너에 맞춤 */
 }
 .container-detail {
-	width: 1050px;
+	width: 900px;
 	margin: 0 auto;
 }
 .carousel-item {
 	text-align: center;
 }
 .article{
- 	width: 800px;
+ 	width: 700px;
 	margin: 0 auto;
 }
 /* 전체 화면을 덮는 반투명 배경 */
@@ -93,13 +93,13 @@
 					<c:forEach items="${fileList}" var="file" varStatus="status">
 						<div class="carousel-item <c:if test="${status.first}">active</c:if>"> 
 							<img src="<c:url value="/uploads/${file.file_name}"/>"
-								alt="${file.file_ori_name}" width="800" height="500"> 
+								alt="${file.file_ori_name}" width="700" height="500"> 
 						</div>
 					</c:forEach>
 					<c:if test="${fileList.size() == 0 }">
 						<div class="carousel-item active"> 
 							<img src="<c:url value="/resources/img/none_image.jpg"/>"
-								alt="none" width="800" height="500"> 
+								alt="none" width="700" height="500"> 
 						</div>
 					</c:if>
 				</div>
@@ -107,7 +107,8 @@
 				<a class="carousel-control-prev" href="#carousel-indicators"
 					data-slide="prev"> <i class="fas fa-chevron-left"
 					style="font-size: 24px; color: black;"></i>
-				</a> <a class="carousel-control-next" href="#carousel-indicators"
+				</a> 
+				<a class="carousel-control-next" href="#carousel-indicators"
 					data-slide="next"> <i class="fas fa-chevron-right"
 					style="font-size: 24px; color: black;"></i>
 				</a>
@@ -186,7 +187,7 @@
 				style="font-size: 18px; font-weight: bold;">${post.post_price }</p>
 			<div property="schema:description" id="article-detail">
 				${post.post_content }</div>
-			<p id="article-counts">관심 30 ∙ 채팅 85 ∙ 조회 ${post.post_view }</p>
+			<p id="article-counts">관심 ${post.post_wishcount} ∙ 채팅 85 ∙ 조회 ${post.post_view}</p>
 		</section>
 		<%-- <section class="article">
 			<a class="btn btn-outline-dark">수정</a>
