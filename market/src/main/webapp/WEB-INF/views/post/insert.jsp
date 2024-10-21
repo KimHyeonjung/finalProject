@@ -79,6 +79,19 @@
 	<h1>상품 등록</h1>
 	<form action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
 		
+		<div class="form-check">
+		  <input type="radio" class="form-check-input" id="radio1" name="optradio" value="option1" checked>팝니다
+		  <label class="form-check-label" for="radio1"></label>
+		</div>
+		<div class="form-check">
+		  <input type="radio" class="form-check-input" id="radio2" name="optradio" value="option2">삽니다
+		  <label class="form-check-label" for="radio2"></label>
+		</div>
+		<div class="form-check">
+		  <input type="radio" class="form-check-input" id="radio3" name="optradio" value="option3">무료나눔
+		  <label class="form-check-label"></label>
+		</div>
+		
 		<!-- 사진 첨부 -->
 		<div class="form-group">
 		    <label>사진 첨부 (최대 10장)</label>
