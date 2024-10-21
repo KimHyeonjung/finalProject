@@ -1,5 +1,6 @@
 package com.team3.market.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+<<<<<<< Updated upstream
 
+=======
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.team3.market.model.dto.MessageDTO;
+import com.team3.market.model.vo.MemberVO;
+import com.team3.market.model.vo.PostVO;
+import com.team3.market.model.vo.ReportVO;
+import com.team3.market.model.vo.WishVO;
+>>>>>>> Stashed changes
 import com.team3.market.service.PostService;
 
 @Controller
@@ -18,11 +31,47 @@ public class PostController {
 	@Autowired
 	PostService postService;
 	
-	@GetMapping("/insert")
-	public String insert() {
+    @GetMapping("/insert")
+    public String insert(Model model) {
+        // 카테고리 목록을 가져와서 뷰에 전달
+        List<String> categoryList = postService.getCategoryList();
+        model.addAttribute("categoryList", categoryList);	
+        
+        return "/post/insert";
+    }
+	
+    // 게시글 생성 처리
+    @PostMapping("/insert")
+    public String insertPost(Model model, PostVO post, HttpSession session, MultipartFile[] fileList) {
+    	System.out.println("파일 길이 : " +fileList.length);
+	    // 파일 선택 체크
+	    if (fileList == null || fileList.length == 0) {
+	        model.addAttribute("message", new MessageDTO("/post/insert", "파일을 선택하지 않았습니다."));
+	        return "/main/message";
+	    }
+    	
+    	MemberVO user = (MemberVO)session.getAttribute("user");
+    	
+    	System.out.println(post);
+		
+    	boolean res = postService.insertPost(post, user, fileList);
 
-		return "/post/insert";
-	}
+		MessageDTO message;
+		
+		for(MultipartFile file : fileList) {
+			System.out.println(file.getOriginalFilename());
+		}
+		
+		if(res) {	
+			message = new MessageDTO("/post/list", "게시글을 등록했습니다.");
+		}else {
+			message = new MessageDTO("/post/insert", "게시글을 등록하지 못했습니다.");
+		}
+		
+		model.addAttribute("message",message);
+		
+		return "/main/message";
+    }
 	
 	@GetMapping("/detail")
 	public String detail(Model model) {
