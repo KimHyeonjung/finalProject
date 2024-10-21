@@ -36,7 +36,7 @@
 			    <%-- </c:if> --%>
 			    <%-- <c:if test="${user != null}"> --%>
 			    	<li class="nav-item">
-						<a class="nav-link" href="<c:url value="/chatPage"/>">채팅</a>
+						<a class="nav-link" href="<c:url value="/chatRoom"/>">채팅</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="<c:url value="/post/insert"/>">글 쓰기</a>
