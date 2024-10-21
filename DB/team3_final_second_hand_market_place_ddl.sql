@@ -10,17 +10,6 @@ CREATE TABLE `member` (
 	`member_num`	int primary key auto_increment	NOT NULL,
 	`member_id`	varchar(50) unique	NOT NULL,
 	`member_pw`	varchar(255)	NULL,
-	`member_nick`	varchar(10)	NULL,
-	`member_phone`	varchar(13)	NULL,
-	`member_email`	varchar(30)	NOT NULL,
-	`member_auth`	varchar(5)	NOT NULL DEFAULT 'USER',
-	`member_state`	varchar(10)	NULL DEFAULT '사용',
-	`member_report`	int	NULL,
-	`member_score`	double	NULL DEFAULT 0,
-	`member_money`	int	NULL DEFAULT 0,
-    `member_fail`  int NULL DEFAULT 0,
-    `member_cookie` varchar(255) NULL,
-    `member_limit` datetime NULL
 =======
 	`member_nick`	varchar(10) unique	NULL,
 	`member_phone`	varchar(13) unique	NULL,
@@ -33,7 +22,7 @@ CREATE TABLE `member` (
 	`member_fail`	int	NULL	DEFAULT 0,
 	`member_cookie`	varchar(255)	NULL,
 	`member_limit`	DATETIME	NULL,
-    `member_locked` DATETIME NULL
+  `member_locked` DATETIME NULL
 
 );
 
@@ -42,35 +31,25 @@ DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
 	`post_num`	int primary key auto_increment	NOT NULL,
 	`post_member_num`	int	NOT NULL,
-	`post_position_name`	varchar(10) NOT NULL,
-	`post_way_name`	varchar(10) NOT NULL,
-	`post_category_name`	varchar(16) NOT NULL,
+	`post_position_num`	int	NOT NULL,
+	`post_way_num`	int	NOT NULL,
+	`post_category_num`	int	NOT NULL,
 	`post_title`	varchar(20)	NOT NULL,
 	`post_content`	varchar(500)	NOT NULL,
 	`post_price`	int	NULL,
 	`post_deal`	boolean	NOT NULL,
-	`post_date`	date	NOT NULL,
-	`post_refresh`	date	NULL,
+	`post_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
+	`post_refresh`	datetime	NULL,
 	`post_address`	varchar(100)	NULL,
-    `post_view` int NULL DEFAULT 0
-);
-
-DROP TABLE IF EXISTS `position`;
-
-CREATE TABLE `position` (
-	`position_name`	varchar(10) primary key	NOT NULL
-);
-
-DROP TABLE IF EXISTS `way`;
-
-CREATE TABLE `way` (
-	`way_name`	varchar(10) primary key	NOT NULL
+	`post_view`	int	NULL	DEFAULT 0,
+    `post_report`	int	NULL	DEFAULT 0
 );
 
 DROP TABLE IF EXISTS `category`;
 
 CREATE TABLE `category` (
-	`category_name`	varchar(16) primary key	NOT NULL
+	`category_num`	int primary key auto_increment	NOT NULL,
+	`category_name`	varchar(16)	NULL
 );
 
 DROP TABLE IF EXISTS `wish`;
@@ -79,7 +58,7 @@ CREATE TABLE `wish` (
 	`wish_num`	int primary key auto_increment	NOT NULL,
 	`wish_post_num`	int	NOT NULL,
 	`wish_member_num`	int	NOT NULL,
-	`wish_date`	date	NULL
+	`wish_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `address`;
@@ -91,6 +70,12 @@ CREATE TABLE `address` (
 	`address_ad`	varchar(100)	NULL
 );
 
+DROP TABLE IF EXISTS `way`;
+
+CREATE TABLE `way` (
+	`way_num`	int primary key auto_increment	NOT NULL,
+	`way_name`	varchar(10)	NULL
+);
 
 DROP TABLE IF EXISTS `notice`;
 
@@ -106,11 +91,11 @@ DROP TABLE IF EXISTS `report`;
 CREATE TABLE `report` (
 	`report_num`	int primary key auto_increment	NOT NULL,
 	`report_member_num`	int	NOT NULL,
-	`report_member_ num2`	int	NULL,
+	`report_member_num2`	int	NULL,
 	`report_post_num`	int	NULL,
 	`report_category_num`	int	NOT NULL,
 	`report_content`	varchar(100)	NULL,
-	`report_date`	date	NULL
+	`report_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `chat_room`;
@@ -120,7 +105,7 @@ CREATE TABLE `chat_room` (
 	`chatRoom_member_num`	int	NOT NULL,
 	`chatRoom_member_num2`	int	NOT NULL,
 	`chatRoom_post_num`	int	NOT NULL,
-	`chatRoom_date`	date	NULL
+	`chatRoom_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `chat`;
@@ -131,7 +116,7 @@ CREATE TABLE `chat` (
 	`chat_chatRoom_num`	int	NOT NULL,
 	`chat_content`	varchar(100)	NULL,
 	`chat_read`	boolean	NULL	DEFAULT false,
-	`chat_date`	date	NULL
+	`chat_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `block`;
@@ -140,7 +125,14 @@ CREATE TABLE `block` (
 	`block_num`	int primary key auto_increment	NOT NULL,
 	`block_member_num`	int	NOT NULL,
 	`block_member_num2`	int	NOT NULL,
-	`block_date`	date	NULL
+	`block_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS `position`;
+
+CREATE TABLE `position` (
+	`position_num`	int primary key auto_increment	NOT NULL,
+	`position_name`	varchar(10)	NULL
 );
 
 DROP TABLE IF EXISTS `file`;
@@ -148,11 +140,7 @@ DROP TABLE IF EXISTS `file`;
 CREATE TABLE `file` (
 	`file_num`	int primary key auto_increment	NOT NULL,
 	`file_name`	varchar(255)	NULL,
-<<<<<<< Updated upstream
 	`file_ori_name`	varchar(255)	NULL,
-=======
-    `file_ori_name`	varchar(255)	NULL,
->>>>>>> Stashed changes
 	`file_target_table`	varchar(10)	NULL,
 	`file_target_num`	int	NULL
 );
@@ -164,7 +152,7 @@ CREATE TABLE `wallet` (
 	`wallet_member_num`	int	NOT NULL,
 	`wallet_post_num`	int	NOT NULL,
 	`wallet_money`	int	NULL,
-	`wallet_date`	date	NULL
+	`wallet_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `point`;
@@ -173,7 +161,7 @@ CREATE TABLE `point` (
 	`point_num`	int primary key auto_increment	NOT NULL,
 	`point_member_num`	int	NOT NULL,
 	`point_money`	int	NULL,
-	`point_date`	date	NULL,
+	`point_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
 	`point_type`	varchar(20)	NOT NULL
 );
 
@@ -276,6 +264,7 @@ CREATE TABLE `report_category` (
 	`report_category_name`	varchar(20)	NOT NULL
 );
 
+
 ALTER TABLE `post` ADD CONSTRAINT `FK_member_TO_post_1` FOREIGN KEY (
 	`post_member_num`
 )
@@ -284,24 +273,24 @@ REFERENCES `member` (
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_position_TO_post_1` FOREIGN KEY (
-	`post_position_name`
+	`post_position_num`
 )
 REFERENCES `position` (
-	`position_name`
+	`position_num`
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_way_TO_post_1` FOREIGN KEY (
-	`post_way_name`
+	`post_way_num`
 )
 REFERENCES `way` (
-	`way_name`
+	`way_num`
 );
 
 ALTER TABLE `post` ADD CONSTRAINT `FK_category_TO_post_1` FOREIGN KEY (
-	`post_category_name`
+	`post_category_num`
 )
 REFERENCES `category` (
-	`category_name`
+	`category_num`
 );
 
 ALTER TABLE `wish` ADD CONSTRAINT `FK_post_TO_wish_1` FOREIGN KEY (
@@ -340,7 +329,7 @@ REFERENCES `member` (
 );
 
 ALTER TABLE `report` ADD CONSTRAINT `FK_member_TO_report_2` FOREIGN KEY (
-	`report_member_ num2`
+	`report_member_num2`
 )
 REFERENCES `member` (
 	`member_num`
@@ -520,5 +509,6 @@ ALTER TABLE `rating` ADD CONSTRAINT `FK_after_TO_rating_1` FOREIGN KEY (
 REFERENCES `after` (
 	`after_num`
 );
+
 
 

@@ -9,7 +9,7 @@
 <body>
 	<nav class="navbar navbar-expand-md bg-dark navbar-dark">
 		<a class="navbar-brand" href="<c:url value="/"/>">
-			<img src="" alt="Logo" style="width:40px;">
+			<img src="<c:url value="/resources/img/logo.PNG"/>" alt="Logo" style="width:40px;">
 		</a>
 		<form class="form-inline" action="/action_page.php">
 			<select>
@@ -39,12 +39,15 @@
 						<a class="nav-link" href="<c:url value="/chatRoom"/>">채팅</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="<c:url value="/post/insert"/>">글 쓰기</a>
+						<a class="nav-link" href="<c:url value="/post/insert"/>">판매하기</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="<c:url value="/logout"/>">로그아웃</a>
 					</li>
 					<li class="nav-item">
 						<div class="dropdown">
 							<button data-toggle="collapse" data-target="#demo">
-								<img src="bird.jpg" alt="Logo" style="width:40px;">	
+								<img src="<c:url value="/resources/img/none_profile_image.png"/>" alt="Logo" style="width:40px;">	
 							</button>
 						</div>
 					</li>
@@ -67,8 +70,8 @@
 			<a href="#">충전</a>
 		</div>
 		<div>
-			<a href="#">게시글 관리</a>
-			<a href="#">찜목록</a>
+			<a href="<c:url value="/mypage/post/list"/>">게시글 관리</a>
+			<a href="<c:url value="/mypage/wish/list"/>">찜목록</a>
 		</div>
 		<div>
 			<a href="#">주소록</a>
