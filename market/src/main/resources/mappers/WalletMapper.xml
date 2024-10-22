@@ -9,6 +9,11 @@
 	    VALUES (#{point_member_num}, #{point_money}, #{point_date}, '충전');
 	</insert>
 	
+	<insert id="deletePayment">
+	    INSERT INTO point (point_member_num, point_money, point_date, point_type) 
+	    VALUES (#{point_member_num}, #{point_money}, #{point_date}, '사용');
+	</insert>
+	
 	<update id="updatePoint">
 		update member
 		set
