@@ -211,4 +211,20 @@
 		insert into chat(chat_member_num, chat_chatRoom_num, chat_content) values 
 			(#{chat_member_num}, #{chat_chatRoom_num}, #{chat_content})
 	</insert>
+	<select id="selectNotification" resultType="NotificationVO">
+		select * from notification
+		join notification_type
+			on notification.notification_type_num = notification_type.notification_type_num 
+		where 
+			notification_member_num = #{member_num} and
+			notification_read = false
+	</select>
+	<update id="updateNotiReadTrue">
+		update notification set notification_read = true 
+		where 
+			notification_member_num = #{member_num} and notification_read = false
+	</update>
+	<select id="selectNotReadCount" resultType="int">
+		select count(*) from notification where notification_member_num = #{member_num} and notification_read = false
+	</select>
 </mapper>

@@ -366,7 +366,7 @@
     $(document).on('click', '.dropdown-menu', function (e) {
       e.stopPropagation(); // 클릭 이벤트 전파 막기
     });
-	
+	// 흥정하기
 	$(document).on('click', '.discount', function (){
 		let discount = +$('#input-discount').val() - +$(this).data('price');
 		//var formattedDc = discount.toLocaleString();
@@ -380,6 +380,7 @@
 			$('#input-discount').val('');
 		}
 	});
+	// 제안
 	$(document).on('click', '#propose', function () {
 		let proposePrice = +$('#input-discount').val();
 		let post_num = +${post.post_num};
@@ -396,7 +397,10 @@
 			data : JSON.stringify(obj), 
 			contentType : "application/json; charSet=utf-8",
 			success : function (data){	
-				console.log(data);
+				if(data){
+					$('.dropdown-menu').hide();
+					/* location.href = `<c:url value="/채팅룸"/>`; */
+				}
 			}, 
 			error : function(jqXHR, textStatus, errorThrown){
 				console.log(jqXHR);

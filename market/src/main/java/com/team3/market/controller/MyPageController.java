@@ -1,5 +1,6 @@
 package com.team3.market.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
+import com.team3.market.model.vo.NotificationVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.pagination.MyPostCriteria;
 import com.team3.market.pagination.PageMaker;
@@ -88,6 +90,20 @@ public class MyPageController {
 	public FileVO postThumbnail(@RequestParam("post_num") int post_num) {
 		FileVO file = postService.getFile(post_num, "post");
 		return file;
+	}
+	@PostMapping("/notification")
+	@ResponseBody
+	public Map<String, Object> notification(@RequestParam("notification_read") boolean notification_read, HttpSession session){
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<NotificationVO> list = null;
+		if(notification_read) {
+			list = postService.getNotification(user);			
+		}
+		int notReadCount = postService.getNotReadCount(user);
+		map.put("list", list);
+		map.put("count", notReadCount);
+		return map;
 	}
 	
 }

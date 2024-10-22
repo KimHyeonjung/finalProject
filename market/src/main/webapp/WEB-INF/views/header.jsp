@@ -54,6 +54,12 @@
 					<li class="nav-item">
 						<span class="nav-link" id="profile_nick">[${user.member_nick}]</span>
 					</li>
+					<li>
+						<!-- Button to Open the Modal -->
+						<button id="notification" type="button" class="btn btn-dark" data-toggle="modal" data-target="#notiList">
+						  🔔알림
+						</button>
+					</li>
 			    <%-- </c:if> --%>
 			</ul>
 		</div>  
@@ -82,6 +88,74 @@
 		</div>
 		<a href="<c:url value="/logout"/>">로그아웃</a>
 	</div>
+	
 
 </body>
+<script type="text/javascript">
+function notiCheck(notification_read){
+	if(${user != null}){
+		$.ajax({
+			async : true, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/mypage/notification"/>', 
+			type : 'post', 
+			data : {notification_read : notification_read},
+			dataType : 'json',
+			success : function (data){	
+				var count = data.count;
+				var list = data.list;
+				var str = '';
+				$('#notification').text('🔔알림(' + count + ')');
+				if(count != 0){
+					$('#notification').removeClass('btn-dark');
+					$('#notification').addClass('btn-danger');
+				} else {
+					$('#notification').removeClass('btn-danger');
+					$('#notification').addClass('btn-dark');
+				}
+				if(list == null || list.length == 0){					
+					return;
+				}else {
+					str += `
+						<div class="modal fade" id="notiList">
+					    <div class="modal-dialog">
+					      <div class="modal-content">
+					        
+				        <!-- Modal body -->
+				        <div class="modal-body">
+					        <div class="list-group">
+					`;
+					for(noti of list){
+						str +=`
+							  <a href="<c:url value="/post/detail/\${noti.notification_post_num}"/>" 
+							  	class="list-group-item list-group-item-action">
+							  	\${noti.notification_message}							  	
+							  </a>
+								
+						`;
+					}
+					str += `
+							</div>
+				        </div>
+			       `;
+					$('#notification').html(str);
+					$("#notiList").modal();
+				}
+				
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+			}
+		});	
+	}
+}	
+	
+$(document).ready(function (){
+	let notification_read = false;
+	notiCheck(notification_read);
+	$('#notification').click(function(){
+		notification_read = true;
+		notiCheck(notification_read);
+	});
+});
+</script>
 </html>

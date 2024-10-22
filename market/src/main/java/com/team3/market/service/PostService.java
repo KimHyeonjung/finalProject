@@ -21,6 +21,7 @@ import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
+import com.team3.market.model.vo.NotificationVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportCategoryVO;
 import com.team3.market.model.vo.ReportVO;
@@ -364,6 +365,22 @@ public class PostService {
 		String propStr = "가격제안 : 이 가격에 사고 싶어요. (" + price.format(newPrice) + "원)";
 		ChatVO chat = new ChatVO(chatRoom.getChatRoom_member_num2(), chatRoom.getChatRoom_num(), propStr);
 		return postDao.insertChat(chat);
+	}
+
+	public List<NotificationVO> getNotification(MemberVO user) {
+		if(user == null) {
+			return null;
+		}
+		List<NotificationVO> notification = postDao.selectNotification(user.getMember_num());
+		postDao.updateNotiReadTrue(user.getMember_num());
+		return notification;
+	}
+
+	public int getNotReadCount(MemberVO user) {
+		if(user == null) {
+			return 0;
+		}
+		return postDao.selectNotReadCount(user.getMember_num());
 	}
 
 	
