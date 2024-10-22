@@ -87,7 +87,6 @@ public class MyPageController {
 	@ResponseBody
 	public FileVO postThumbnail(@RequestParam("post_num") int post_num) {
 		FileVO file = postService.getFile(post_num, "post");
-		System.out.println(file);
 		return file;
 	}
 	
