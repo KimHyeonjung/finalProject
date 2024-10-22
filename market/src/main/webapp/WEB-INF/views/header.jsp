@@ -69,8 +69,8 @@
 		</div>
 		<div>
 			<p>포인트</p>
-			<a href="#">내역</a>
-			<a href="#">충전</a>
+			<a href="<c:url value="/wallet/list"/>">내역</a>
+			<a href="<c:url value="/wallet/point"/>">충전</a>
 		</div>
 		<div>
 			<a href="<c:url value="/mypage/post/list"/>">게시글 관리</a>
@@ -83,13 +83,5 @@
 		<a href="<c:url value="/logout"/>">로그아웃</a>
 	</div>
 
-	<button data-toggle="collapse" type="button" data-target="#category">카테고리</button>
-	
-	<div id="category" class="collapse">
-		<c:forEach items="${category}" var="category">
-			<a href="<c:url value="/post/list/${category.category_num}"/>">${category.category_name}</a>
-		</c:forEach>
-	</div>
-	
 </body>
 </html>

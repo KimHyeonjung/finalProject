@@ -49,5 +49,12 @@
         <textarea name="chatContent" class="chat-input" rows="3" placeholder="메시지를 입력하세요..."></textarea>
         <button type="submit">전송</button>
     </form>
+    
+    <form action="${pageContext.request.contextPath}/sendMoney" method="post">
+	    <input type="hidden" name="chatRoomNum" value="${chatRoomNum}"/>
+	    <input type="number" name="amount" placeholder="송금할 금액" required />
+    <button type="submit" class="send-money-button">송금</button>
+    
+</form>
 </body>
 </html>
