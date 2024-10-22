@@ -1,5 +1,8 @@
 USE marketplace;
 
+-- 알림 타입
+INSERT INTO `notification_type` (`notification_type_num`, `notification_type_name`) VALUES 
+(1,'가격제안'), (2,'가격하락'), (3,'가격상승');
 -- 신고 항목
 INSERT INTO `report_category` (`report_category_num`, `report_category_name`) VALUES
 (1, '광고성 콘텐츠예요'			),

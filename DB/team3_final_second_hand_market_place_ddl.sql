@@ -178,6 +178,7 @@ CREATE TABLE `notification` (
 	`notification_num`	int primary key auto_increment	NOT NULL,
 	`notification_member_num`	int	NOT NULL,
 	`notification_type_num`	int	NOT NULL,
+    `notification_post_num`	int	NULL,
 	`notification_message`	varchar(50)	NULL,
 	`notification_read`	boolean	NULL	DEFAULT false,
 	`notification_date`	date	NULL
@@ -445,6 +446,13 @@ ALTER TABLE `notification` ADD CONSTRAINT `FK_notification_type_TO_notification_
 )
 REFERENCES `notification_type` (
 	`notification_type_num`
+);
+
+ALTER TABLE `notification` ADD CONSTRAINT `FK_post_TO_notification_1` FOREIGN KEY (
+	`notification_post_num`
+)
+REFERENCES `post` (
+	`post_num`
 );
 
 ALTER TABLE `deal` ADD CONSTRAINT `FK_post_TO_deal_1` FOREIGN KEY (

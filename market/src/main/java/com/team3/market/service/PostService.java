@@ -2,6 +2,7 @@ package com.team3.market.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -15,18 +16,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.PostDAO;
-import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.AfterVO;
-import com.team3.market.model.vo.Chat_roomVO;
+import com.team3.market.model.vo.ChatRoomVO;
+import com.team3.market.model.vo.ChatVO;
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
+import com.team3.market.model.vo.ReportCategoryVO;
 import com.team3.market.model.vo.ReportVO;
-import com.team3.market.model.vo.Report_categoryVO;
 import com.team3.market.model.vo.WalletVO;
 import com.team3.market.model.vo.WishVO;
 import com.team3.market.pagination.MyPostCriteria;
 import com.team3.market.pagination.PageMaker;
-
 import com.team3.market.utils.UploadFileUtils;
 
 @Service
@@ -142,7 +143,7 @@ public class PostService {
 			return false;
 		}
 		// 게시글 참조 체크
-		Chat_roomVO chatRoom = postDao.selectChatRoomChk(post_num); 
+		ChatRoomVO chatRoom = postDao.selectChatRoomChk(post_num); 
 		WalletVO wallet = postDao.selectWalletChk(post_num);
 		AfterVO after = postDao.selectAfterChk(post_num);
 		ReportVO report = postDao.selectReportChk(post_num);
@@ -183,8 +184,8 @@ public class PostService {
 		return postDao.selectPostList();
 	}
 
-	public List<Report_categoryVO> getReport_category() {
-		return postDao.selectReport_category();
+	public List<ReportCategoryVO> getReportCategory() {
+		return postDao.selectReportCategory();
 	}
 	// 게시글 신고
 	public int reportPost(ReportVO report, MemberVO user) {
@@ -324,6 +325,45 @@ public class PostService {
 	public FileVO getFile(int post_num, String target) {
 		
 		return postDao.selectFile(post_num, target);
+	}
+
+	public ChatRoomVO getChatRoom(Map<String, Object> post, MemberVO user) {
+		int post_num = (Integer) post.get("post_num");
+		int member_num = (Integer) post.get("member_num");
+		return postDao.selectChatRoom(member_num, user.getMember_num(), post_num);
+	}
+
+	public boolean notify(Map<String, Object> post, MemberVO user) {
+		DecimalFormat price = new DecimalFormat("###,###");
+		int type = 1;
+		int newPrice = (Integer) post.get("proposePrice");
+		int post_num = (Integer) post.get("post_num");
+		int member_num = (Integer) post.get("member_num");
+		String propStr = user.getMember_nick() + "님이 다른 가격 제안을 했습니다. (" + price.format(newPrice) + "원)";
+		
+		return postDao.insertNotification(member_num, type, post_num, propStr);
+	}
+
+	public boolean makeChatRoom(Map<String, Object> post, MemberVO user) {
+		DecimalFormat price = new DecimalFormat("###,###");
+		int newPrice = (Integer) post.get("proposePrice");
+		int post_num = (Integer) post.get("post_num");
+		int member_num = (Integer) post.get("member_num");
+		String propStr = "가격제안 : 이 가격에 사고 싶어요. (" + price.format(newPrice) + "원)";
+		ChatRoomVO chatRoom = new ChatRoomVO(member_num, user.getMember_num(), post_num);
+		postDao.insertChatRoom(chatRoom);
+		System.out.println("챗룸 번호 :" + chatRoom.getChatRoom_num());
+		ChatVO chat = new ChatVO(chatRoom.getChatRoom_member_num2(), chatRoom.getChatRoom_num(), propStr);
+		return postDao.insertChat(chat);
+		
+	}
+
+	public boolean addChat(Map<String, Object> post, ChatRoomVO chatRoom) {
+		DecimalFormat price = new DecimalFormat("###,###");
+		int newPrice = (Integer) post.get("proposePrice");
+		String propStr = "가격제안 : 이 가격에 사고 싶어요. (" + price.format(newPrice) + "원)";
+		ChatVO chat = new ChatVO(chatRoom.getChatRoom_member_num2(), chatRoom.getChatRoom_num(), propStr);
+		return postDao.insertChat(chat);
 	}
 
 	

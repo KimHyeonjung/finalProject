@@ -57,7 +57,7 @@
 	    	<input type="hidden" name="type" value="${pm.cri.page}">
 	    	<input type="hidden" name="page" value="${pm.cri.page}">
 	        <input type="text" name="search" value="${pm.cri.search}" placeholder="상품명을 입력해주세요."/>
-	        <button id="btn-search" type="submit">검색</button>
+	        <button id="btn-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i>검색</button>
 	        <select id="perPageSelect" name="perPageNum">
 	            <option value="10" <c:if test="${pm.cri.perPageNum == 10}">selected</c:if>>10개씩</option>
 	            <option value="20" <c:if test="${pm.cri.perPageNum == 20}">selected</c:if>>20개씩</option>
