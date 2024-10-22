@@ -117,7 +117,7 @@ $(document).ready(function(){
 			data : {post_num : post_num}, 
 			success : function (data){			
 				if(data.file_name != null){
-					var str = <c:url value="/uploads/\${data.file_name}"/>;
+					var str = `<c:url value="/uploads/\${data.file_name}"/>`;
 					$(thumbnail).attr('src', str);
 					$(thumbnail).attr('alt', data.file_ori_name);
 				}
