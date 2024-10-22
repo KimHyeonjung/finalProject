@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.ReportVO;
-import com.team3.market.model.vo.Report_categoryVO;
+import com.team3.market.model.vo.ReportCategoryVO;
 import com.team3.market.service.AdminService;
 import com.team3.market.service.PostService;
 
@@ -34,7 +34,7 @@ public class AdminController {
 	public Map<String, Object> report(@RequestParam("post_num")int post_num, HttpSession session){
 		Map<String, Object> map = new HashMap<String, Object>();
 		MemberVO user = (MemberVO)session.getAttribute("user");
-		List<Report_categoryVO> list = postService.getReport_category();
+		List<ReportCategoryVO> list = postService.getReportCategory();
 		boolean res = adminService.reportPostcheck(post_num, user);
 		map.put("list", list);
 		map.put("res", res);

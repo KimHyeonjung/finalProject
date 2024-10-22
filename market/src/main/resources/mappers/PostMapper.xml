@@ -5,11 +5,17 @@
 <mapper namespace="com.team3.market.dao.PostDAO">
 	<select id="selectPostList" resultType="PostVO">
 		select 
+			count(wish_post_num) as post_wishcount, 
 			(select hour(TIMEDIFF(current_timestamp, post_refresh))) as post_timepassed, post.*
 		from
 			post
-		where post_state_num = 1
-		order by post_view desc, post_refresh desc		
+		left join 
+			wish
+				on post_num = wish_post_num
+		where 
+			post_state_num = 1
+        group by post_num
+		order by post_view desc, post_refresh desc;		
 	</select>
 	<select id="selectPost" resultType="PostVO">
 		select * 
@@ -21,13 +27,16 @@
 		where post_num = #{post_num}
 	</select>
 	<select id="selectPostMap" resultType="map">
-		select * 
+		select count(wish_post_num) as post_wishcount, post.*, member.* 
 		from 
 			post 
+		left join 
+			wish
+            on post_num = wish_post_num
 		join 
 			member
 			on post_member_num = member_num			
-		where post_num = #{post_num}
+		where post_num = #{post_num};
 	</select>
 	<update id="updateView">
 		update post set post_view = post_view + 1 where post_num = #{post_num}
@@ -35,7 +44,7 @@
 	<delete id="deletePost">
 		delete from post where post_num = #{post_num}
 	</delete>	
-	<select id="selectReport_category" resultType="Report_categoryVO">
+	<select id="selectReport_category" resultType="ReportCategoryVO">
 		select * from report_category
 	</select>
 	<insert id="insertReportPost">
@@ -88,11 +97,11 @@
     <insert id="insertPost" parameterType="PostVO" useGeneratedKeys="true" keyProperty="post_num">
         insert into post (
             post_member_num, post_position_num, post_way_num, post_category_num, 
-            post_title, post_content, post_price, post_deal, post_refresh, post_address
+            post_title, post_content, post_price, post_deal, post_address
         ) 
         values (
             #{post_member_num}, #{post_position_num}, #{post_way_num}, #{post_category_num}, 
-            #{post_title}, #{post_content}, #{post_price}, #{post_deal}, #{post_refresh}, #{post_address}
+            #{post_title}, #{post_content}, #{post_price}, #{post_deal}, #{post_address}
         )
     </insert>
     
@@ -156,7 +165,7 @@
 	<update id="updateDelPost">
 		update post set post_state_num = 3 where post_num = #{post_num}
 	</update>
-	<select id="selectChatRoomChk" resultType="Chat_roomVO">
+	<select id="selectChatRoomChk" resultType="ChatRoomVO">
 		select * from chat_room where chatRoom_post_num = #{post_num}
 	</select>
 	<select id="selectWalletChk" resultType="WalletVO">
@@ -171,4 +180,35 @@
 	<delete id="deletePostAllWish">
 		delete from wish where wish_post_num = #{post_num}
 	</delete>
+	<delete id="deleteFile">
+		delete from file where file_num = #{file_num}
+	</delete>
+	<select id="selectFileList" resultType="FileVO">
+		select * from file where file_target_table = #{target} and file_target_num = #{post_num}
+	</select>
+	<select id="selectFile" resultType="FileVO">
+		select * from file where file_target_table = #{target} and file_target_num = #{post_num}
+		order by file_num
+		limit 0, 1
+	</select>
+	<select id="selectChatRoom" resultType="ChatRoomVO">
+		select * from chat_room 
+		where 
+			chatRoom_member_num = #{member_num} and 
+			chatRoom_member_num2 = #{member_num2} and
+			chatRoom_post_num = #{post_num}
+	</select>
+	<insert id="insertNotification">
+		insert into 
+			notification(notification_member_num, notification_type_num, notification_post_num, notification_message) values
+			(#{member_num}, #{type}, #{post_num}, #{propStr})
+	</insert>
+	<insert id="insertChatRoom" parameterType="ChatRoomVO" useGeneratedKeys="true" keyProperty="chatRoom_num">
+		insert into chat_room(chatRoom_member_num, chatRoom_member_num2, chatRoom_post_num) values
+			(#{chatRoom_member_num}, #{chatRoom_member_num2}, #{chatRoom_post_num})
+	</insert>
+	<insert id="insertChat">
+		insert into chat(chat_member_num, chat_chatRoom_num, chat_content) values 
+			(#{chat_member_num}, #{chat_chatRoom_num}, #{chat_content})
+	</insert>
 </mapper>

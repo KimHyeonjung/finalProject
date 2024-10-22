@@ -22,8 +22,9 @@ public class PostVO {
 	private Date post_date;
 	private Date post_refresh;
 	private String post_address;
-	private int post_timepassed;
 	private int post_view;
 	private int post_report;
+	private int post_timepassed; // 게시 후 지난 시간
+	private int post_wishcount; // 찜한 수 
 
 }

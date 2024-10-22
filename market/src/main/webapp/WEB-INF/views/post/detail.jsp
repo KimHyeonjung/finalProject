@@ -14,14 +14,14 @@
 	object-fit: contain; /* 이미지 비율 유지하면서 컨테이너에 맞춤 */
 }
 .container-detail {
-	width: 1050px;
+	width: 900px;
 	margin: 0 auto;
 }
 .carousel-item {
 	text-align: center;
 }
 .article{
- 	width: 800px;
+ 	width: 700px;
 	margin: 0 auto;
 }
 /* 전체 화면을 덮는 반투명 배경 */
@@ -76,39 +76,39 @@
 			<h3 class="hide">이미지</h3>
 			<div id="carousel-indicators" class="carousel slide">
 				<!-- Indicators -->
-				<ul class="carousel-indicators">
-					<li data-target="#carousel-indicators" data-slide-to="0"
-						class="active"></li>
-					<li data-target="#carousel-indicators" data-slide-to="1"></li>
-					<li data-target="#carousel-indicators" data-slide-to="2"></li>
-					<li data-target="#carousel-indicators" data-slide-to="3"></li>
+				<ul class="carousel-indicators"> 
+					<c:if test="${fileList.size() != 0 }">
+						<c:forEach begin="0" end="${fileList.size() - 1}" var="i" varStatus="status">
+							<li data-target="#carousel-indicators" data-slide-to="${i}"
+								class="<c:if test="${status.first}">active</c:if>"></li>
+						</c:forEach>
+					</c:if>
+					<c:if test="${fileList.size() == 0 }">
+						<li data-target="#carousel-indicators" data-slide-to="0"
+								class="active"></li>
+					</c:if>
 				</ul>
-
 				<!-- The slideshow -->
 				<div class="carousel-inner">
-					<div class="carousel-item active">
-						<img src="<c:url value="/resources/img/g1.webp"/>"
-							alt="Los Angeles" width="800" height="500">
-					</div>
-					<div class="carousel-item">
-						<img src="<c:url value="/resources/img/g2.webp"/>" alt="Chicago"
-							width="800" height="500">
-					</div>
-					<div class="carousel-item">
-						<img src="<c:url value="/resources/img/g3.webp"/>" alt="New York"
-							width="800" height="500">
-					</div>
-					<div class="carousel-item">
-						<img src="<c:url value="/resources/img/g4.webp"/>" alt="New York"
-							width="800" height="500">
-					</div>
+					<c:forEach items="${fileList}" var="file" varStatus="status">
+						<div class="carousel-item <c:if test="${status.first}">active</c:if>"> 
+							<img src="<c:url value="/uploads/${file.file_name}"/>"
+								alt="${file.file_ori_name}" width="700" height="500"> 
+						</div>
+					</c:forEach>
+					<c:if test="${fileList.size() == 0 }">
+						<div class="carousel-item active"> 
+							<img src="<c:url value="/resources/img/none_image.jpg"/>"
+								alt="none" width="700" height="500"> 
+						</div>
+					</c:if>
 				</div>
-
 				<!-- Left and right controls -->
 				<a class="carousel-control-prev" href="#carousel-indicators"
 					data-slide="prev"> <i class="fas fa-chevron-left"
 					style="font-size: 24px; color: black;"></i>
-				</a> <a class="carousel-control-next" href="#carousel-indicators"
+				</a> 
+				<a class="carousel-control-next" href="#carousel-indicators"
 					data-slide="next"> <i class="fas fa-chevron-right"
 					style="font-size: 24px; color: black;"></i>
 				</a>
@@ -133,6 +133,26 @@
 											id="wish" data-post_num="${post.post_num}">찜하기</div>
 										<div class="btn btn-outline-danger <c:if test="${report.report_member_num == user.member_num}">active</c:if>" 
 											id="report" data-post_num="${post.post_num}">신고하기</div>
+										<div class="btn btn-warning" id="chat" data-post_num="${post.post_num}">채팅</div>
+										<div class="dropdown dropright">
+										    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+												흥정하기
+										    </button>
+										    <div class="dropdown-menu" style="padding: 4px;">
+										      <span class="dropdown-item discount" data-price="1000">
+										      	<fmt:formatNumber value="-1000" type="number"/><span>원</span></span>
+										      <span class="dropdown-item discount" data-price="5000">
+										      	<fmt:formatNumber value="-5000" type="number"/><span>원</span></span>
+										      <span class="dropdown-item discount" data-price="10000">
+										     	 <fmt:formatNumber value="-10000" type="number"/><span>원</span></span>
+										      <div class="dropdown-divider"></div>
+										      <span class="dropdown-item" style="padding: 4px 5px;">										      	
+										      	<input type="text" value="${post.post_price }"
+										      		id="input-discount" style="width: 120px; margin-right: 5px;">
+										      	<button type="button" class="btn btn-outline-dark" id="propose">제안</button>
+										      </span>
+										    </div>
+										</div>
 									</c:if>
 									<c:if test="${user.member_num eq post.post_member_num }">
 										<div>
@@ -145,6 +165,8 @@
 										id="wish">찜하기</div>
 									<div class="btn btn-dark" 
 										id="report">신고하기</div>
+									<div class="btn btn-dark" 
+										id="chat">채팅</div>
 								</c:otherwise>
 							</c:choose>
 						</div>
@@ -161,7 +183,7 @@
 			</div>
 		</section>
 		<section id="article-description" class="article">
-			<h5 property="schema:name" id="article-title"
+			<h5 id="article-title"
 				style="margin-top: 0px;">${post.post_title }</h5>
 			<p id="article-category">
 				${post.post_category_name }
@@ -179,20 +201,14 @@
 	           	 	</c:choose>
 				</time>
 			</p>
-			<p property="schema:priceValidUntil" datatype="xsd:date"
-				content="2026-10-07"></p>
-			<p rel="schema:url" resource="https://www.daangn.com/844403235"></p>
-			<p property="schema:priceCurrency" content="KRW"></p>
-			<p id="article-price" property="schema:price" content="100000.0"
-				style="font-size: 18px; font-weight: bold;">${post.post_price }</p>
-			<div property="schema:description" id="article-detail">
+			
+			<p id="article-price" style="font-size: 18px; font-weight: bold;">
+				${post.post_price }</p>
+			<div id="article-detail">
 				${post.post_content }</div>
-			<p id="article-counts">관심 30 ∙ 채팅 85 ∙ 조회 ${post.post_view }</p>
+			<p id="article-counts">
+				관심 ${post.post_wishcount} ∙ 채팅 85 ∙ 조회 ${post.post_view}</p>
 		</section>
-		<%-- <section class="article">
-			<a class="btn btn-outline-dark">수정</a>
-			<a href="<c:url value="/post/delete/${post.post_num }"/>" class="btn btn-outline-dark">삭제</a>
-		</section> --%>
 	</div>
 	<div class="overlay" id="overlay"></div>
 	<div class="report-modal" id="report-modal">
@@ -202,7 +218,6 @@
 		</div>
 	</div>
 <script>
-
 	$(document).ready(function () {
 	const $overlay = $("#overlay");
 	const $reportModal = $("#report-modal");
@@ -347,6 +362,48 @@
 			}
 		});	
 	});
+	// 드롭다운 클릭 시 닫히지 않도록 기본 동작 취소
+    $(document).on('click', '.dropdown-menu', function (e) {
+      e.stopPropagation(); // 클릭 이벤트 전파 막기
+    });
+	
+	$(document).on('click', '.discount', function (){
+		let discount = +$('#input-discount').val() - +$(this).data('price');
+		//var formattedDc = discount.toLocaleString();
+		if(discount < 0 ){
+			discount = 0;
+		}
+		$('#input-discount').val(discount);
+	});
+	$(document).on('click', '#input-discount', function (){
+		if($(this).val() == 0){
+			$('#input-discount').val('');
+		}
+	});
+	$(document).on('click', '#propose', function () {
+		let proposePrice = +$('#input-discount').val();
+		let post_num = +${post.post_num};
+		let member_num = +${post.post_member_num};
+		let obj = {
+				post_num : post_num,
+				member_num : member_num,
+				proposePrice : proposePrice
+		}
+		$.ajax({
+			async : true, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/post/propose"/>', 
+			type : 'post', 
+			data : JSON.stringify(obj), 
+			contentType : "application/json; charSet=utf-8",
+			success : function (data){	
+				console.log(data);
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+			}
+		});	
+	});
+	
 </script>
 </body>
 </html>

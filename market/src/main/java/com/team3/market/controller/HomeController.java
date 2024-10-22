@@ -1,9 +1,8 @@
 package com.team3.market.controller;
 
-import java.util.List;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.MessageDTO;
@@ -77,6 +77,7 @@ public class HomeController {
 			
 			if (user != null) {
 			session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
+			session.setAttribute("memberNum", user.getMember_num()); // 로그인 성공 시 세션에 memberNum 저장 // chatRoom 송금 시 사용
 			
 			// 자동 로그인 체크 여부 확인
 			String auto = request.getParameter("autoLogin");
@@ -205,7 +206,7 @@ public class HomeController {
 	
 	@GetMapping("/updateemail")
 	public String updateemail() {
-		return "/updatepw";
+		return "/updateemail";
 	}
 	
 	
@@ -234,7 +235,7 @@ public class HomeController {
 	
 	@GetMapping("/updatephone")
 	public String updatephone() {
-		return "/updatepw";
+		return "/updatephone";
 	}
 	
 	
@@ -255,8 +256,6 @@ public class HomeController {
 		else {
 			message = new MessageDTO("/updatephone", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
 		}
-		
-		System.out.println(user);
 		
 		model.addAttribute("message", message);
 	    return "/main/message";

@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.mysql.cj.Session;
 import com.team3.market.model.dto.ChatRoomDTO;
-import com.team3.market.model.vo.ChatRoomVO;
-import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.service.ChatService;
+import com.team3.market.service.WalletService;
 
 
 @Controller
@@ -24,6 +22,9 @@ public class ChatController {
 
     @Autowired
     private ChatService chatService; // ChatService 주입
+    
+    @Autowired
+    private WalletService walletService; 
 
 	@GetMapping("/chatRoom")
 	public String chatRoom(HttpSession session, Model model) {
@@ -64,5 +65,56 @@ public class ChatController {
 
 		return "/chat/chat";
 	}
+	
+	
+	@PostMapping("/sendMoney")
+	public String sendMoney(
+	        @RequestParam("amount") Integer amount,
+	        @RequestParam("chatRoomNum") Integer chatRoomNum,
+	        HttpSession session,
+	        Model model) {
+	    
+	    // 세션에서 송금자 정보 가져오기
+	    Integer senderMemberNum = (Integer) session.getAttribute("memberNum");
+	    
+	    if (senderMemberNum == null) {
+	        return "redirect:/login"; // If sender is not logged in, redirect to login
+	    }
+
+	    try {
+	        // Get the chat room information to determine the target member
+//	        List<ChatRoomDTO> chatRoomDTOs = chatService.getChatRoomsWithMembers(senderMemberNum);
+//	        ChatRoomDTO targetChatRoom = null;
+
+//	        System.out.println("Chat Rooms Found: " + chatRoomDTOs.size());
+
+	        // Find the chat room that matches the chatRoomNum
+//	        for (ChatRoomDTO chatRoomDTO : chatRoomDTOs) {
+//	            System.out.println("Checking chat room: " + chatRoomDTO.getChatRoom().getChatRoom_num());
+//	            if (chatRoomDTO.getChatRoom().getChatRoom_num() == chatRoomNum) {
+//	                targetChatRoom = chatRoomDTO;
+//	                break;
+//	            }
+//	        }
+//
+//	        if (targetChatRoom == null) {
+//	            throw new IllegalStateException("채팅방을 찾을 수 없습니다."); // Handle case where chat room is not found
+//	        }
+//
+//	        Integer targetMemberNum = targetChatRoom.getTargetMember().getMember_num(); // Get the target member number
+//	        System.out.println("Target Member Num: " + targetMemberNum);
+	        
+	        Integer targetMemberNum = 1;
+
+	        // 송금 서비스 호출
+	        walletService.transferMoney(senderMemberNum, targetMemberNum, amount);
+
+	        return "redirect:/chatRoom?chatRoomNum=" + chatRoomNum;
+
+	    } catch (Exception e) {
+	        return "redirect:/chatRoom?chatRoomNum=" + chatRoomNum; // Redirect back to chat room
+	    }
+	}
+
 
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.team3.market.model.dto.MessageDTO;
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.pagination.MyPostCriteria;
@@ -82,6 +82,12 @@ public class MyPageController {
 	public int refreshCheck(@RequestParam("post_num") int post_num) {
 		int res = postService.refreshCheck(post_num);
 		return res;
+	}
+	@PostMapping("/post/thumbnail") // 끌올 가능 체크
+	@ResponseBody
+	public FileVO postThumbnail(@RequestParam("post_num") int post_num) {
+		FileVO file = postService.getFile(post_num, "post");
+		return file;
 	}
 	
 }
