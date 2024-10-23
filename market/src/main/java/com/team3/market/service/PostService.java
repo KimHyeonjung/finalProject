@@ -340,7 +340,7 @@ public class PostService {
 		int newPrice = (Integer) post.get("proposePrice");
 		int post_num = (Integer) post.get("post_num");
 		int member_num = (Integer) post.get("member_num");
-		String propStr = user.getMember_nick() + "님이 다른 가격 제안을 했습니다. (" + price.format(newPrice) + "원)";
+		String propStr = user.getMember_nick() + "님이 가격제안을 했습니다. (희망가격: " + price.format(newPrice) + "원)";
 		
 		return postDao.insertNotification(member_num, type, post_num, propStr);
 	}
@@ -371,9 +371,7 @@ public class PostService {
 		if(user == null) {
 			return null;
 		}
-		List<NotificationVO> notification = postDao.selectNotification(user.getMember_num());
-		postDao.updateNotiReadTrue(user.getMember_num());
-		return notification;
+		return postDao.selectNotification(user.getMember_num());
 	}
 
 	public int getNotReadCount(MemberVO user) {
@@ -381,6 +379,13 @@ public class PostService {
 			return 0;
 		}
 		return postDao.selectNotReadCount(user.getMember_num());
+	}
+	// 알림 읽기여부를 읽음으로 변경
+	public boolean checkedNotification(int notification_num, MemberVO user) {
+		if(user == null) {
+			return false;
+		}		
+		return postDao.updateNotiReadTrue(notification_num);
 	}
 
 	

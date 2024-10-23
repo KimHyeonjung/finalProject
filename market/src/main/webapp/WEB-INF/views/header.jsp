@@ -5,6 +5,9 @@
 <html>
 <head>
 	<meta charset="UTF-8">
+<style type="text/css">
+	.close:hover {color: red;}
+</style>
 </head>
 <body>
 	<nav class="navbar navbar-expand-md bg-dark navbar-dark">
@@ -56,8 +59,8 @@
 					</li>
 					<li>
 						<!-- Button to Open the Modal -->
-						<button id="notification" type="button" class="btn btn-dark" data-toggle="modal" data-target="#notiList">
-						  🔔알림
+						<button id="noti-btn" type="button" class="btn btn-dark" data-toggle="modal" data-target="#notiList">
+						  <i class="fa-regular fa-bell"></i>알림
 						</button>
 					</li>
 			    <%-- </c:if> --%>
@@ -89,73 +92,109 @@
 		<a href="<c:url value="/logout"/>">로그아웃</a>
 	</div>
 	
+	<!-- The Modal -->
+  <div class="modal fade" id="notiListModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h6 class="modal-title" style="font-weight: bold;">새로운 알림이 있습니다.</h6>
+          <button type="button" class="close" data-dismiss="modal">×</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          	<div class="list-group noti-list">
+			  <a href="#" class="list-group-item list-group-item-action">First item</a>
+			</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </body>
 <script type="text/javascript">
-function notiCheck(notification_read){
+var count = 0;
+function notiCheck(){
 	if(${user != null}){
 		$.ajax({
-			async : true, //비동기 : true(비동기), false(동기)
-			url : '<c:url value="/mypage/notification"/>', 
+			async : false, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/notification/count"/>', 
 			type : 'post', 
-			data : {notification_read : notification_read},
-			dataType : 'json',
 			success : function (data){	
-				var count = data.count;
-				var list = data.list;
-				var str = '';
-				$('#notification').text('🔔알림(' + count + ')');
+				count = data;
 				if(count != 0){
-					$('#notification').removeClass('btn-dark');
-					$('#notification').addClass('btn-danger');
+					$('#noti-btn').html('<i style="color: yellow;" class="fa-solid fa-bell"></i>알림(' + count + ')');
 				} else {
-					$('#notification').removeClass('btn-danger');
-					$('#notification').addClass('btn-dark');
+					$('#noti-btn').html('<i class="fa-regular fa-bell"></i>알림(' + count + ')');
 				}
-				if(list == null || list.length == 0){					
-					return;
-				}else {
-					str += `
-						<div class="modal fade" id="notiList">
-					    <div class="modal-dialog">
-					      <div class="modal-content">
-					        
-				        <!-- Modal body -->
-				        <div class="modal-body">
-					        <div class="list-group">
-					`;
-					for(noti of list){
-						str +=`
-							  <a href="<c:url value="/post/detail/\${noti.notification_post_num}"/>" 
-							  	class="list-group-item list-group-item-action">
-							  	\${noti.notification_message}							  	
-							  </a>
-								
-						`;
-					}
-					str += `
-							</div>
-				        </div>
-			       `;
-					$('#notification').html(str);
-					$("#notiList").modal();
-				}
-				
 			}, 
 			error : function(jqXHR, textStatus, errorThrown){
 				console.log(jqXHR);
 			}
 		});	
 	}
-}	
+}
+function notiListDisplay(){
+	$.ajax({
+		async : false, //비동기 : true(비동기), false(동기)
+		url : '<c:url value="/notification/list"/>', 
+		type : 'post', 
+		success : function (data){	
+			var list = data.list;
+			var str = '';
+			notiCheck();				
+			if(count != 0) {
+				for(item of list){
+					str += `
+					<div class="list-group-item list-group-item-action">
+						<a href='<c:url value="/post/detail/\${item.notification_post_num}"/>' >
+							\${item.notification_message}	
+						</a>
+						<button type="button" class="close checked"
+							data-num="\${item.notification_num}"
+						><i class="fa-solid fa-check"></i></button>
+					</div>
+					`;
+				}
+				$('.noti-list').html(str);
+				$('#notiListModal').modal();
+			}
+			
+		}, 
+		error : function(jqXHR, textStatus, errorThrown){
+			console.log(jqXHR);
+		}
+	});
+}
 	
 $(document).ready(function (){
-	let notification_read = false;
-	notiCheck(notification_read);
-	$('#notification').click(function(){
-		notification_read = true;
-		notiCheck(notification_read);
+	notiCheck();
+	
+	$('#noti-btn').click(function(){
+		notiListDisplay();	
 	});
 });
+	$(document).on('click', '.close.checked', function(){
+		var notification_num = $(this).data('num');
+		$.ajax({
+			async : true, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/notification/checked"/>', 
+			type : 'post', 
+			data : {notification_num : notification_num},
+			success : function (data){
+				if(data){
+					notiListDisplay();
+					if(count == 0){
+						$('#notiListModal').modal("hide");
+					}
+				}
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+			}
+		});
+	});
 </script>
 </html>

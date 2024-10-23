@@ -87,7 +87,7 @@ public interface PostDAO {
 
 	List<NotificationVO> selectNotification(int member_num);
 
-	void updateNotiReadTrue(int member_num);
+	boolean updateNotiReadTrue(int notification_num);
 
 	int selectNotReadCount(int member_num);
 

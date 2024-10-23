@@ -90,12 +90,14 @@
 				</ul>
 				<!-- The slideshow -->
 				<div class="carousel-inner">
-					<c:forEach items="${fileList}" var="file" varStatus="status">
-						<div class="carousel-item <c:if test="${status.first}">active</c:if>"> 
-							<img src="<c:url value="/uploads/${file.file_name}"/>"
-								alt="${file.file_ori_name}" width="700" height="500"> 
-						</div>
-					</c:forEach>
+						<c:if test="${fileList.size() != 0 }">
+							<c:forEach items="${fileList}" var="file" varStatus="status">
+								<div class="carousel-item <c:if test="${status.first}">active</c:if>"> 
+									<img src="<c:url value="/uploads/${file.file_name}"/>"
+										alt="${file.file_ori_name}" width="700" height="500"> 
+								</div>
+							</c:forEach>
+						</c:if>
 					<c:if test="${fileList.size() == 0 }">
 						<div class="carousel-item active"> 
 							<img src="<c:url value="/resources/img/none_image.jpg"/>"
