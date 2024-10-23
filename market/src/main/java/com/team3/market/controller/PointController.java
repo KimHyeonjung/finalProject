@@ -26,7 +26,27 @@ public class PointController {
     private WalletService walletService;
     
     @GetMapping("/point")
-    public String point() {
+    public String point(HttpSession session, Model model) {
+    	// 세션에서 사용자 정보 가져오기
+    	MemberVO user = (MemberVO) session.getAttribute("user");
+    	
+        // 로그인된 사용자 정보가 없으면 로그인 페이지로 리다이렉트
+ 		if (user == null) {
+ 			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+ 		}
+ 		
+ 		// 세션에서 포인트 정보 가져오기
+ 	    Integer point = (Integer) session.getAttribute("point");
+ 	    
+ 	    if (point == null) {
+ 	        // 만약 세션에 포인트 정보가 없다면, 데이터베이스에서 가져와서 세션에 저장
+ 	        point = walletService.getUpdatedPoints(user.getMember_num());
+ 	        session.setAttribute("point", point);
+ 	    }
+
+ 	    // 모델에 포인트 정보 추가
+ 	    model.addAttribute("point", point);
+ 	    
     	return "/wallet/point";
     }
     
@@ -35,7 +55,8 @@ public class PointController {
     	
         // 세션에서 사용자 정보 가져오기
     	MemberVO user = (MemberVO)session.getAttribute("user");
-        pointRequest.setPoint_member_num(user.getMember_num());
+    	
+ 		pointRequest.setPoint_member_num(user.getMember_num());
 
         // 현재 날짜 설정
         pointRequest.setPoint_date(new Date());
@@ -43,10 +64,12 @@ public class PointController {
         // 결제 처리 서비스 호출
         PointVO processedPoint = walletService.processPayment(pointRequest, paymentMethod);
         
-        int updatedMemberPoint = user.getMember_money() + processedPoint.getPoint_money();
-        user.setMember_money(updatedMemberPoint);
-        
         walletService.updatePoint(pointRequest);
+        
+        // 세션에 있는 포인트 업데이트
+        Integer currentPoints = (Integer) session.getAttribute("point");
+        currentPoints += processedPoint.getPoint_money(); // 포인트 충전
+        session.setAttribute("point", currentPoints); // 세션에 포인트 업데이트
         
         session.setAttribute("user", user);
         

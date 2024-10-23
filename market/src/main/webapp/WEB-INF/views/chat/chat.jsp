@@ -32,6 +32,23 @@
             margin-top: 10px;
         }
     </style>
+    
+    <script>
+	    window.onload = function() {
+	        // 에러 메시지가 존재하는지 확인
+	        var errorMessage = "<c:out value='${errorMessage}' />";
+	        if (errorMessage) {
+	            alert(errorMessage);
+	        }
+	
+	        // 성공 메시지가 존재하는지 확인
+	        var successMessage = "<c:out value='${successMessage}' />";
+	        if (successMessage) {
+	            alert(successMessage);
+	        }
+	    };
+	</script>	
+    
 </head>
 <body>
     <h2>채팅 내역</h2>
@@ -56,5 +73,6 @@
     <button type="submit" class="send-money-button">송금</button>
     
 </form>
+
 </body>
 </html>

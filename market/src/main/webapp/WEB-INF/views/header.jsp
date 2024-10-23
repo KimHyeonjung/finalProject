@@ -71,13 +71,13 @@
 	<div id="demo" class="collapse" style="position: relative; bottom: 10%; left: 80%; background-color: grey;">
 	
 		<div>
-			<p>닉네임</p>
+			<p>${user.member_nick}</p>
 			<a href="<c:url value="/mypage"/>">개인정보 변경</a>
 			<a href="#">알림</a>
 			<p>온도</p>
 		</div>
 		<div>
-			<p>포인트</p>
+			<p>${point}원</p>
 			<a href="<c:url value="/wallet/list"/>">내역</a>
 			<a href="<c:url value="/wallet/point"/>">충전</a>
 		</div>
