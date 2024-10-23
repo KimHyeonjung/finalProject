@@ -201,7 +201,7 @@
 				<label class="form-check-label" for="delivery">택배거래</label>
 			</div>
 			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" id="direct" name="transaction" value="직거래" onclick="setPostWayNum(); toggleAddressInput();">
+				<input class="form-check-input" type="checkbox" id="direct" name="transaction" value="직거래" onclick="setPostWayNum();">
 				<label class="form-check-label" for="direct">직거래</label>
 			</div>
 		</div>
@@ -534,11 +534,12 @@
 	    const directChecked = document.getElementById('direct').checked;
 	    const postWayInput = document.getElementById('post_way_num');
 	    
-        var directCheckbox = document.getElementById('direct');
-        //var addressContainer = document.getElementById('addressContainer');
+        var addressContainer = document.getElementById('addressContainer');
+        
+        
         var map = document.getElementById('map');
 
-        if (directCheckbox.checked) {
+        if (directChecked.checked) {
             map.style.display = 'block'; // 체크되면 주소 입력란 표시
         } else {
             map.style.display = 'none'; // 체크 해제되면 주소 입력란 숨김
@@ -547,10 +548,13 @@
 	    
 	    if (deliveryChecked && directChecked) {
 	        postWayInput.value = '3'; // 택배거래와 직거래 둘 다 선택됨
+	        //document.getElementById('post_way_num').value = 3; // 택배거래 방식
 	    } else if (deliveryChecked) {
 	        postWayInput.value = '1'; // 택배거래만 선택됨
+	        //document.getElementById('post_way_num').value = 1; // 택배거래 방식
 	    } else if (directChecked) {
 	        postWayInput.value = '2'; // 직거래만 선택됨
+	        //document.getElementById('post_way_num').value = 2; // 택배거래 방식
 	    }
 
 	    checkFormCompletion(); // 폼의 완료 상태 재검증
