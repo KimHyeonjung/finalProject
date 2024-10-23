@@ -25,6 +25,7 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.WishVO;
 import com.team3.market.service.PostService;
+import com.team3.market.utils.NotificationWebSocketHandler;
 
 @Controller
 @RequestMapping("/post")
@@ -32,6 +33,8 @@ public class PostController {
 	
 	@Autowired
 	PostService postService;
+	@Autowired
+    private NotificationWebSocketHandler notificationHandler;
 	
     @GetMapping("/insert")
     public String insert(Model model) {
@@ -122,6 +125,16 @@ public class PostController {
 			res = postService.addChat(post, chatRoom);
 		}
 		res = postService.notify(post, user);
+		if(res) {
+			MemberVO postUser = postService.getMember((Integer)post.get("member_num"));
+			try {
+				notificationHandler.sendNotificationToUser(postUser.getMember_id(), "notification");
+				return true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
 		return res;
 	}
 

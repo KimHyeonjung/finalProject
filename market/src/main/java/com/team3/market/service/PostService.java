@@ -340,8 +340,8 @@ public class PostService {
 		int newPrice = (Integer) post.get("proposePrice");
 		int post_num = (Integer) post.get("post_num");
 		int member_num = (Integer) post.get("member_num");
-		String propStr = user.getMember_id() + "(" + user.getMember_nick() 
-						+ ")님이 가격제안을 했습니다. (희망가격: " + price.format(newPrice) + "원)";
+		String propStr = "<div>" + user.getMember_id() + "(" + user.getMember_nick() 
+						+ ")님이 가격제안을 했습니다.</div>(희망가격: " + price.format(newPrice) + "원)";
 		
 		return postDao.insertNotification(member_num, type, post_num, propStr);
 	}
@@ -351,7 +351,7 @@ public class PostService {
 		int newPrice = (Integer) post.get("proposePrice");
 		int post_num = (Integer) post.get("post_num");
 		int member_num = (Integer) post.get("member_num");
-		String propStr = "가격제안 : 이 가격에 사고 싶어요. (" + price.format(newPrice) + "원)";
+		String propStr = "가격제안 : 이 가격에 사고 싶어요.\n(" + price.format(newPrice) + "원)";
 		ChatRoomVO chatRoom = new ChatRoomVO(member_num, user.getMember_num(), post_num);
 		postDao.insertChatRoom(chatRoom);
 		ChatVO chat = new ChatVO(chatRoom.getChatRoom_member_num2(), chatRoom.getChatRoom_num(), propStr);
@@ -391,6 +391,11 @@ public class PostService {
 	public FileVO getProfileImg(int target_num, String target) {
 		
 		return postDao.selectFile(target_num, target);
+	}
+
+	public MemberVO getMember(int member_num) {
+		
+		return postDao.selectMember(member_num);
 	}
 
 	

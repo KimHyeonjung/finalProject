@@ -121,7 +121,7 @@
 			</div>
 		</section>
 		<section id="article-profile" class="article">
-			<h3 class="hide">프로필</h3>
+			<h3 class="hide">프로필</h3> <button id="test-btn">test</button>
 			<div class="d-flex justify-content-between">
 				<div style="display: flex;">
 					<div id="article-profile-image">
@@ -244,6 +244,21 @@
 	    $overlay.click(function () {
 	        $overlay.hide();
 	        $reportModal.hide();
+	    });
+	    $('#test-btn').click(function(){
+	    	var userId = 'qweqwe';
+	    	var message = '테스트메세지야';
+	    	$.ajax({
+				async : true, //비동기 : true(비동기), false(동기)
+				url : '<c:url value="/notification/notify-user"/>', 
+				type : 'post',
+				data : {userId : userId, message : message},
+				success : function (data){
+					console.log(data);
+				}, 
+				error : function(jqXHR, textStatus, errorThrown){
+				}
+			});
 	    });
 	});
 	//로그인 상태 체크

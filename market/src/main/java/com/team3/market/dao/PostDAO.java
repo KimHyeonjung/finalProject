@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.team3.market.model.vo.FileVO;
+import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.NotificationVO;
 import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
@@ -90,5 +91,7 @@ public interface PostDAO {
 	boolean updateNotiReadTrue(int notification_num);
 
 	int selectNotReadCount(int member_num);
+
+	MemberVO selectMember(int member_num);
 
 }

@@ -7,6 +7,15 @@
 	<meta charset="UTF-8">
 <style type="text/css">
 	.close:hover {color: red;}
+	.list-group-item.list-group-item-action {
+		padding: 4px 10px;
+	}
+	.modal-header, .modal-body {
+		padding: 4px 10px;
+	}
+	.list-group.noti-list {
+		margin-top: 0;
+	}
 </style>
 </head>
 <body>
@@ -148,7 +157,7 @@ function notiListDisplay(){
 			if(count != 0) {
 				for(item of list){
 					str += `
-					<div class="list-group-item list-group-item-action">
+					<div class="list-group-item list-group-item-action d-flex justify-content-between">
 						<a href='<c:url value="/post/detail/\${item.notification_post_num}"/>' >
 							\${item.notification_message}	
 						</a>
