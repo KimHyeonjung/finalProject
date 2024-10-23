@@ -57,17 +57,66 @@
             text-align: right;
         }
         .product-item .time { margin-top: 0px; margin-bottom: 10px; }
+        
+        .dropdown-content {
+		  display: none;
+		  position: absolute;
+		  background-color: white;
+		  min-width: 160px;
+		  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+		  z-index: 1;
+		}
+		
+		.dropdown-content a {
+		  color: black;
+		  padding: 12px 16px;
+		  text-decoration: none;
+		  display: block;
+		}
+		
+		.dropdown-content a:hover {
+		  background-color: #f1f1f1;
+		}
+		
+		.dropdown-btn {
+		  background-color: #343a40;
+		  color: white;
+		  padding: 10px;
+		  width: 160px;
+		  font-size: 16px;
+		  border: none;
+		  cursor: pointer;
+		  display: flex;            
+		  align-items: center;      
+		  justify-content: center;
+		}
+		
+		.dropdown-btn:hover {
+		  background-color: #3d444b;
+		}
+		.dropdown-btn svg {
+		  margin-right: 8px; 
+		  vertical-align: middle; 
+		}
     </style>
 </head>
 <body>
 
-<button data-toggle="collapse" type="button" data-target="#category">카테고리</button>
+<button id="categoryButton" class="dropdown-btn">
+	<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 20 20" class="text-xl" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+    	<path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+    </svg>
+    카테고리
+</button>
 	
-<div id="category" class="collapse">
-	<c:forEach items="${category}" var="category">
-		<a href="<c:url value="/post/list/${category.category_num}"/>">${category.category_name}</a>
-	</c:forEach>
+<div id="categoryList" class="dropdown-content" style="display:none;">
+    <c:forEach items="${categoryList}" var="category">
+    	<div>
+        	<a href="<c:url value='/post/list/${category.category_num}'/>">${category.category_name}</a>
+        </div>
+    </c:forEach>
 </div>
+
 
 <div class="container">
     <h3>오늘의 상품 추천</h3>
@@ -129,9 +178,38 @@ $(document).ready(function(){
 	
 	$('.product-item').click(function(){
 		let post_num = $(this).data('post_num')
-		location.href = <c:url value="/post/detail/\${post_num}"/>;	
+		location.href = `<c:url value="/post/detail/\${post_num}"/>`;	
+	});
+	$('#categoryButton').mouseenter(function() {
+	    $.ajax({
+	        url: '<c:url value="/category"/>',
+	        type: 'GET',
+	        dataType: 'json', 
+	        success: function(data) {
+	            
+	            var html = '';
+	            $.each(data, function(index, category) {
+	                html += '<div><a href="/post/list/' + category.category_num + '">' + category.category_name + '</a></div>';
+	            });
+	            
+	            $('#categoryList').html(html);  // 생성된 HTML을 카테고리 목록에 삽입
+	            $('#categoryList').toggle();  // 목록을 보여주거나 숨김
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("Error: " + error);
+	        }
+	    });
+	});
+	$('#categoryList').mouseenter(function() {
+		$('#categoryList').show();  // 마우스가 목록에 있을 때 유지
+	});
+	
+	// 카테고리 버튼 또는 목록에서 마우스를 벗어나면 목록이 사라짐
+	$('#categoryButton, #categoryList').mouseleave(function() {
+	    $('#categoryList').hide();  // 마우스를 벗어나면 목록이 사라짐
 	});
 });
+
 </script>
 </body>
 </html>

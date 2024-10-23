@@ -117,40 +117,4 @@ public class ChatController {
 	}
 
 
-	    try {
-	        // Get the chat room information to determine the target member
-//	        List<ChatRoomDTO> chatRoomDTOs = chatService.getChatRoomsWithMembers(senderMemberNum);
-//	        ChatRoomDTO targetChatRoom = null;
-
-//	        System.out.println("Chat Rooms Found: " + chatRoomDTOs.size());
-
-	        // Find the chat room that matches the chatRoomNum
-//	        for (ChatRoomDTO chatRoomDTO : chatRoomDTOs) {
-//	            System.out.println("Checking chat room: " + chatRoomDTO.getChatRoom().getChatRoom_num());
-//	            if (chatRoomDTO.getChatRoom().getChatRoom_num() == chatRoomNum) {
-//	                targetChatRoom = chatRoomDTO;
-//	                break;
-//	            }
-//	        }
-//
-//	        if (targetChatRoom == null) {
-//	            throw new IllegalStateException("채팅방을 찾을 수 없습니다."); // Handle case where chat room is not found
-//	        }
-//
-//	        Integer targetMemberNum = targetChatRoom.getTargetMember().getMember_num(); // Get the target member number
-//	        System.out.println("Target Member Num: " + targetMemberNum);
-	        
-	        Integer targetMemberNum = 1;
-
-	        // 송금 서비스 호출
-	        walletService.transferMoney(senderMemberNum, targetMemberNum, amount);
-
-	        return "redirect:/chatRoom?chatRoomNum=" + chatRoomNum;
-
-	    } catch (Exception e) {
-	        return "redirect:/chatRoom?chatRoomNum=" + chatRoomNum; // Redirect back to chat room
-	    }
-	}
-
-
 }
