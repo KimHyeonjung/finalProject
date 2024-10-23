@@ -32,8 +32,6 @@ public class PostController {
 	
 	@Autowired
 	PostService postService;
-	@Autowired
-	NotificationController notificationController;
 	
     @GetMapping("/insert")
     public String insert(Model model) {
