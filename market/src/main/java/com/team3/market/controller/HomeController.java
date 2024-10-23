@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.MessageDTO;
@@ -26,6 +25,7 @@ import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.service.MemberService;
 import com.team3.market.service.PostService;
+import com.team3.market.service.WalletService;
 
 
 @Controller
@@ -35,6 +35,8 @@ public class HomeController {
 	MemberService memberService;
 	@Autowired
 	PostService postService;
+	@Autowired
+	WalletService walletService;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model) {
@@ -78,6 +80,11 @@ public class HomeController {
 			if (user != null) {
 			session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
 			session.setAttribute("memberNum", user.getMember_num()); // 로그인 성공 시 세션에 memberNum 저장 // chatRoom 송금 시 사용
+			
+	        // 사용자 포인트 정보를 데이터베이스에서 가져옴
+		    Integer updatedPoints = walletService.getUpdatedPoints(user.getMember_num());
+		    session.setAttribute("point", updatedPoints); // 포인트 세션에 저장
+
 			
 			// 자동 로그인 체크 여부 확인
 			String auto = request.getParameter("autoLogin");

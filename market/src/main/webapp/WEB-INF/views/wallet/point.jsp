@@ -7,7 +7,7 @@
 	<meta charset="UTF-8">
 </head>
 <body>
-	<h1>포인트 : ${user.member_money}</h1>
+	<h1>포인트 : ${point}</h1>
     
     <form action="/market/wallet/point" method="post">
 	    <!-- 결제 금액 -->

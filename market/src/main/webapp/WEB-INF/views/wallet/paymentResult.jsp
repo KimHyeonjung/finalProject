@@ -24,7 +24,7 @@
 	    </c:otherwise>
 	</c:choose>
 	
-	<a href="${pageContext.request.contextPath}/home">홈으로 돌아가기</a>
+	<a href="${pageContext.request.contextPath}/">홈으로 돌아가기</a>
 
 </body>
 </html>

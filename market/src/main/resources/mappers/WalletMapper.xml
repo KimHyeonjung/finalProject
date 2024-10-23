@@ -11,7 +11,7 @@
 	
 	<insert id="deletePayment">
 	    INSERT INTO point (point_member_num, point_money, point_date, point_type) 
-	    VALUES (#{point_member_num}, #{point_money}, #{point_date}, '사용');
+	    VALUES (#{point_member_num}, #{point_money}, #{point_date}, ${point_type});
 	</insert>
 	
 	<update id="updatePoint">
