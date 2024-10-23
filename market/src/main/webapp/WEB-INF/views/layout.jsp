@@ -23,5 +23,24 @@
     <footer>
         <tiles:insertAttribute name="footer" />
     </footer>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	if(${user != null}){
+		var userId = `${user.member_id}`; // 현재 로그인한 사용자의 ID
+		var eventSource = new EventSource('<c:url value="/notification/subscribe/' + userId + '"/>');
+		// 서버로부터 알림을 받았을 때 실행되는 이벤트 핸들러
+		eventSource.onmessage = function(event) {
+		    var notification = event.data;
+		    alert("알림: " + notification); // 실시간 알림 표시
+		};
+		
+		// 서버와 연결이 끊겼을 때
+		eventSource.onerror = function(event) {
+		    console.log("연결이 끊어졌습니다.");
+		};
+	}
+});
+</script>
 </body>
 </html>

@@ -73,9 +73,9 @@ public interface PostDAO {
 
 	void deleteFile(int file_num);
 
-	List<FileVO> selectFileList(@Param("post_num")int post_num, @Param("target")String target);
+	List<FileVO> selectFileList(@Param("target_num")int target_num, @Param("target")String target);
 
-	FileVO selectFile(@Param("post_num")int post_num, @Param("target")String target);
+	FileVO selectFile(@Param("target_num")int target_num, @Param("target")String target);
 
 	ChatRoomVO selectChatRoom(@Param("member_num")int member_num, @Param("member_num2")int member_num2, @Param("post_num")int post_num);
 

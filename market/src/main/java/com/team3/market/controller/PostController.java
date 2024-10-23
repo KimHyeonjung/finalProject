@@ -32,6 +32,8 @@ public class PostController {
 	
 	@Autowired
 	PostService postService;
+	@Autowired
+	NotificationController notificationController;
 	
     @GetMapping("/insert")
     public String insert(Model model) {
@@ -83,10 +85,12 @@ public class PostController {
 		List<FileVO> fileList = postService.selectFileList(post_num, "post");
 		WishVO wish = postService.getWish(post_num, user);
 		ReportVO report = postService.getReportPost(post_num, user);
+		FileVO profileImg = postService.getProfileImg((Integer)post.get("post_member_num"), "member");
 		model.addAttribute("report", report);		
 		model.addAttribute("wish", wish);
 		model.addAttribute("post", post);
 		model.addAttribute("fileList", fileList);
+		model.addAttribute("profile", profileImg);
 		return "/post/detail";
 	}	
 	
@@ -122,4 +126,5 @@ public class PostController {
 		res = postService.notify(post, user);
 		return res;
 	}
+
 }

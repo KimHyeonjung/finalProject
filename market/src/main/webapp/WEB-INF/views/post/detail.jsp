@@ -24,6 +24,10 @@
  	width: 700px;
 	margin: 0 auto;
 }
+#article-profile-image img {
+	width: 80px; height: 80px;
+	border-radius: 40px;
+}
 /* 전체 화면을 덮는 반투명 배경 */
 .overlay {
     position: fixed;
@@ -74,7 +78,7 @@
 		<h1 class="hide">상세</h1>
 		<section id="article-images">
 			<h3 class="hide">이미지</h3>
-			<div id="carousel-indicators" class="carousel slide">
+			<div id="carousel-indicators" class="carousel slide" data-ride="false">
 				<!-- Indicators -->
 				<ul class="carousel-indicators"> 
 					<c:if test="${fileList.size() != 0 }">
@@ -121,8 +125,14 @@
 			<div class="d-flex justify-content-between">
 				<div style="display: flex;">
 					<div id="article-profile-image">
-						<img alt=${post.member_nick }
-							src="<c:url value="/resources/img/none_profile_image.png"/>" />
+						<c:if test="${profile != null}">
+							<img alt="${profile.file_ori_name}"
+								src="<c:url value="/uploads/${profile.file_name}"/>" />
+						</c:if>
+						<c:if test="${profile == null}">
+							<img alt="none"
+								src="<c:url value="/resources/img/none_profile_image.png"/>" />
+						</c:if>
 					</div>
 					<div id="article-profile-left">
 						<div id="nickname">${post.member_nick }</div>
@@ -400,7 +410,7 @@
 			contentType : "application/json; charSet=utf-8",
 			success : function (data){	
 				if(data){
-					$('.dropdown-menu').hide();
+					$('.dropdown-toggle').click();
 					/* location.href = `<c:url value="/채팅룸"/>`; */
 				}
 			}, 

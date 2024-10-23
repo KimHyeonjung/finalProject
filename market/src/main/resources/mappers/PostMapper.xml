@@ -184,10 +184,10 @@
 		delete from file where file_num = #{file_num}
 	</delete>
 	<select id="selectFileList" resultType="FileVO">
-		select * from file where file_target_table = #{target} and file_target_num = #{post_num}
+		select * from file where file_target_table = #{target} and file_target_num = #{target_num}
 	</select>
 	<select id="selectFile" resultType="FileVO">
-		select * from file where file_target_table = #{target} and file_target_num = #{post_num}
+		select * from file where file_target_table = #{target} and file_target_num = #{target_num}
 		order by file_num
 		limit 0, 1
 	</select>
