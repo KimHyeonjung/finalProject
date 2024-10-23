@@ -2,6 +2,7 @@ package com.team3.market.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -15,17 +16,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.PostDAO;
-import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.AfterVO;
-import com.team3.market.model.vo.Chat_roomVO;
+import com.team3.market.model.vo.ChatRoomVO;
+import com.team3.market.model.vo.ChatVO;
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
+import com.team3.market.model.vo.ReportCategoryVO;
 import com.team3.market.model.vo.ReportVO;
-import com.team3.market.model.vo.Report_categoryVO;
 import com.team3.market.model.vo.WalletVO;
 import com.team3.market.model.vo.WishVO;
 import com.team3.market.pagination.MyPostCriteria;
 import com.team3.market.pagination.PageMaker;
+import com.team3.market.utils.UploadFileUtils;
 
 @Service
 public class PostService {
@@ -123,19 +126,36 @@ public class PostService {
 		
 	}
 
+	private boolean checkWriter(int post_num, int member_num) {
+		PostVO post = postDao.selectPost(post_num);
+		if(post == null) {
+			return false;
+		}
+		return post.getPost_member_num() == member_num;
+	}
+	
 	public boolean deletePost(int post_num, MemberVO user) {
 		if(user == null || user.getMember_num() == 0) {
 			return false;
 		}
-		// 참조 체크
-		Chat_roomVO chatRoom = postDao.selectChatRoomChk(post_num); 
-//		WishVO wish = postDao.selectWishChk(post_num);
+		//작성자인지 확인
+		if(!checkWriter(post_num, user.getMember_num())) {
+			return false;
+		}
+		// 게시글 참조 체크
+		ChatRoomVO chatRoom = postDao.selectChatRoomChk(post_num); 
 		WalletVO wallet = postDao.selectWalletChk(post_num);
 		AfterVO after = postDao.selectAfterChk(post_num);
 		ReportVO report = postDao.selectReportChk(post_num);
+		// 없으면 실제 DB에서 삭제
 		if(chatRoom == null && wallet == null && after == null && report == null) {
 			try {
 				postDao.deletePostAllWish(post_num);
+				//서버에서 첨부파일 삭제
+				List<FileVO> list = postDao.selectFileList(post_num, "post");
+				for(FileVO file : list) {
+					deleteFile(file);
+				}
 				return postDao.deletePost(post_num);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -145,13 +165,27 @@ public class PostService {
 		postDao.deletePostAllWish(post_num); 
 		return postDao.updateDelPost(post_num);
 	}
+	private void deleteFile(FileVO file) {
+		if(file == null) {
+			return;
+		}
+		//첨부파일을 서버에서 삭제
+		UploadFileUtils.delteFile(uploadPath, file.getFile_name());
+		//첨부파일 정보를 DB에서 삭제
+		postDao.deleteFile(file.getFile_num());
+	}
+
+	public List<FileVO> selectFileList(int post_num, String target) {
+		
+		return postDao.selectFileList(post_num, target);
+	}
 
 	public List<PostVO> getPostList() {
 		return postDao.selectPostList();
 	}
 
-	public List<Report_categoryVO> getReport_category() {
-		return postDao.selectReport_category();
+	public List<ReportCategoryVO> getReportCategory() {
+		return postDao.selectReportCategory();
 	}
 	// 게시글 신고
 	public int reportPost(ReportVO report, MemberVO user) {
@@ -287,6 +321,51 @@ public class PostService {
 		}
 		return -2;
 	}
+
+	public FileVO getFile(int post_num, String target) {
+		
+		return postDao.selectFile(post_num, target);
+	}
+
+	public ChatRoomVO getChatRoom(Map<String, Object> post, MemberVO user) {
+		int post_num = (Integer) post.get("post_num");
+		int member_num = (Integer) post.get("member_num");
+		return postDao.selectChatRoom(member_num, user.getMember_num(), post_num);
+	}
+
+	public boolean notify(Map<String, Object> post, MemberVO user) {
+		DecimalFormat price = new DecimalFormat("###,###");
+		int type = 1;
+		int newPrice = (Integer) post.get("proposePrice");
+		int post_num = (Integer) post.get("post_num");
+		int member_num = (Integer) post.get("member_num");
+		String propStr = user.getMember_nick() + "님이 다른 가격 제안을 했습니다. (" + price.format(newPrice) + "원)";
+		
+		return postDao.insertNotification(member_num, type, post_num, propStr);
+	}
+
+	public boolean makeChatRoom(Map<String, Object> post, MemberVO user) {
+		DecimalFormat price = new DecimalFormat("###,###");
+		int newPrice = (Integer) post.get("proposePrice");
+		int post_num = (Integer) post.get("post_num");
+		int member_num = (Integer) post.get("member_num");
+		String propStr = "가격제안 : 이 가격에 사고 싶어요. (" + price.format(newPrice) + "원)";
+		ChatRoomVO chatRoom = new ChatRoomVO(member_num, user.getMember_num(), post_num);
+		postDao.insertChatRoom(chatRoom);
+		System.out.println("챗룸 번호 :" + chatRoom.getChatRoom_num());
+		ChatVO chat = new ChatVO(chatRoom.getChatRoom_member_num2(), chatRoom.getChatRoom_num(), propStr);
+		return postDao.insertChat(chat);
+		
+	}
+
+	public boolean addChat(Map<String, Object> post, ChatRoomVO chatRoom) {
+		DecimalFormat price = new DecimalFormat("###,###");
+		int newPrice = (Integer) post.get("proposePrice");
+		String propStr = "가격제안 : 이 가격에 사고 싶어요. (" + price.format(newPrice) + "원)";
+		ChatVO chat = new ChatVO(chatRoom.getChatRoom_member_num2(), chatRoom.getChatRoom_num(), propStr);
+		return postDao.insertChat(chat);
+	}
+
 	
 	
 }

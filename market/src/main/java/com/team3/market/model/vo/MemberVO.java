@@ -16,17 +16,19 @@ public class MemberVO {
     private String member_email; // 이메일
     private String member_auth; // 권한 (USER, ADMIN 등)
 	private String member_cookie;
-	private Date member_limit;
+	private Date member_limit; // 쿠키 만료 시간
     private String member_state; // 상태
     private int member_report; // 신고횟수
     private double member_score; // 회원 평점
     private int member_money; // 잔액
     private int member_fail; // 실패 횟수
+    private Date member_locked; //계정 잠금 시간
     
 		
 	public MemberVO(String id, String email) {
 		this.member_id = id;
 		this.member_email = email;
+		
 	}
     
 }

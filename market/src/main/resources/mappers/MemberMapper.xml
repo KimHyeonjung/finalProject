@@ -10,6 +10,12 @@
 	<select id="getMemberById" parameterType="String" resultType="MemberVO">
         SELECT * FROM member WHERE member_id = #{member_id}
     </select>
+    <select id="getMemberByNick" parameterType="String" resultType="MemberVO">
+	    SELECT * FROM member WHERE member_nick = #{member_nick}
+	</select>
+	<select id="getMemberByPhone" parameterType="String" resultType="MemberVO">
+	    SELECT * FROM member WHERE member_phone = #{member_phone}
+	</select>
 
     <select id="getMemberByEmail" parameterType="String" resultType="MemberVO">
         SELECT * FROM member WHERE member_email = #{member_email}
@@ -53,6 +59,31 @@
 			member_phone = #{member_phone}
 		where
 			member_id = #{member_id}
+	</update>
+	
+	<select id="findMemberId" resultType="MemberVO">
+	    SELECT * FROM member 
+	    WHERE 
+	    	member_nick = #{member_nick}
+	     AND 
+	     	member_email = #{member_email}
+	</select>
+	
+	<select id="findMemberPw" resultType="MemberVO">
+	    SELECT * FROM member 
+	    WHERE member_id = #{member_id} 
+	      AND member_nick = #{member_nick} 
+	      AND member_email = #{member_email}
+	</select>
+	<update id="updateMemberFail" parameterType="MemberVO">
+	    UPDATE member
+	    SET member_fail = #{member_fail}, 
+	        member_locked = #{member_locked},
+	        member_state = case
+	        	when #{member_fail}>=3 then '정지'
+	        	else member_state
+	        end
+	    WHERE member_id = #{member_id}
 	</update>
 	
 </mapper>

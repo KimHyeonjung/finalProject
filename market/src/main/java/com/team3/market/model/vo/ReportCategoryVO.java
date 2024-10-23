@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Report_categoryVO {
+public class ReportCategoryVO {
 	private int report_category_num;
 	private String report_category_name;
 }

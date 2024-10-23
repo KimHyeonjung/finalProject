@@ -20,7 +20,9 @@ CREATE TABLE `member` (
 	`member_money`	int	NULL	DEFAULT 0,
 	`member_fail`	int	NULL	DEFAULT 0,
 	`member_cookie`	varchar(255)	NULL,
-	`member_limit`	DATETIME	NULL
+	`member_limit`	DATETIME	NULL,
+    `member_locked` DATETIME NULL
+
 );
 
 DROP TABLE IF EXISTS `post`;
@@ -176,6 +178,7 @@ CREATE TABLE `notification` (
 	`notification_num`	int primary key auto_increment	NOT NULL,
 	`notification_member_num`	int	NOT NULL,
 	`notification_type_num`	int	NOT NULL,
+    `notification_post_num`	int	NULL,
 	`notification_message`	varchar(50)	NULL,
 	`notification_read`	boolean	NULL	DEFAULT false,
 	`notification_date`	date	NULL
@@ -443,6 +446,13 @@ ALTER TABLE `notification` ADD CONSTRAINT `FK_notification_type_TO_notification_
 )
 REFERENCES `notification_type` (
 	`notification_type_num`
+);
+
+ALTER TABLE `notification` ADD CONSTRAINT `FK_post_TO_notification_1` FOREIGN KEY (
+	`notification_post_num`
+)
+REFERENCES `post` (
+	`post_num`
 );
 
 ALTER TABLE `deal` ADD CONSTRAINT `FK_post_TO_deal_1` FOREIGN KEY (

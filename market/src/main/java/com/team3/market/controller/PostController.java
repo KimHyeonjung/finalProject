@@ -11,12 +11,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.model.dto.MessageDTO;
+import com.team3.market.model.vo.ChatRoomVO;
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
@@ -77,17 +80,19 @@ public class PostController {
 		postService.updateView(post_num);
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		Map<String, Object> post = postService.getPostMap(post_num);
+		List<FileVO> fileList = postService.selectFileList(post_num, "post");
 		WishVO wish = postService.getWish(post_num, user);
 		ReportVO report = postService.getReportPost(post_num, user);
 		model.addAttribute("report", report);		
 		model.addAttribute("wish", wish);
 		model.addAttribute("post", post);
+		model.addAttribute("fileList", fileList);
 		return "/post/detail";
 	}	
 	
 	@ResponseBody
 	@PostMapping("/wish")
-	public boolean wish(Model model, @RequestParam("post_num") int post_num, HttpSession session) {
+	public boolean wish(@RequestParam("post_num") int post_num, HttpSession session) {
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		WishVO wish = postService.getWish(post_num, user);
 		boolean res = false;
@@ -98,6 +103,23 @@ public class PostController {
 			postService.deleteWish(post_num, user);
 			res = false;
 		}
+		return res;
+	}
+	@ResponseBody
+	@PostMapping("/propose")
+	public boolean propose(@RequestBody Map<String, Object> post, HttpSession session) {
+		boolean res = false;
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(post == null || user == null) {
+			return false;
+		}
+		ChatRoomVO chatRoom = postService.getChatRoom(post, user); 
+		if(chatRoom == null) {
+			res = postService.makeChatRoom(post, user);
+		}else {
+			res = postService.addChat(post, chatRoom);
+		}
+		res = postService.notify(post, user);
 		return res;
 	}
 }

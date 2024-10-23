@@ -1,5 +1,7 @@
 package com.team3.market.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.MessageDTO;
@@ -41,15 +44,16 @@ public class HomeController {
 		return "/main/home";//타일즈에서 /*로 했기 때문에 /를 붙임
 	}
 	
-	 @GetMapping("/signup")
-	    public String showSignupForm() {
-	        return "/member/signup";
-	    }
+	@GetMapping("/signup")
+	public String showSignupForm() {
+		
+	    return "/member/signup";
+	}
 
     @PostMapping("/signup")
-    public String processSignup(Model model, MemberVO member) {
+	public String processSignup(Model model, MemberVO member, @RequestParam("verificationCode") String enteredCode, HttpSession session) {
         
-        boolean res = memberService.signup(member);
+        boolean res = memberService.signup(member, session, enteredCode);
         
         MessageDTO message;
         if(res) {
@@ -73,21 +77,31 @@ public class HomeController {
 			
 			if (user != null) {
 			session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
+			session.setAttribute("memberNum", user.getMember_num()); // 로그인 성공 시 세션에 memberNum 저장 // chatRoom 송금 시 사용
 			
 			// 자동 로그인 체크 여부 확인
 			String auto = request.getParameter("autoLogin");
-			System.out.println("AutoLogin Parameter: " + auto);
 			if (auto != null && auto.equals("Y")) {
 				Cookie cookie = memberService.createCookie(user, request);
 				response.addCookie(cookie);
 			}
 					
-			redirectAttributes.addFlashAttribute("message", "로그인 성공!");
-			return "redirect:/";  // 홈으로 리다이렉트
-		} else {
-			redirectAttributes.addFlashAttribute("error", "로그인 실패! 아이디 또는 비밀번호가 올바르지 않습니다.");
-			return "redirect:/login"; // 로그인 실패 시 로그인 페이지로 리다이렉트
-		}
+			MessageDTO message = new MessageDTO("/", "로그인에 성공했습니다.");
+			model.addAttribute("message", message);
+			return "/main/message";  // 메시지 페이지로 이동
+		    } else {
+		    	MemberVO failedUser = memberService.getMemberById(member.getMember_id());
+		    	if (failedUser != null && failedUser.getMember_locked() != null && failedUser.getMember_locked().after(new Date())) {
+		            // 계정이 잠긴 경우
+		            String lockTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(failedUser.getMember_locked());
+		            redirectAttributes.addFlashAttribute("message", new MessageDTO("/login", 
+		                "계정이 잠겼습니다. " + lockTime + "까지 로그인이 불가능합니다."));
+		    	}else {
+		    		// 로그인 실패 시 리다이렉트와 메시지 설정
+		    		redirectAttributes.addFlashAttribute("message", new MessageDTO("/login", "아이디 혹은 비밀번호가 맞지 않습니다. 3회연속 로그인 실패시 계정이 30분동안 비활성화 됩니다."));
+		    	}
+		    	return "redirect:/login";
+		    }
 	}
     
     @GetMapping("/logout")
@@ -110,12 +124,27 @@ public class HomeController {
     // 아이디 중복 체크
     @GetMapping("/checkId")
     @ResponseBody
-    public String checkId(@RequestParam("member_id") String memberId) {
+    public boolean checkId(@RequestParam("member_id") String memberId) {
+    	
         MemberVO member = memberService.getMemberById(memberId);
-        if (member != null) {
-            return "EXISTS"; // 중복된 아이디
-        }
-        return "OK"; // 사용 가능한 아이디
+        
+        return member != null;
+    }
+    
+    @GetMapping("/checkNick")
+    @ResponseBody
+    public boolean checkNick(@RequestParam("member_nick") String memberNick) {
+    	
+        MemberVO member = memberService.getMemberByNick(memberNick);
+        
+        return member != null;  
+    }
+    @GetMapping("/checkPhone")
+    @ResponseBody
+    public boolean checkPhone(@RequestParam("member_phone") String memberPhone) {
+        MemberVO member = memberService.getMemberByPhone(memberPhone);
+        
+        return member != null;  
     }
     
     @GetMapping("/mypage")
@@ -177,7 +206,7 @@ public class HomeController {
 	
 	@GetMapping("/updateemail")
 	public String updateemail() {
-		return "/updatepw";
+		return "/updateemail";
 	}
 	
 	
@@ -206,7 +235,7 @@ public class HomeController {
 	
 	@GetMapping("/updatephone")
 	public String updatephone() {
-		return "/updatepw";
+		return "/updatephone";
 	}
 	
 	
@@ -228,11 +257,55 @@ public class HomeController {
 			message = new MessageDTO("/updatephone", "비밀번호 변경 실패. 올바른 비밀 번호인지 확인하세요");
 		}
 		
-		System.out.println(user);
-		
 		model.addAttribute("message", message);
 	    return "/main/message";
 		
+	}
+	
+	@GetMapping("/findId")
+	public String showFindIdForm() {
+	    return "/member/findid";  // 아이디 찾기 폼 페이지로 이동
+	}
+	
+	@PostMapping("/findId")
+	public String findId(@RequestParam("member_nick") String memberNick, 
+	                     @RequestParam("member_email") String memberEmail, Model model) {
+	    
+	    // 닉네임과 이메일을 사용해 아이디 조회
+	    MemberVO member = memberService.findMemberId(memberNick, memberEmail);
+	    
+	    model.addAttribute("findId", member);
+	    
+	    return "/member/findidresult";  // 결과 메시지 페이지로 이동
+	}
+	
+	@GetMapping("/findPassword")
+	public String showFindPwForm() {
+	    return "/member/findpw";  // 비밀번호 찾기 폼 페이지로 이동
+	}
+	
+	@PostMapping("/findPassword")
+	public String findPassword(@RequestParam("member_id") String memberId,
+	                           @RequestParam("member_nick") String memberNick,
+	                           @RequestParam("member_email") String memberEmail,
+	                           Model model) {
+
+	    // 회원 정보 조회
+	    MemberVO user = memberService.findMemberPw(memberId, memberNick, memberEmail);
+
+	    if (user != null) {
+	        // 임시 비밀번호 생성
+	        String tempPassword = memberService.generateTempPassword();
+
+	        // 암호화된 임시 비밀번호 저장
+	        memberService.updatePassword(user, tempPassword);
+
+	        model.addAttribute("tempPassword", tempPassword);
+	    } else {
+	        model.addAttribute("tempPassword", null);
+	    }
+
+	    return "/member/findpwresult";  // 결과 메시지 페이지로 이동
 	}
 	
 }

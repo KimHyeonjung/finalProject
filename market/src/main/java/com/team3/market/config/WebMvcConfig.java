@@ -29,6 +29,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+        registry.addResourceHandler("/uploads/**").addResourceLocations("file:///D:/uploads/");
     }
     
 	// TilesViewResolver 설정
