@@ -9,6 +9,7 @@ import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.NotificationVO;
 import com.team3.market.model.dto.CombineNotificationWithFileDTO;
+import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
@@ -96,5 +97,9 @@ public interface PostDAO {
 	MemberVO selectMember(int member_num);
 
 	List<CombineNotificationWithFileDTO> selectNotificationWithFile(int member_num);
+
+	List<CombinePostWithFileDTO> selectPostListWithFileByCategory(int category_num);
+
+	String selectCategoryName(int category_num);
 
 }

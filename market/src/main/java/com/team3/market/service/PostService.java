@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.PostDAO;
 import com.team3.market.model.dto.CombineNotificationWithFileDTO;
+import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
@@ -404,6 +405,14 @@ public class PostService {
 			return null;
 		}
 		return postDao.selectNotificationWithFile(user.getMember_num());
+	}
+
+	public List<CombinePostWithFileDTO> getPostListWithFileByCategory(int category_num) {
+		return postDao.selectPostListWithFileByCategory(category_num);
+	}
+
+	public String getCategoryName(int category_num) {
+		return postDao.selectCategoryName(category_num);
 	}
 
 	

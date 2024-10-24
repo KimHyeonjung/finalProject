@@ -250,7 +250,7 @@
 	</resultMap>
 	<select id="selectNotificationWithFile" resultMap="CombineNotificationWithFileResultMap">
 		select a.*, b.* from notification a 
-		join (WITH RankedRows AS (
+		left join (WITH RankedRows AS (
 		    SELECT *, ROW_NUMBER() OVER (PARTITION BY file_target_num ORDER BY file_num) as row_num
 		    FROM file where file_target_table = 'post'
 		)
@@ -258,5 +258,39 @@
 		where row_num = 1) b 
 			on a.notification_post_num = b.file_target_num
 		where notification_member_num = #{member_num}
+	</select>
+	<resultMap id="CombinePostWithFileResultMap" type="com.team3.market.model.dto.CombinePostWithFileDTO">
+		<association property="post" javaType="PostVO">
+        <id property="post_num" column="post_num"/>
+        <result property="post_category_num" column="post_category_num"/>
+        <result property="post_title" column="post_title"/>
+        <result property="post_price" column="post_price"/>
+        <result property="post_deal" column="post_deal"/>
+        <result property="post_refresh" column="post_refresh"/>
+        <result property="post_address" column="post_address"/>
+        <result property="post_address" column="post_address"/>
+        <result property="post_view" column="post_view"/>
+    </association>
+    <association property="file" javaType="FileVO">
+        <id property="file_num" column="file_num"/>
+        <result property="file_name" column="file_name"/>
+        <result property="file_ori_name" column="file_ori_name"/>
+        <result property="file_target_table" column="file_target_table"/>
+        <result property="file_target_num" column="file_target_num"/>
+    </association>
+	</resultMap>
+	<select id="selectPostListWithFileByCategory" resultMap="CombinePostWithFileResultMap">
+		select (select hour(TIMEDIFF(current_timestamp, a.post_refresh))) as post_timepassed, a.*, b.* from post a 
+		left join (WITH RankedRows AS (
+		    SELECT *, ROW_NUMBER() OVER (PARTITION BY file_target_num ORDER BY file_num) as row_num
+		    FROM file where file_target_table = 'post'
+		)
+		select * from RankedRows
+		where row_num = 1) b 
+			on a.post_num = b.file_target_num
+		where post_category_num = #{category_num}
+	</select>
+	<select id="selectCategoryName" resultType="String">
+		select category_name from category where category_num = #{category_num}
 	</select>
 </mapper>

@@ -119,7 +119,7 @@
 
 
 <div class="container">
-    <h3>오늘의 상품 추천</h3>
+    <h3 class="mt-3">오늘의 상품 추천</h3>
     <div class="product-grid">
     	<c:forEach items="${list }" var="post">    		
     		<div class="product-item" data-post_num="${post.post_num}">

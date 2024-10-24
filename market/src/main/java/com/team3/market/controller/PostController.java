@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.dto.MessageDTO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.FileVO;
@@ -77,9 +78,18 @@ public class PostController {
 		
 		return "/main/message";
     }
+    
+    @GetMapping("/list/{category_num}")
+    public String postList(Model model, @PathVariable("category_num") int category_num) {
+    	List<CombinePostWithFileDTO> list = postService.getPostListWithFileByCategory(category_num);
+    	String category_name = postService.getCategoryName(category_num);
+    	model.addAttribute("list", list);
+    	model.addAttribute("category_name", category_name);
+    	return "/post/list";
+    }
 	
 	@GetMapping("/detail/{post_num}")
-	public String detail(Model model, @PathVariable("post_num")int post_num, HttpSession session) {
+	public String postDetail(Model model, @PathVariable("post_num")int post_num, HttpSession session) {
 		postService.updateView(post_num);
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		Map<String, Object> post = postService.getPostMap(post_num);
