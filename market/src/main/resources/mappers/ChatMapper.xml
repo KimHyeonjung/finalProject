@@ -52,4 +52,10 @@
         ORDER BY chat_date ASC; <!-- 시간 순으로 정렬 -->
     </select>
     
+    <insert id="insertChat">
+	    INSERT INTO chat 
+	    	(chat_member_num, chat_chatRoom_num, chat_content)
+	    VALUES (#{chat_member_num}, #{chat_chatRoom_num}, #{chat_content});
+    </insert>
+    
 </mapper>

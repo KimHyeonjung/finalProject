@@ -16,7 +16,7 @@ import java.util.List;
 public class ChatService {
 
     @Autowired
-    private ChatDAO chatDAO; // ChatDAO 주입
+    private ChatDAO chatDAO;
 
 	public List<ChatRoomDTO> getChatRoomsWithMembers(int member_num) {
         List<ChatRoomVO> chatRooms = chatDAO.selectChatRoomsByMember(member_num);
@@ -51,6 +51,10 @@ public class ChatService {
 
         return chatRoomDTOs;
     }
+
+	public void saveChatMessage(ChatVO chatVO) {
+		chatDAO.insertChat(chatVO);
+	}
 
     
 }

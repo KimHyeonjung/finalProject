@@ -42,11 +42,11 @@ public class ChatController {
 		model.addAttribute("chatRooms", chatRoomDTOs);
 		model.addAttribute("member", user);
 
-		return "/chat/chatPage";
+		return "/chat/chatRoom";
 	}
     
 	// 채팅방 클릭 시 해당 채팅방의 채팅 내역을 보여주는 메서드
-	@GetMapping("/chatPage")
+	@GetMapping("/chat")
 	public String chat(@RequestParam("chatRoomNum") int chatRoomNum, HttpSession session, Model model) {
 		MemberVO user = (MemberVO) session.getAttribute("user");
 

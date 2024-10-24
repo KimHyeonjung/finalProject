@@ -44,27 +44,27 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 //        processChatMessage(payload);
     }
 	
-	private void processChatMessage(String chatMessage) {
-        // JSON 파싱을 위한 JsonNode 객체 생성
-        JsonNode jsonNode;
-        try {
-            // JSON 문자열을 JsonNode로 파싱
-            jsonNode = objectMapper.readTree(chatMessage);
-            
-            // 필요한 데이터 추출
-            int memberNum = jsonNode.get("memberNum").asInt();
-            int chatRoomNum = jsonNode.get("chatRoomNum").asInt();
-            String chatContent = jsonNode.get("chatContent").asText();
-
-            // DB에 메시지 저장
-            saveChatMessage(memberNum, chatRoomNum, chatContent);
-            
-            // 다른 클라이언트에 메시지 전송
-            sendMessageToAllClients(chatRoomNum, chatContent);
-        } catch (Exception e) {
-            e.printStackTrace(); // 예외 처리
-        }
-    }
+//	private void processChatMessage(String chatMessage) {
+//        // JSON 파싱을 위한 JsonNode 객체 생성
+//        JsonNode jsonNode;
+//        try {
+//            // JSON 문자열을 JsonNode로 파싱
+//            jsonNode = objectMapper.readTree(chatMessage);
+//            
+//            // 필요한 데이터 추출
+//            int memberNum = jsonNode.get("memberNum").asInt();
+//            int chatRoomNum = jsonNode.get("chatRoomNum").asInt();
+//            String chatContent = jsonNode.get("chatContent").asText();
+//
+//            // DB에 메시지 저장
+//            saveChatMessage(memberNum, chatRoomNum, chatContent);
+//            
+//            // 다른 클라이언트에 메시지 전송
+//            sendMessageToAllClients(chatRoomNum, chatContent);
+//        } catch (Exception e) {
+//            e.printStackTrace(); // 예외 처리
+//        }
+//    }
 
 	// 클라이언트가 연결 해제될 때 호출
 	@Override

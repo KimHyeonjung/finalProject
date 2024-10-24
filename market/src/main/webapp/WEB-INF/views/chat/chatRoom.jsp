@@ -10,7 +10,35 @@
 	// 채팅방 클릭 시 해당 채팅방으로 이동하는 함수
 	function openChatRoom(chatRoomNum) {
 		// 선택한 채팅방 번호를 URL 쿼리 파라미터로 전달
-		window.location.href = "/market/chatPage?chatRoomNum=" + chatRoomNum;
+		window.location.href = "/market/chat?chatRoomNum=" + chatRoomNum;
+	}
+	var socket;
+
+	window.onload = function() {
+	    var isUserLoggedIn = <%= (session.getAttribute("user") != null) ? "true" : "false" %>;
+
+	    if (isUserLoggedIn) {
+	        // 웹소켓 연결
+	        connectWebSocket();
+	    }
+	}
+
+	function connectWebSocket() {
+	    if (!socket || socket.readyState !== WebSocket.OPEN) {
+	        socket = new WebSocket("ws://localhost:8080/market/chat");
+
+	        socket.onopen = function() {
+	            console.log("WebSocket connection established.");
+	        };
+
+	        socket.onmessage = function(event) {
+	            console.log("Message received:", event.data);
+	        };
+
+	        socket.onclose = function() {
+	            console.log("WebSocket connection closed.");
+	        };
+	    }
 	}
 </script>
 </head>
