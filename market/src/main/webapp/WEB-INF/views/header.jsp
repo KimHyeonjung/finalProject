@@ -147,11 +147,19 @@ function notiListDisplay(){
 			notiCheck();				
 			if(count != 0) {
 				for(item of list){
+					var fileName
+					if(item.file != null){
+						fileName = item.file.file_name;
+						fileOriName = item.file.file_ori_name;
+					} else {
+						fileName = '';
+						fileOriName = '';
+					}
 					str += `
 					<div class="list-group-item list-group-item-action d-flex justify-content-between">
-							<img src="<c:url value="/uploads/\${item.file.file_name}"/>" 
+							<img src="<c:url value="/uploads/\${fileName}"/>" 
 							onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';"
-							width="70" height="70" alt="\${item.file.file_ori_name}"/>
+							width="70" height="70" alt="\${fileOriName}"/>
 						<a href='<c:url value="/post/detail/\${item.notification_post_num}"/>'>
 							\${item.notification.notification_message}	
 						</a>

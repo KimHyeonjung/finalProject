@@ -54,7 +54,7 @@
 	<h2>내 상점관리 ${list.size()}</h2>
     <form action="<c:url value="/mypage/post/list"/>" id="form">
 	    <div>
-	    	<input type="hidden" name="type" value="${pm.cri.page}">
+	    	<input type="hidden" name="type" value="${pm.cri.type}">
 	    	<input type="hidden" name="page" value="${pm.cri.page}">
 	        <input type="text" name="search" value="${pm.cri.search}" placeholder="상품명을 입력해주세요."/>
 	        <button id="btn-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i>검색</button>
