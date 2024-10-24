@@ -15,11 +15,12 @@
 	}
 	.noti-modal {
             position: absolute;
-            width: 400px;
+            width: auto;
             padding: 10px;
             background-color: #f0f0f0;
             border: 1px solid #ccc;
             display: none;
+            z-index: 1001;
         }
 </style>
 </head>
@@ -74,7 +75,7 @@
 					<li>
 						<!-- Button to Open the Modal -->
 						<button id="noti-btn" type="button" class="btn btn-dark">
-						  <i class="fa-regular fa-bell"></i>알림
+						  <i class="fa-solid fa-bell"></i>알림
 						</button>
 					</li>
 			    <%-- </c:if> --%>
@@ -126,7 +127,7 @@ function notiCheck(){
 				if(count != 0){
 					$('#noti-btn').html('<i style="color: yellow;" class="fa-solid fa-bell"></i>알림(' + count + ')');
 				} else {
-					$('#noti-btn').html('<i class="fa-regular fa-bell"></i>알림(' + count + ')');
+					$('#noti-btn').html('<i class="fa-solid fa-bell"></i>알림(' + count + ')');
 				}
 			}, 
 			error : function(jqXHR, textStatus, errorThrown){
@@ -148,8 +149,11 @@ function notiListDisplay(){
 				for(item of list){
 					str += `
 					<div class="list-group-item list-group-item-action d-flex justify-content-between">
-						<a href='<c:url value="/post/detail/\${item.notification_post_num}"/>' >
-							\${item.notification_message}	
+							<img src="<c:url value="/uploads/\${item.file.file_name}"/>" 
+							onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';"
+							width="70" height="70" alt="\${item.file.file_ori_name}"/>
+						<a href='<c:url value="/post/detail/\${item.notification_post_num}"/>'>
+							\${item.notification.notification_message}	
 						</a>
 						<button type="button" class="close checked"
 							data-num="\${item.notification_num}"
@@ -171,23 +175,25 @@ $(document).ready(function (){
 	notiCheck();
 
     $('#noti-btn').on('mouseenter', function(){
-    	notiListDisplay();
-        // 클릭한 요소의 위치값을 구함
-        var position = $(this).offset();
-        var height = $(this).outerHeight();
-
-        // 모달을 클릭한 버튼 바로 아래에 위치시키고 보여줌
-        $('.noti-modal').css({
-            top: position.top + height,
-            left: position.left - 100
-        }).show();
+    	if(${user != null}){
+	    	notiListDisplay();
+	        // 클릭한 요소의 위치값을 구함
+	        var position = $(this).offset();
+	        var height = $(this).outerHeight();
+	        var width = $(this).outerWidth();
+	        var modalWidth = $('.noti-modal').outerWidth();
+			
+	        // 모달을 클릭한 버튼 바로 아래에 위치시키고 보여줌
+	        $('.noti-modal').css({
+	            top: position.top + height,
+	            left: position.left - ((modalWidth - width) / 2)
+	        }).show();
+    	}
     });
 
     $('#noti-btn').on('mouseleave', function(e) {
     	if (!$(e.relatedTarget).closest('.noti-modal').length) {
-    		setTimeout(function() {
-    	    	$('.noti-modal').hide();
-            }, 2000);  // 2000 밀리초 = 2초
+   	    	$('.noti-modal').hide();
         }
     	
     });
@@ -195,9 +201,7 @@ $(document).ready(function (){
     	$('.noti-modal').show();
     });
     $('.noti-modal').on('mouseleave', function(){
-    	setTimeout(function() {
-	    	$('.noti-modal').hide();
-        }, 2000);  // 2000 밀리초 = 2초
+    	$('.noti-modal').hide();
     });
     
     // 모달 닫기 예시: 모달 외부 클릭시 숨김 처리

@@ -72,7 +72,9 @@
     <div class="product-grid">
     	<c:forEach items="${list }" var="post">    		
     		<div class="product-item" data-post_num="${post.post_num}">
-	            <img class="prouct-img" src="https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg" alt="상품 이미지">
+	            <img class="prouct-img" 
+	            	src="https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg" 
+	            	onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';" alt="상품 이미지">
 	            <div class="name">${post.post_title }</div>
              	<div class="d-flex justify-content-between">
 		            <div class="price">	            

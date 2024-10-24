@@ -181,7 +181,7 @@ CREATE TABLE `notification` (
     `notification_post_num`	int	NULL,
 	`notification_message`	varchar(50)	NULL,
 	`notification_read`	boolean	NULL	DEFAULT false,
-	`notification_date`	date	NULL
+	`notification_date`	datetime	NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `deal`;

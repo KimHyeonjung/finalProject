@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.PostDAO;
+import com.team3.market.model.dto.CombineNotificationWithFileDTO;
 import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
@@ -396,6 +397,13 @@ public class PostService {
 	public MemberVO getMember(int member_num) {
 		
 		return postDao.selectMember(member_num);
+	}
+
+	public List<CombineNotificationWithFileDTO> getNotificationWithFile(MemberVO user) {
+		if(user == null) {
+			return null;
+		}
+		return postDao.selectNotificationWithFile(user.getMember_num());
 	}
 
 	

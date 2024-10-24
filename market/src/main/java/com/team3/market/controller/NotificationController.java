@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.team3.market.model.dto.CombineNotificationWithFileDTO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.NotificationVO;
 import com.team3.market.service.PostService;
@@ -27,7 +28,7 @@ public class NotificationController {
 	@Autowired
     private NotificationWebSocketHandler notificationHandler;
 
-    @PostMapping("/notify-user")
+    @PostMapping("/notify-user") // test sample
     public String notifyUser(String userId, String message) {
         try {
             notificationHandler.sendNotificationToUser(userId, message);
@@ -48,7 +49,8 @@ public class NotificationController {
 	public Map<String, Object> list(HttpSession session){
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<NotificationVO> list = postService.getNotification(user);;
+//		List<NotificationVO> list = postService.getNotification(user);
+		List<CombineNotificationWithFileDTO> list = postService.getNotificationWithFile(user);
 		map.put("list", list);
 		return map;
 	}

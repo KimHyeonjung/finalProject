@@ -98,6 +98,7 @@
 							<c:forEach items="${fileList}" var="file" varStatus="status">
 								<div class="carousel-item <c:if test="${status.first}">active</c:if>"> 
 									<img src="<c:url value="/uploads/${file.file_name}"/>"
+										onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';"
 										alt="${file.file_ori_name}" width="700" height="500"> 
 								</div>
 							</c:forEach>

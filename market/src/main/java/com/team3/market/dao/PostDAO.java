@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.NotificationVO;
+import com.team3.market.model.dto.CombineNotificationWithFileDTO;
 import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
@@ -93,5 +94,7 @@ public interface PostDAO {
 	int selectNotReadCount(int member_num);
 
 	MemberVO selectMember(int member_num);
+
+	List<CombineNotificationWithFileDTO> selectNotificationWithFile(int member_num);
 
 }
