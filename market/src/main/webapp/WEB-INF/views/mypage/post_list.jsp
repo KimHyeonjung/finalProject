@@ -88,6 +88,7 @@
 	                <a href="<c:url value="/post/detail/${post.post_num}"/>">
 		                <img class="thumbnail" data-post_num="${post.post_num}"
 			                src="<c:url value="/resources/img/none_image.jpg"/>" 
+			                onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';"
 			                alt="none" />
 	                </a>
 	            </td>

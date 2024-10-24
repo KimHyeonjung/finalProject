@@ -117,7 +117,8 @@ body {
 		<div class="container-product">		
 			<c:forEach items="${list }" var="post"> 
 				<div class="product">
-		            <img class="product-click thumbnail" src="<c:url value="/resources/img/none_image.jpg"/>" alt="none"
+		            <img class="product-click thumbnail" src="<c:url value="/resources/img/none_image.jpg"/>" 
+		            	onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';"alt="none"
 		            	 data-post_num="${post.post_num}">
 		            <div class="product-info product-click" data-post_num="${post.post_num}">		            	
 		                <h2>${post.post_title }</h2> 

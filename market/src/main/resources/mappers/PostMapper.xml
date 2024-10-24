@@ -184,10 +184,10 @@
 		delete from file where file_num = #{file_num}
 	</delete>
 	<select id="selectFileList" resultType="FileVO">
-		select * from file where file_target_table = #{target} and file_target_num = #{post_num}
+		select * from file where file_target_table = #{target} and file_target_num = #{target_num}
 	</select>
 	<select id="selectFile" resultType="FileVO">
-		select * from file where file_target_table = #{target} and file_target_num = #{post_num}
+		select * from file where file_target_table = #{target} and file_target_num = #{target_num}
 		order by file_num
 		limit 0, 1
 	</select>
@@ -226,5 +226,37 @@
 	</update>
 	<select id="selectNotReadCount" resultType="int">
 		select count(*) from notification where notification_member_num = #{member_num} and notification_read = false
+	</select>
+	<select id="selectMember" resultType="MemberVO">
+		select * from member where member_num = #{member_num}
+	</select>
+	<resultMap id="CombineNotificationWithFileResultMap" type="com.team3.market.model.dto.CombineNotificationWithFileDTO">
+		<association property="notification" javaType="NotificationVO">
+        <id property="notification_num" column="notification_num"/>
+        <result property="notification_member_num" column="notification_member_num"/>
+        <result property="notification_type_num" column="notification_type_num"/>
+        <result property="notification_post_num" column="notification_post_num"/>
+        <result property="notification_message" column="notification_message"/>
+        <result property="notification_read" column="notification_read"/>
+        <result property="notification_date" column="notification_date"/>
+    </association>
+    <association property="file" javaType="FileVO">
+        <id property="file_num" column="file_num"/>
+        <result property="file_name" column="file_name"/>
+        <result property="file_ori_name" column="file_ori_name"/>
+        <result property="file_target_table" column="file_target_table"/>
+        <result property="file_target_num" column="file_target_num"/>
+    </association>
+	</resultMap>
+	<select id="selectNotificationWithFile" resultMap="CombineNotificationWithFileResultMap">
+		select a.*, b.* from notification a 
+		join (WITH RankedRows AS (
+		    SELECT *, ROW_NUMBER() OVER (PARTITION BY file_target_num ORDER BY file_num) as row_num
+		    FROM file where file_target_table = 'post'
+		)
+		select * from RankedRows
+		where row_num = 1) b 
+			on a.notification_post_num = b.file_target_num
+		where notification_member_num = #{member_num}
 	</select>
 </mapper>

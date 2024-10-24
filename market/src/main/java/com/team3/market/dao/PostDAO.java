@@ -6,7 +6,9 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.team3.market.model.vo.FileVO;
+import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.NotificationVO;
+import com.team3.market.model.dto.CombineNotificationWithFileDTO;
 import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
@@ -73,9 +75,9 @@ public interface PostDAO {
 
 	void deleteFile(int file_num);
 
-	List<FileVO> selectFileList(@Param("post_num")int post_num, @Param("target")String target);
+	List<FileVO> selectFileList(@Param("target_num")int target_num, @Param("target")String target);
 
-	FileVO selectFile(@Param("post_num")int post_num, @Param("target")String target);
+	FileVO selectFile(@Param("target_num")int target_num, @Param("target")String target);
 
 	ChatRoomVO selectChatRoom(@Param("member_num")int member_num, @Param("member_num2")int member_num2, @Param("post_num")int post_num);
 
@@ -90,5 +92,9 @@ public interface PostDAO {
 	boolean updateNotiReadTrue(int notification_num);
 
 	int selectNotReadCount(int member_num);
+
+	MemberVO selectMember(int member_num);
+
+	List<CombineNotificationWithFileDTO> selectNotificationWithFile(int member_num);
 
 }

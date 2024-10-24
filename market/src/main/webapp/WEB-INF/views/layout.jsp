@@ -23,5 +23,28 @@
     <footer>
         <tiles:insertAttribute name="footer" />
     </footer>
+<script type="text/javascript">
+$(document).ready(function() {
+	if(${user != null}){
+	    var socket = new WebSocket("ws://localhost:8080" + "<c:url value="/ws/notify"/>");
+	
+	    socket.onmessage = function(event) {
+	        var notification = event.data;
+	        if(notification === 'notification') {
+	        	notiCheck();
+	        }
+	    };
+	
+	    socket.onopen = function() {
+	        console.log("WebSocket connection established");
+	    };
+	
+	    socket.onclose = function() {
+	        console.log("WebSocket connection closed");
+	    };
+	}
+});
+
+</script>
 </body>
 </html>
