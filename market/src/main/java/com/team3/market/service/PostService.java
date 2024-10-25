@@ -416,5 +416,10 @@ public class PostService {
 	}
 
 	
+	public List<PostVO> getPostsByCategory(int category_num) {
+		return postDao.selectPostsByCategory(category_num);
+	}
+
+	
 	
 }

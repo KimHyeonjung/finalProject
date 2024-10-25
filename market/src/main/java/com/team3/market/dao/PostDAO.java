@@ -101,5 +101,6 @@ public interface PostDAO {
 	List<CombinePostWithFileDTO> selectPostListWithFileByCategory(int category_num);
 
 	String selectCategoryName(int category_num);
+	List<PostVO> selectPostsByCategory(@Param("category_num") int category_num);
 
 }
