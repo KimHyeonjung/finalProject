@@ -9,6 +9,4 @@ import com.team3.market.model.vo.CategoryVO;
 @Mapper
 public interface CategoryDAO {
     List<CategoryVO> selectCategoryList();
-
-	CategoryVO getCategoryByNum(int category_num);
 }

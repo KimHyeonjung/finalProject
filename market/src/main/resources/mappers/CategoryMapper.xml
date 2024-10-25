@@ -3,12 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team3.market.dao.CategoryDAO">
-	<select id="selectCategoryList" resultType="CategoryVO">
+	<select id="selectCategoryList" resultType="com.team3.market.model.vo.CategoryVO">
 	    SELECT category_num, category_name FROM category
 	</select>
-	<select id="getCategoryByNum" parameterType="int" resultType="CategoryVO">
-        SELECT category_num, category_name
-        FROM category
-        WHERE category_num = #{category_num}
-    </select>
 </mapper>

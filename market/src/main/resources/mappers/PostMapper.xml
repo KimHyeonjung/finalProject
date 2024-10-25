@@ -293,22 +293,4 @@
 	<select id="selectCategoryName" resultType="String">
 		select category_name from category where category_num = #{category_num}
 	</select>
-	<select id="selectPostsByCategory" parameterType="int" resultType="PostVO">
-		select 
-		    count(wish_post_num) AS post_wishcount, 
-		    hour(TIMEDIFF(NOW(), post_refresh)) AS post_timepassed, 
-		    post.*
-		from 
-		    post
-		left join
-		    wish on post_num = wish_post_num
-		where 
-		    post_state_num = 1 
-		    AND post_category_num = #{category_num}
-		group by 
-		    post_num
-		order by 
-		    post_view DESC, post_refresh DESC;
-	</select>
-	
 </mapper>
