@@ -71,6 +71,13 @@
 	<input type="text" id="message" style="width: 80%;">
 	<!-- 메시지 전송 버튼 -->
 	<button onclick="sendMessage()">Send</button>
+	  <form action="${pageContext.request.contextPath}/sendMoney" method="post">
+	    <input type="hidden" name="chatRoomNum" value="${chatRoomNum}"/>
+	    <input type="number" name="amount" placeholder="송금할 금액" required />
+	    <button type="submit" class="send-money-button">송금</button>
+	  </form>
+
+  
 	<script>
 		let websocket = new WebSocket("http://localhost:8080/market/chat/echo.do?chatRoomNum=${chatRoomNum}&member_nick=${member.member_nick}");
 		
@@ -143,6 +150,19 @@
 		    document.getElementById("message").value = '';
 
 		}
+    window.onload = function() {
+      // 에러 메시지가 존재하는지 확인
+      var errorMessage = "<c:out value='${errorMessage}' />";
+      if (errorMessage) {
+          alert(errorMessage);
+      }
+
+      // 성공 메시지가 존재하는지 확인
+      var successMessage = "<c:out value='${successMessage}' />";
+      if (successMessage) {
+          alert(successMessage);
+      }
+  };
 	</script>
 </body>
 </html>
