@@ -18,7 +18,7 @@ INSERT INTO `state` (`state_num`, `state_name`) VALUES
 
 -- 거래 상태
 INSERT INTO `position` (`position_name`) VALUES 
-('판매중'), ('예약중'), ('거래완료');
+(1, '판매중'), (2, '구매중'), (3, '예약중'), (4, '거래완료'), (5, '무료나눔');
 
 -- 거래 방식
 INSERT INTO `way` (`way_name`) VALUES 
@@ -30,8 +30,7 @@ INSERT INTO `category` (`category_name`) VALUES
 ('패션'		),	('리빙'		),	('모바일/태블릿'	),
 ('가전제품'	),	('스포츠'		),	('도서/음반'		),
 ('반려동물'	),	('유아/완구'	),	('공구/산업용품'	),
-('취미용품'	),	('여행'		),	('중고차'			),
-('무료나눔'	),  ('삽니다'		);
+('취미용품'	),	('여행'		),	('중고차'			);
 
 -- member 테이블에 대한 샘플 데이터 삽입
 INSERT INTO `member` 

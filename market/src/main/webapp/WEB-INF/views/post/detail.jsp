@@ -5,9 +5,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 폰트어썸 -->
-<script src="https://kit.fontawesome.com/c9d8812a57.js"
-	crossorigin="anonymous"></script>
 <style>
 .carousel-item img {
 	height: 500px;
@@ -430,10 +427,11 @@
 					/* location.href = `<c:url value="/채팅룸"/>`; */
 				}
 			}, 
-			error : function(jqXHR, textStatus, errorThrown){
+			error : function(jqXHR, textStatus, errorThrown){				
 				console.log(jqXHR);
 			}
 		});	
+		alert(1);
 	});
 	
 </script>

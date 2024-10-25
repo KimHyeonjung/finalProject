@@ -5,6 +5,8 @@
 <html>
 <head>
 	<meta charset="UTF-8">
+	<!-- 폰트어썸 -->
+	<script src="https://kit.fontawesome.com/c9d8812a57.js"	crossorigin="anonymous"></script>
 <style type="text/css">
 	.close:hover {color: red;}
 	.list-group-item.list-group-item-action {
@@ -234,6 +236,7 @@ $(document).on('click', '.close.checked', function(){
 		data : {notification_num : notification_num},
 		success : function (data){
 			if(data){
+				
 				notiListDisplay();
 				if(count == 0){
 					$('#notiListModal').modal("hide");
