@@ -108,18 +108,18 @@
 	</div>
 	
 	
-						<div class="noti-modal">
-							<div class="list-group noti-list">
-								
-							</div>
-						</div>
+	<div class="noti-modal">
+		<div class="list-group noti-list">
+			
+		</div>
+	</div>
 </body>
 <script type="text/javascript">
 var count = 0;
 function notiCheck(){
 	if(${user != null}){
 		$.ajax({
-			async : false, //비동기 : true(비동기), false(동기)
+			async : true, //비동기 : true(비동기), false(동기)
 			url : '<c:url value="/notification/count"/>', 
 			type : 'post', 
 			success : function (data){	
@@ -151,20 +151,26 @@ function notiListDisplay(){
 					if(item.file != null){
 						fileName = item.file.file_name;
 						fileOriName = item.file.file_ori_name;
-					} else {
-						fileName = '';
-						fileOriName = '';
-					}
-					str += `
-					<div class="list-group-item list-group-item-action d-flex justify-content-between">
+						str += `
 							<img src="<c:url value="/uploads/\${fileName}"/>" 
 							onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';"
 							width="70" height="70" alt="\${fileOriName}"/>
-						<a href='<c:url value="/post/detail/\${item.notification_post_num}"/>'>
+						`;
+					} else {
+						str += `
+							<img src="<c:url value="/resources/img/none_image.jpg"/>" 
+							onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';"
+							width="70" height="70" alt="none"/>
+						`;
+					}
+					str += `
+					<div class="list-group-item list-group-item-action d-flex justify-content-between">
+							
+						<a href='<c:url value="/post/detail/\${item.notification.notification_post_num}"/>'>
 							\${item.notification.notification_message}	
 						</a>
 						<button type="button" class="close checked"
-							data-num="\${item.notification_num}"
+							data-num="\${item.notification.notification_num}"
 						><i class="fa-solid fa-check"></i></button>
 					</div>
 					`;

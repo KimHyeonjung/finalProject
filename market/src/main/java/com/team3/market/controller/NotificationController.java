@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team3.market.model.dto.CombineNotificationWithFileDTO;
 import com.team3.market.model.vo.MemberVO;
-import com.team3.market.model.vo.NotificationVO;
 import com.team3.market.service.PostService;
 import com.team3.market.utils.NotificationWebSocketHandler;
 
@@ -49,8 +48,7 @@ public class NotificationController {
 	public Map<String, Object> list(HttpSession session){
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		Map<String, Object> map = new HashMap<String, Object>();
-//		List<NotificationVO> list = postService.getNotification(user);
-		List<CombineNotificationWithFileDTO> list = postService.getNotificationWithFile(user);
+		List<CombineNotificationWithFileDTO> list = postService.getNotificationListWithFile(user);
 		map.put("list", list);
 		return map;
 	}

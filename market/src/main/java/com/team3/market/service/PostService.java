@@ -400,11 +400,11 @@ public class PostService {
 		return postDao.selectMember(member_num);
 	}
 
-	public List<CombineNotificationWithFileDTO> getNotificationWithFile(MemberVO user) {
+	public List<CombineNotificationWithFileDTO> getNotificationListWithFile(MemberVO user) {
 		if(user == null) {
 			return null;
 		}
-		return postDao.selectNotificationWithFile(user.getMember_num());
+		return postDao.selectNotificationListWithFile(user.getMember_num());
 	}
 
 	public List<CombinePostWithFileDTO> getPostListWithFileByCategory(int category_num) {

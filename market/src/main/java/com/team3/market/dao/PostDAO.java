@@ -96,7 +96,7 @@ public interface PostDAO {
 
 	MemberVO selectMember(int member_num);
 
-	List<CombineNotificationWithFileDTO> selectNotificationWithFile(int member_num);
+	List<CombineNotificationWithFileDTO> selectNotificationListWithFile(int member_num);
 
 	List<CombinePostWithFileDTO> selectPostListWithFileByCategory(int category_num);
 
