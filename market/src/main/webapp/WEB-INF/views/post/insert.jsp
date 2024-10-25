@@ -182,7 +182,6 @@
 
 		<!-- 등록 버튼 -->
 		<button type="submit" class="btn btn-primary btn-block" id="submitBtn" onclick="validateForm(event)">등록</button>
-		<!-- <button type="submit" class="btn btn-primary btn-block" id="submitBtn">등록</button> -->
 	</form>
 </div>
 <script>
