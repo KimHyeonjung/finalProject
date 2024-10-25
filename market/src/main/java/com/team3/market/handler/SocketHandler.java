@@ -1,7 +1,5 @@
 package com.team3.market.handler;
 
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +26,6 @@ public class SocketHandler extends TextWebSocketHandler implements InitializingB
 
 	private final Logger logger = LoggerFactory.getLogger(SocketHandler.class);
 	private Set<WebSocketSession> sessionSet = new HashSet<WebSocketSession>();
-//	private Map<Integer, WebSocketSession> chatRoomSession = new HashMap<Integer, WebSocketSession>();
 	
     private ChatService chatService; // ChatService 주입
 
@@ -65,8 +62,6 @@ public class SocketHandler extends TextWebSocketHandler implements InitializingB
 		} else {
 		    logger.warn("쿼리 파라미터가 없는 세션 연결됨.");
 		}
-		
-//		this.logger.info("세션 추가!");
 	}
 
 	// WebSocket 연결이 닫혔을 때 호출
