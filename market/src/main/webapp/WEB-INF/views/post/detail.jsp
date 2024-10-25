@@ -122,7 +122,7 @@
 			</div>
 		</section>
 		<section id="article-profile" class="article">
-			<h3 class="hide">프로필</h3> <button id="test-btn">test</button>
+			<h3 class="hide">프로필</h3>
 			<div class="d-flex justify-content-between">
 				<div style="display: flex;">
 					<div id="article-profile-image">

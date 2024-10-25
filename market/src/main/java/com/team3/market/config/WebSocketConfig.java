@@ -1,6 +1,7 @@
 package com.team3.market.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -11,6 +12,7 @@ import com.team3.market.utils.NotificationWebSocketHandler;
 
 @Configuration
 @EnableWebSocket
+@ComponentScan(basePackages = "com.team3.market")
 public class WebSocketConfig implements WebSocketConfigurer {
 
     @Override
