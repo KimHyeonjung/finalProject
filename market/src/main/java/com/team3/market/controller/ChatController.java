@@ -43,11 +43,10 @@ public class ChatController {
 
 		System.out.println(user.getMember_num());
 
-//    	List<ChatRoomVO> chatRooms = chatService.getChatRoomsByMember(user.getMember_num());
 		List<ChatRoomDTO> chatRoomDTOs = chatService.getChatRoomsWithMembers(user.getMember_num());
 
-//    	model.addAttribute("chatRooms", chatRooms);
 		model.addAttribute("chatRooms", chatRoomDTOs);
+		model.addAttribute("member", user);
 
 		return "/chat/chatRoom";
 	}
@@ -62,10 +61,9 @@ public class ChatController {
 		}
 
 		// 해당 채팅방의 채팅 내역 가져오기
-//		List<ChatVO> chats = chatService.getChatsByRoom(chatRoomNum);
 		List<ChatRoomDTO> chatDTOs = chatService.getChatsByRoom(chatRoomNum);
-//		model.addAttribute("chats", chats);
 		model.addAttribute("chatDTOs", chatDTOs);
+		model.addAttribute("member", user);
 		model.addAttribute("chatRoomNum", chatRoomNum);
 
 		return "/chat/chat";

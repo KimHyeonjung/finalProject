@@ -5,24 +5,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>채팅방 목록</title>
+<title>Chat Rooms</title>
+<script>
+	// 채팅방 클릭 시 해당 채팅방으로 이동하는 함수
+	function openChatRoom(chatRoomNum) {
+		// 선택한 채팅방 번호를 URL 쿼리 파라미터로 전달
+		window.location.href = "/market/chat?chatRoomNum=" + chatRoomNum;
+	}
+	var socket;
+
+	window.onload = function() {
+	    var isUserLoggedIn = <%= (session.getAttribute("user") != null) ? "true" : "false" %>;
+
+	    if (isUserLoggedIn) {
+	        // 웹소켓 연결
+	        connectWebSocket();
+	    }
+	}
+
+	function connectWebSocket() {
+	    if (!socket || socket.readyState !== WebSocket.OPEN) {
+	        socket = new WebSocket("ws://localhost:8080/market/chat");
+
+	        socket.onopen = function() {
+	            console.log("WebSocket connection established.");
+	        };
+
+	        socket.onmessage = function(event) {
+	            console.log("Message received:", event.data);
+	        };
+
+	        socket.onclose = function() {
+	            console.log("WebSocket connection closed.");
+	        };
+	    }
+	}
+</script>
 </head>
 <body>
-	<h2>채팅방 목록</h2>
-	<div class="chat-room-list">
+	<!-- 로그인한 사용자 ID 표시 -->
+	<h2>${member.member_nick}</h2>
+	<div id="chatRoomList">
+		<!-- 채팅방 목록을 반복하여 표시 -->
 		<c:forEach var="chatRoom" items="${chatRooms}">
-			<!-- 클릭 시 해당 chatRoom_num을 넘겨서 채팅창으로 이동 -->
-			<a href="<c:url value='/chat?chatRoomNum=${chatRoom.getChatRoom().chatRoom_num}' />">
-				<div class="profile-image" style="background-color: #ccc;"></div> <!-- 프로필 이미지 -->
+			<div class="chat-room"
+				onclick="openChatRoom('${chatRoom.getChatRoom().chatRoom_num}')">
+				<!-- 클릭 시 해당 채팅방으로 이동 -->
+				<img src="/market/resources/img/none_profile_image.png"
+					alt="Profile" class="profile-img">
+				<!-- 프로필 이미지 -->
 				<div class="chat-room-info">
-					<strong>${chatRoom.getTargetMember().member_nick}</strong>
-					<!-- 발신자 닉네임 -->
-					<p>${chatRoom.getChat().chat_content}</p>
-					<!-- 가장 최근 채팅 내용 -->
-					<span>${chatRoom.getChatRoom().chatRoom_date}</span>
-					<!-- 마지막 채팅 시간 -->
+					<span class="nickname">${chatRoom.getTargetMember().member_nick}</span>
+					<!-- 상대방 닉네임 -->
+					<span class="last-message">${chatRoom.getChat().chat_content}</span>
+					<!-- 마지막 메시지 내용 -->
 				</div>
-			</a>
+				<span class="last-time">${chatRoom.getChat().chat_date}</span>
+				<!-- 마지막 메시지 시간 -->
+			</div>
 		</c:forEach>
 	</div>
 </body>

@@ -255,6 +255,11 @@
 		    <artifactId>spring-messaging</artifactId>
 		    <version>${org.springframework-version}</version> <!-- 본인의 Spring 버전에 맞게 변경 -->
 		</dependency>
+    <dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.15.2</version> <!-- 버전은 필요에 따라 조정 -->
+		</dependency>
 
 	
 	</dependencies>
