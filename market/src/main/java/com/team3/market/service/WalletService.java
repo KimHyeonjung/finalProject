@@ -21,87 +21,64 @@ public class WalletService {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	@Autowired
-    public WalletService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
 	// 결제 처리 메서드
     public PointVO processPayment(PointVO point, String paymentMethod) {
     	
         // 결제 날짜 설정
         point.setPoint_date(new Date());
         
-        // 결제 방식에 따라 분기 처리
-        if ("kakao".equalsIgnoreCase(paymentMethod)) {
+        switch (paymentMethod.toLowerCase()) {
+        case "kakao":
             return processKakaoPay(point);
-        } else if ("toss".equalsIgnoreCase(paymentMethod)) {
+        case "toss":
             return processTossPay(point);
+        default:
+            return point;
         }
-        
-        return point;
     }
 
 	// 카카오페이 결제 처리
     private PointVO processKakaoPay(PointVO point) {
-        // 카카오페이 API 호출
-        String apiUrl = "https://kapi.kakao.com/v1/payment/ready"; // 카카오페이 결제 준비 API URL
-        // 결제 요청에 필요한 데이터
-        String requestBody = "{\"cid\": \"TC0ONETIME\", \"partner_order_id\": \"12345\", \"partner_user_id\": \"${user.member_id}\", "
-                + "\"item_name\": \"중고날아\", \"quantity\": 1, \"total_amount\": " + point.getPoint_money()
-                + ", \"tax_free_amount\": 0, \"approval_url\": \"http://localhost:8080/market/wallet/paymentResult\", "
-                + "\"cancel_url\": \"http://localhost:8080/market\", \"fail_url\": \"http://localhost:8080/market/wallet/paymentResult\"}";
+        String apiUrl = "https://kapi.kakao.com/v1/payment/ready";
+        String requestBody = String.format(
+                "{\"cid\": \"TC0ONETIME\", \"partner_order_id\": \"12345\", \"partner_user_id\": \"%d\", "
+                + "\"item_name\": \"중고날아\", \"quantity\": 1, \"total_amount\": %d, \"tax_free_amount\": 0, "
+                + "\"approval_url\": \"http://localhost:8080/market/wallet/paymentResult\", "
+                + "\"cancel_url\": \"http://localhost:8080/market\", \"fail_url\": \"http://localhost:8080/market/wallet/paymentResult\"}",
+                point.getPoint_member_num(), point.getPoint_money()
+        );
 
-        // 카카오페이 API 호출
         String response = restTemplate.postForObject(apiUrl, requestBody, String.class);
-
-        // API 호출 응답 처리 (실제 호출 시에는 JSON 응답을 객체로 변환해야 함)
         System.out.println("KakaoPay Response: " + response);
-        
-        // 결제 정보를 DB에 저장
+
         walletDao.insertPayment(point);
-        
         return point;
     }
 
     // 토스페이 결제 처리
     private PointVO processTossPay(PointVO point) {
-        // 토스페이 API 호출
-        String apiUrl = "https://api.tosspayments.com/v1/charges"; // 토스페이 결제 API URL
-        // 결제 요청에 필요한 데이터
-        String requestBody = "{\"amount\": " + point.getPoint_money() + ", \"orderId\": \"12345\", "
-                + "\"orderName\": \"중고날아\", \"successUrl\": \"http://localhost:8080/market/wallet/paymentResult\", "
-                + "\"cancelUrl\": \"http://localhost:8080/market/wallet/paymentResult\"}";
+    	String apiUrl = "https://api.tosspayments.com/v1/charges";
+        String requestBody = String.format(
+                "{\"amount\": %d, \"orderId\": \"12345\", \"orderName\": \"중고날아\", "
+                + "\"successUrl\": \"http://localhost:8080/market/wallet/paymentResult\", "
+                + "\"cancelUrl\": \"http://localhost:8080/market/wallet/paymentResult\"}",
+                point.getPoint_money()
+        );
 
-        // 헤더에 Authorization 추가
-        String authHeader = "Bearer " + "test_ck_GePWvyJnrK2N9XBJpgPOVgLzN97E";
-
-        // RestTemplate을 사용하여 POST 요청 보내기
+        String authHeader = "Bearer test_ck_GePWvyJnrK2N9XBJpgPOVgLzN97E";
         String response = restTemplate.postForObject(apiUrl, requestBody, String.class, authHeader);
-
-        // API 호출 응답 처리 (실제 호출 시에는 JSON 응답을 객체로 변환해야 함)
         System.out.println("TossPay Response: " + response);
 
-        // 결제 정보를 DB에 저장
         walletDao.insertPayment(point);
-
         return point;
     }
 
 	public void updatePoint(PointVO pointRequest) {
 		
 		MemberVO member = walletDao.selectMemberById(pointRequest.getPoint_member_num());
-        
-        // 현재 사용자의 기존 포인트 가져오기
-        int currentMemberPoint = member.getMember_money();
-        
-        // 새로운 포인트 계산 (기존 포인트 + 충전한 포인트)
-        int newMemberPoint = currentMemberPoint + pointRequest.getPoint_money();
-        
-        // 업데이트된 포인트를 DB에 반영
+        int newMemberPoint = member.getMember_money() + pointRequest.getPoint_money();
+
         member.setMember_money(newMemberPoint);
-        
-        // 업데이트된 포인트 저장
         walletDao.updatePoint(member);
 		
 	}
@@ -111,56 +88,46 @@ public class WalletService {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public Integer transferMoney(Integer senderMemberNum, int targetMemberNum, int amount) {
-		
-	        // 1. 송금할 금액이 유효한지 확인
-	        if (amount <= 0) {
-	            throw new IllegalArgumentException("송금 금액이 유효하지 않습니다.");
-	        }
+    public Integer transferMoney(Integer senderMemberNum, Integer targetMemberNum, int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("송금 금액이 유효하지 않습니다.");
+        }
 
-	        // 2. 송금자의 포인트 정보 조회
-	        MemberVO sender = walletDao.selectMemberById(senderMemberNum);
-	        int senderBalance = sender.getMember_money();
+        // 송금자 포인트 조회 및 차감
+        MemberVO sender = walletDao.selectMemberById(senderMemberNum);
+        if (sender.getMember_money() < amount) {
+            throw new IllegalStateException("잔액이 부족합니다.");
+        }
 
-	        if (senderBalance < amount) {
-	            throw new IllegalStateException("잔액이 부족합니다.");
-	        }
+        // 수신자 포인트 조회 및 추가
+        MemberVO receiver = walletDao.selectMemberById(targetMemberNum);
 
-	        // 3. 수신자의 포인트 정보 조회
-	        MemberVO receiver = walletDao.selectMemberById(targetMemberNum);
-	        int receiverBalance = receiver.getMember_money();
+        sender.setMember_money(sender.getMember_money() - amount);
+        receiver.setMember_money(receiver.getMember_money() + amount);
 
-	        // 4. 송금자의 포인트 차감
-	        sender.setMember_money(senderBalance - amount);
-	        walletDao.updatePoint(sender);
+        walletDao.updatePoint(sender);
+        walletDao.updatePoint(receiver);
 
-	        // 5. 수신자의 포인트 추가
-	        receiver.setMember_money(receiverBalance + amount);
-	        walletDao.updatePoint(receiver);
+        // 송금 내역 기록
+        logTransaction(senderMemberNum, -amount, "거래 송금");
+        logTransaction(targetMemberNum, amount, "거래 입금");
 
-	        // 6. 송금 및 수신 내역을 포인트 기록으로 남김
-	        PointVO senderPointLog = new PointVO();
-	        senderPointLog.setPoint_member_num(senderMemberNum);
-	        senderPointLog.setPoint_money(-amount); // 포인트 차감
-	        senderPointLog.setPoint_type("거래 송금");
-	        senderPointLog.setPoint_date(new Date());
-	        walletDao.deletePayment(senderPointLog);
+        return sender.getMember_money();
+    }
 
-	        PointVO receiverPointLog = new PointVO();
-	        receiverPointLog.setPoint_member_num(targetMemberNum);
-	        receiverPointLog.setPoint_money(amount); // 포인트 증가
-	        receiverPointLog.setPoint_type("거래 입금");
-	        receiverPointLog.setPoint_date(new Date());
-	        walletDao.insertPayment(receiverPointLog);
-	        
-	        // 송금 완료 후 송금자의 최신 포인트 반환
-	        return getUpdatedPoints(senderMemberNum);
-	}
+	private void logTransaction(int memberNum, int amount, String type) {
+        PointVO pointLog = new PointVO();
+        pointLog.setPoint_member_num(memberNum);
+        pointLog.setPoint_money(amount);
+        pointLog.setPoint_type(type);
+        pointLog.setPoint_date(new Date());
+
+        walletDao.insertPayment(pointLog);
+    }
 	
-	public Integer getUpdatedPoints(Integer memberNum) {
-	    // 데이터베이스에서 최신 포인트 정보 조회
+	public int getUpdatedPoints(int memberNum) {
 	    MemberVO member = walletDao.selectMemberById(memberNum);
-	    return member.getMember_money(); // 포인트 반환
+	    return member != null ? member.getMember_money() : 0; // 멤버가 없으면 0 반환
 	}
 
 }

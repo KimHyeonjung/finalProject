@@ -40,13 +40,12 @@ public class PointController {
  	    
  	    if (point == null) {
  	        // 만약 세션에 포인트 정보가 없다면, 데이터베이스에서 가져와서 세션에 저장
- 	        point = walletService.getUpdatedPoints(user.getMember_num());
+ 	    	point = walletService.getUpdatedPoints(user.getMember_num());
  	        session.setAttribute("point", point);
  	    }
 
  	    // 모델에 포인트 정보 추가
  	    model.addAttribute("point", point);
- 	    
     	return "/wallet/point";
     }
     
@@ -66,15 +65,13 @@ public class PointController {
         
         walletService.updatePoint(pointRequest);
         
-        // 세션에 있는 포인트 업데이트
-        Integer currentPoints = (Integer) session.getAttribute("point");
-        currentPoints += processedPoint.getPoint_money(); // 포인트 충전
-        session.setAttribute("point", currentPoints); // 세션에 포인트 업데이트
+        int updatePoint = walletService.getUpdatedPoints(user.getMember_num());
         
-        session.setAttribute("user", user);
+        session.setAttribute("point", updatePoint);
         
-        // 모델에 결과 추가
-        model.addAttribute("point", processedPoint);
+        model.addAttribute("processedPoint", processedPoint); 
+        model.addAttribute("updatedPoint", updatePoint); 
+
         return "/wallet/paymentResult";
     }
      

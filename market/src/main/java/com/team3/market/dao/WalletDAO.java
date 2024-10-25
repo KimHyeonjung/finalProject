@@ -17,4 +17,6 @@ public interface WalletDAO {
 
 	void deletePayment(PointVO senderPointLog);
 
+	void updatePoint(int memberNum, int points);
+
 }

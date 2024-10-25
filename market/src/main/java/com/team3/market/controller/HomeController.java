@@ -78,24 +78,23 @@ public class HomeController {
 			MemberVO user = memberService.login(member);
 			
 			if (user != null) {
-			session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
-			session.setAttribute("memberNum", user.getMember_num()); // 로그인 성공 시 세션에 memberNum 저장 // chatRoom 송금 시 사용
-			
-	        // 사용자 포인트 정보를 데이터베이스에서 가져옴
-		    Integer updatedPoints = walletService.getUpdatedPoints(user.getMember_num());
-		    session.setAttribute("point", updatedPoints); // 포인트 세션에 저장
-
-			
-			// 자동 로그인 체크 여부 확인
-			String auto = request.getParameter("autoLogin");
-			if (auto != null && auto.equals("Y")) {
-				Cookie cookie = memberService.createCookie(user, request);
-				response.addCookie(cookie);
-			}
+				session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
+				
+		        // 사용자 포인트 정보를 데이터베이스에서 가져옴
+				int point = walletService.getUpdatedPoints(user.getMember_num());
+		        session.setAttribute("point", point);
+	
+				
+				// 자동 로그인 체크 여부 확인
+				String auto = request.getParameter("autoLogin");
+				if (auto != null && auto.equals("Y")) {
+					Cookie cookie = memberService.createCookie(user, request);
+					response.addCookie(cookie);
+				}
 					
-			MessageDTO message = new MessageDTO("/", "로그인에 성공했습니다.");
-			model.addAttribute("message", message);
-			return "/main/message";  // 메시지 페이지로 이동
+				MessageDTO message = new MessageDTO("/", "로그인에 성공했습니다.");
+				model.addAttribute("message", message);
+				return "/main/message";  // 메시지 페이지로 이동
 		    } else {
 		    	MemberVO failedUser = memberService.getMemberById(member.getMember_id());
 		    	if (failedUser != null && failedUser.getMember_locked() != null && failedUser.getMember_locked().after(new Date())) {
