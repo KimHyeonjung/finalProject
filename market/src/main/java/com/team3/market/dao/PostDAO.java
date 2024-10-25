@@ -84,4 +84,6 @@ public interface PostDAO {
 
 	boolean insertChat(ChatVO chat);
 
+	List<PostVO> selectPostsByCategory(@Param("category_num") int category_num);
+
 }

@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.model.dto.MessageDTO;
+import com.team3.market.model.vo.CategoryVO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.WishVO;
+import com.team3.market.service.CategoryService;
 import com.team3.market.service.PostService;
 
 @Controller
@@ -32,6 +34,8 @@ public class PostController {
 	
 	@Autowired
 	PostService postService;
+	@Autowired
+	CategoryService categoryService;
 	
     @GetMapping("/insert")
     public String insert(Model model) {
@@ -122,4 +126,14 @@ public class PostController {
 		res = postService.notify(post, user);
 		return res;
 	}
+	@GetMapping("/list/{category_num}")
+    public String getPostsByCategory(@PathVariable("category_num") int category_num, Model model) {
+		
+		CategoryVO category = categoryService.getCategoryByNum(category_num);
+        List<PostVO> postList = postService.getPostsByCategory(category_num);
+        model.addAttribute("category", category);
+        model.addAttribute("postList", postList);
+        model.addAttribute("category_num", category_num);
+        return "/post/list";  
+    }
 }

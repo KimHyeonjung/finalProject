@@ -96,6 +96,7 @@ public class MemberService {
 	private void resetFailAttempts(MemberVO user) {
 		user.setMember_fail(0);  // 실패 횟수 초기화
 	    user.setMember_locked(null);  // 계정 잠금 해제
+	    user.setMember_state("사용");
 	    memberDao.updateMemberFail(user);
 		
 	}

@@ -16,6 +16,12 @@ public class CategoryService {
 
     
     public List<CategoryVO> getCategoryList() {
-        return categoryDao.selectCategoryList(); // CategoryVO 객체 리스트 반환
+        return categoryDao.selectCategoryList();
     }
+
+
+	public CategoryVO getCategoryByNum(int category_num) {
+		
+		return categoryDao.getCategoryByNum(category_num);
+	}
 }
