@@ -34,10 +34,17 @@ public class PostController {
 	PostService postService;
 	
     @GetMapping("/insert")
-    public String insert(Model model) {
+    public String insert(Model model, HttpSession session) {
+        // 로그인 여부 확인
+        MemberVO user = (MemberVO) session.getAttribute("user");
+        if (user == null) {
+            // 로그인이 되어 있지 않으면 메인 페이지로 리다이렉트
+            return "redirect:/login"; // 로그인 페이지로 변경 가능
+        }
+
         // 카테고리 목록을 가져와서 뷰에 전달
         List<String> categoryList = postService.getCategoryList();
-        model.addAttribute("categoryList", categoryList);	
+        model.addAttribute("categoryList", categoryList);    
         
         return "/post/insert";
     }
@@ -66,7 +73,7 @@ public class PostController {
 		}
 		
 		if(res) {	
-			message = new MessageDTO("/post/list", "게시글을 등록했습니다.");
+			message = new MessageDTO("/", "게시글을 등록했습니다.");
 		}else {
 			message = new MessageDTO("/post/insert", "게시글을 등록하지 못했습니다.");
 		}

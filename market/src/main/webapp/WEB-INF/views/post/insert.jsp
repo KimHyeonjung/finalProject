@@ -98,7 +98,6 @@
 		
 		<!-- 거래 상태 입력 -->
 		<div class="form-group">
-		    <label>거래 유형 선택</label><br>
 		    <div class="btn-group" role="group" aria-label="옵션 선택">
 		        <button type="button" class="btn btn-option" id="option1" onclick="selectOption(1)">판매한다</button>
 		        <button type="button" class="btn btn-option" id="option2" onclick="selectOption(2)">구매한다</button>
@@ -127,7 +126,7 @@
 		<div class="form-group">
 			<label for="price">금액</label>
 			<div class="input-group">
-				<input type="number" class="form-control" id="post_price" name="post_price" min="0">
+				<input type="number" class="form-control" id="post_price" name="post_price" min="0" oninput="checkNumberInput(this)">
 				<div class="input-group-append">
 					<span class="input-group-text">원</span>
 				</div>
@@ -153,24 +152,26 @@
 		<div class="form-group">
 			<label>거래 방법</label><br>
 			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" id="delivery" name="transaction" value="택배거래" onclick="setPostWayNum()">
+				<input class="form-check-input" type="checkbox" id="delivery" name="transaction" value="택배거래" checked="on" onclick="setPostWayNum()">
 				<label class="form-check-label" for="delivery">택배거래</label>
 			</div>
 			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" id="direct" name="transaction" value="직거래" onclick="setPostWayNum()">
+				<input class="form-check-input" type="checkbox" id="direct" name="transaction" value="직거래" checked="on" onclick="toggleMapVisibility(); setPostWayNum()">
 				<label class="form-check-label" for="direct">직거래</label>
 			</div>
 		</div>
 		
-		<div class="map_wrap">
-		    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
-		    <div class="hAddr">
-		        <span class="title">지도중심기준 행정동 주소정보</span>
-		        <span id="centerAddr"></span>
+		<!-- 지도 및 주소 입력 -->
+		<div id="mapContainer">
+		    <div class="map_wrap">
+		        <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+		        <div class="hAddr">
+		            <span class="title">지도중심기준 행정동 주소정보</span>
+		            <span id="centerAddr"></span>
+		        </div>
 		    </div>
+		    <input type="text" id="post_address" name="post_address" placeholder="여기에 클릭한 주소가 표시됩니다" style="width:100%; margin-top:10px; padding:5px;" readonly>
 		</div>
-		
-		<input type="text" id="post_address" name="post_address" placeholder="여기에 클릭한 주소가 표시됩니다" style="width:100%; margin-top:10px; padding:5px;" readonly>
 		<hr>
 		
 		<!-- 숨겨진 필드: post_way_num -->
@@ -180,7 +181,8 @@
 		<input type="hidden" id="post_position_num" name="post_position_num" value="1">
 
 		<!-- 등록 버튼 -->
-		<button type="submit" class="btn btn-primary btn-block" id="submitBtn">등록</button>
+		<button type="submit" class="btn btn-primary btn-block" id="submitBtn" onclick="validateForm(event)">등록</button>
+		<!-- <button type="submit" class="btn btn-primary btn-block" id="submitBtn">등록</button> -->
 	</form>
 </div>
 <script>
@@ -230,6 +232,14 @@ if (navigator.geolocation) {
         message = '<div class="bAddr">Geolocation을 사용할 수 없습니다.</div>'; 
     displayMarker(locPosition, message, "");
 }
+    
+//지도 타입 전환 버튼 생성
+var mapTypeControl = new kakao.maps.MapTypeControl();
+map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+// 지도 확대/축소 버튼 생성
+var zoomControl = new kakao.maps.ZoomControl();
+map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
 // 마커와 인포윈도우를 표시하는 함수입니다
 function displayMarker(locPosition, content, address) {
@@ -279,7 +289,8 @@ function searchDetailAddrFromCoords(coords, callback) {
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 	// 숫자 이외의 문자를 입력하지 않도록 처리
-    function validateNumberInput(input) {
+    function checkNumberInput(input) {
+        // 숫자가 아닌 값은 빈 문자열로 대체합니다.
         input.value = input.value.replace(/[^0-9]/g, '');
     }
 
@@ -295,6 +306,8 @@ function searchDetailAddrFromCoords(coords, callback) {
 	    const directChecked = document.getElementById('direct').checked;
 	    const postWayInput = document.getElementById('post_way_num');
 	    
+	    const mapContainer = document.getElementById('mapContainer');
+	    
 	    if (deliveryChecked && directChecked) {
 	        postWayInput.value = '3'; // 택배거래와 직거래 둘 다 선택됨
 	    } else if (deliveryChecked) {
@@ -307,24 +320,33 @@ function searchDetailAddrFromCoords(coords, callback) {
 	    
 	    checkFormCompletion(); // 거래 방식 선택 시 폼 완료 상태 확인
 	}
-
-	// 폼 검증: 상품명, 설명, 거래 방법 선택 확인
-/* 	function checkFormCompletion() {
-	    const postTitle = document.getElementById('post_title').value.trim();
-	    const postContent = document.getElementById('post_content').value.trim();
-	    const postWayNum = document.getElementById('post_way_num').value;
-	    const submitBtn = document.getElementById('submitBtn');
-	    
-	    // 모든 필드가 채워졌는지 확인
-	    if (postTitle !== "" && postContent !== "" && postWayNum !== "") {
-	        submitBtn.disabled = false; // 버튼 활성화
-	    } else {
-	        submitBtn.disabled = true;  // 버튼 비활성화
-	    }
-	}
- */
+	
+    // 직거래 체크박스 선택 시 지도 및 주소 입력창 보이게
+	function toggleMapVisibility() {
+        const directChecked = document.getElementById('direct').checked;
+        const mapContainer = document.getElementById('mapContainer');
+        const addressInput = document.getElementById('post_address');
+        
+        if (directChecked) {
+            mapContainer.style.display = 'block'; // 직거래 체크 시 지도와 주소 입력창 보이기
+            
+            setTimeout(function() {
+                map.relayout(); // 지도가 보이게 된 후 다시 그리기
+            }, 100); // 약간의 지연 후 호출 (비동기 처리 문제 방지)
+        } else {
+            mapContainer.style.display = 'none';  // 체크 해제 시 숨기기
+            addressInput.value = '';  // 주소 입력창 값 초기화
+        }
+    }
+    
 	// 이미지 파일 미리보기 처리
 	function handleFiles(files) {
+		
+	    // 파일 선택 여부 확인
+/* 	    if (files.length === 0) {
+	        return; // 선택된 파일이 없으면 기존 미리보기를 유지하고 함수 종료
+	    } */
+		
 	    const previewContainer = document.getElementById('previewContainer');
 	    const fileCount = document.getElementById('fileCount');
 	    const maxFiles = 10;
@@ -360,7 +382,7 @@ function searchDetailAddrFromCoords(coords, callback) {
 	    }
 	
 	    // 파일 개수 업데이트
-	    fileCount.innerText = `${selectedCount}/10 사진 선택됨`;
+	    fileCount.innerText = selectedCount + "/10 사진 선택됨";
 	}
 	
  	// 페이지 로드 시 기본 옵션 선택
@@ -429,60 +451,57 @@ function searchDetailAddrFromCoords(coords, callback) {
 	    }
 	}
     
-    
-    // 폼 검증 함수
-    function validateForm() {
-        // 사진 첨부 확인
-        const fileInput = document.getElementById('fileInput');
-        const fileCount = fileInput.files.length;
-        if (fileCount < 1) {
-            alert("최소 1장의 사진을 첨부해야 합니다.");
-            return false;
-        }
-
-        // post_title 입력 확인
-        const postTitle = document.getElementById('post_title').value.trim();
-        if (postTitle === "") {
-            alert("상품명을 입력해주세요.");
-            return false;
-        }
-
-        // 카테고리 선택 확인
-        const categorySelect = document.getElementById('post_category_num');
-        if (categorySelect.value === "") {
-            alert("카테고리를 선택해주세요.");
-            return false;
-        }
-
-        // post_price 입력 확인
-        const postPrice = document.getElementById('post_price').value.trim();
-        if (postPrice === "") {
-            alert("금액을 입력해주세요.");
-            return false;
-        }
-
-        // post_content 입력 확인
-        const postContent = document.getElementById('post_content').value.trim();
-        if (postContent === "") {
-            alert("상품 설명을 입력해주세요.");
-            return false;
-        }
-
-        // 거래 방법 체크박스 하나 이상 선택 확인
-        const deliveryChecked = document.getElementById('delivery').checked;
+	// 주소 입력창 값을 null로 설정
+    function setPostPosition() {
         const directChecked = document.getElementById('direct').checked;
-        if (!deliveryChecked && !directChecked) {
-            alert("거래 방법을 하나 이상 선택해주세요.");
-            return false;
+        const addressInput = document.getElementById('post_address');
+
+        // 직거래 체크박스가 해제된 경우
+        if (!directChecked) {
+            addressInput.value = null;  // 주소 입력창 값을 null로 설정
         }
-
-        return true; // 모든 조건이 충족되면 폼 제출 가능
     }
-
-    // 폼 제출 전에 validateForm 호출
-    document.querySelector('form').onsubmit = function() {
-        return validateForm(); // 폼 검증 결과에 따라 제출 여부 결정
-    };
+	
+	
+	// 필수 필드 검증 함수
+	function validateForm(event) {
+		const title = document.getElementById("post_title").value.trim();
+		const price = document.getElementById("post_price").value.trim();
+		const content = document.getElementById("post_content").value.trim();
+		
+		// 거래 방법 체크 확인
+        const transactionCheckboxes = document.querySelectorAll('input[name="transaction"]');
+        const isTransactionSelected = Array.from(transactionCheckboxes).some(checkbox => checkbox.checked);
+        
+        // 파일 첨부 확인
+        const fileInput = document.getElementById("fileInput");
+        const filesAttached = fileInput.files.length > 0;
+        
+		if (!title && !price && !content) {
+			alert("상품명, 금액, 상품 설명을 모두 입력해주세요.");
+			event.preventDefault(); // 폼 제출 중단
+		} else if (!title) {
+			alert("상품명을 입력해주세요.");
+			event.preventDefault(); // 폼 제출 중단
+		} else if (!price) {
+			alert("금액을 입력해주세요.");
+			event.preventDefault(); // 폼 제출 중단
+		} else if (!content) {
+			alert("상품 설명을 입력해주세요.");
+			event.preventDefault(); // 폼 제출 중단
+		}else if (!isTransactionSelected) {
+	            alert("거래 방법을 선택해주세요.");
+	            event.preventDefault(); // 폼 제출 중단
+	            return;
+	    } else {
+	        if (!filesAttached) {
+	            alert("최소한 하나의 사진을 첨부해주세요.");
+	            event.preventDefault(); // 폼 제출 중단
+	            return;
+	        }
+	    }
+	
+	}
 </script>
 </body>
 </html>
