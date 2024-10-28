@@ -93,7 +93,7 @@
 		</choose>
 	</select>
 	
-		<!-- 게시물 삽입 (생성) -->
+	<!-- 게시물 삽입 (생성) -->
     <insert id="insertPost" parameterType="PostVO" useGeneratedKeys="true" keyProperty="post_num">
         insert into post (
             post_member_num, post_position_num, post_way_num, post_category_num, 

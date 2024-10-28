@@ -38,10 +38,17 @@ public class PostController {
     private NotificationWebSocketHandler notificationHandler;
 	
     @GetMapping("/insert")
-    public String insert(Model model) {
+    public String insert(Model model, HttpSession session) {
+        // 로그인 여부 확인
+        MemberVO user = (MemberVO) session.getAttribute("user");
+        if (user == null) {
+            // 로그인이 되어 있지 않으면 메인 페이지로 리다이렉트
+            return "redirect:/login"; // 로그인 페이지로 변경 가능
+        }
+
         // 카테고리 목록을 가져와서 뷰에 전달
         List<String> categoryList = postService.getCategoryList();
-        model.addAttribute("categoryList", categoryList);	
+        model.addAttribute("categoryList", categoryList);    
         
         return "/post/insert";
     }
@@ -49,7 +56,8 @@ public class PostController {
     // 게시글 생성 처리
     @PostMapping("/insert")
     public String insertPost(Model model, PostVO post, HttpSession session, MultipartFile[] fileList) {
-    	System.out.println("파일 길이 : " +fileList.length);
+    	System.out.println("Request received"); // 디버깅 메시지 추가
+    	System.out.println("파일 길이 : " + fileList.length);
 	    // 파일 선택 체크
 	    if (fileList == null || fileList.length == 0) {
 	        model.addAttribute("message", new MessageDTO("/post/insert", "파일을 선택하지 않았습니다."));
@@ -69,7 +77,7 @@ public class PostController {
 		}
 		
 		if(res) {	
-			message = new MessageDTO("/post/list", "게시글을 등록했습니다.");
+			message = new MessageDTO("/", "게시글을 등록했습니다.");
 		}else {
 			message = new MessageDTO("/post/insert", "게시글을 등록하지 못했습니다.");
 		}
