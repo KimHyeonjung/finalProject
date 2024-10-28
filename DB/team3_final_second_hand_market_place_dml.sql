@@ -18,7 +18,7 @@ INSERT INTO `state` (`state_num`, `state_name`) VALUES
 
 -- 거래 상태
 INSERT INTO `position` (`position_name`) VALUES 
-(1, '판매중'), (2, '구매중'), (3, '예약중'), (4, '거래완료'), (5, '무료나눔');
+(1, '판매중'), (2, '구매중'), (3, '무료나눔'), (4, '예약중'), (5, '거래완료');
 
 -- 거래 방식
 INSERT INTO `way` (`way_name`) VALUES 

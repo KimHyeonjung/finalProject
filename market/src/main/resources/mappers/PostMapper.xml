@@ -129,13 +129,13 @@
 			<when test="type == 'buying'">
 				and post_position_num = 2
 			</when>
-			<when test="type == 'reserved'">
+			<when test="type == 'forfree'">
 				and post_position_num = 3
 			</when>
-			<when test="type == 'soldout'">
+			<when test="type == 'reserved'">
 				and post_position_num = 4
 			</when>
-			<when test="type == 'forfree'">
+			<when test="type == 'soldout'">
 				and post_position_num = 5
 			</when>
 		</choose>
@@ -153,11 +153,17 @@
 			<when test="type == 'selling'">
 				and post_position_num = 1
 			</when>
-			<when test="type == 'reserved'">
+			<when test="type == 'buying'">
 				and post_position_num = 2
 			</when>
-			<when test="type == 'soldout'">
+			<when test="type == 'forfree'">
 				and post_position_num = 3
+			</when>
+			<when test="type == 'reserved'">
+				and post_position_num = 4
+			</when>
+			<when test="type == 'soldout'">
+				and post_position_num = 5
 			</when>
 		</choose>
 		and post_title like concat('%', #{search}, '%')

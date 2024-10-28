@@ -58,7 +58,7 @@ public class MyPageController {
 		model.addAttribute("list", list);
 		model.addAttribute("pm", pm);
 		
-		return "/mypage/post_list";
+		return "/mypage/myList";
 	}
 	@PostMapping("/post/state")
 	@ResponseBody

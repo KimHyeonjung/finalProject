@@ -93,11 +93,21 @@
 	            </td>
                 <td>
                     <select class="state" data-post_num="${post.post_num}">
-                        <option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
-                        <option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매중</option>
-                        <option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>예약중</option>
-                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>거래완료</option>
-                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>무료나눔</option>
+                    	<c:if test="${post.post_position_num == 1}">
+                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
+	                        <option value="4" <c:if test="${post.post_position_num == 3}">selected</c:if>>예약중</option>
+	                        <option value="5" <c:if test="${post.post_position_num == 4}">selected</c:if>>거래완료</option>
+                    	</c:if>
+                    	<c:if test="${post.post_position_num == 2}">
+	                        <option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매중</option>
+	                        <option value="4" <c:if test="${post.post_position_num == 3}">selected</c:if>>예약중</option>
+	                        <option value="5" <c:if test="${post.post_position_num == 4}">selected</c:if>>거래완료</option>
+                    	</c:if>
+                    	<c:if test="${post.post_position_num == 3}">
+	                        <option value="3" <c:if test="${post.post_position_num == 5}">selected</c:if>>무료나눔</option>
+	                        <option value="4" <c:if test="${post.post_position_num == 3}">selected</c:if>>예약중</option>
+	                        <option value="5" <c:if test="${post.post_position_num == 4}">selected</c:if>>거래완료</option>
+                    	</c:if>
                     </select>
                 </td>
                 <td><a href="<c:url value="/post/detail/${post.post_num}"/>">${post.post_title}</a></td>
@@ -296,9 +306,15 @@ $(document).on('change','.state', function(){
 	console.log(state);
 	if(state == '1'){
 		$(this).find('option[value="2"]').hide();
+		$(this).find('option[value="3"]').hide();
 	}
 	if(state == '2'){
 		$(this).find('option[value="1"]').hide();
+		$(this).find('option[value="3"]').hide();
+	}
+	if(state == '3'){
+		$(this).find('option[value="1"]').hide();
+		$(this).find('option[value="2"]').hide();
 	}
 	$(this).find('option[value="' + state + '"]').hide();
 	let obj = {
