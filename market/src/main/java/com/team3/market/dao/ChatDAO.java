@@ -9,6 +9,7 @@ import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.MemberVO;
+import com.team3.market.model.vo.PostVO;
 
 @Repository
 public interface ChatDAO {
@@ -24,4 +25,9 @@ public interface ChatDAO {
     List<ChatVO> selectChatsByRoom(int chatRoom_num); // 특정 채팅방의 채팅 내역 조회
 
 	void insertChat(ChatVO chatVO);
+
+	PostVO selectChatRoomPost(int chatRoomNum);
+
+	boolean deleteChatRoom(int chatRoomNum);
+
 }

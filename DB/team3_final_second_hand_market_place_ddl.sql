@@ -397,7 +397,7 @@ ALTER TABLE `chat` ADD CONSTRAINT `FK_chat_room_TO_chat_1` FOREIGN KEY (
 )
 REFERENCES `chat_room` (
 	`chatRoom_num`
-);
+) ON DELETE CASCADE;
 
 ALTER TABLE `block` ADD CONSTRAINT `FK_member_TO_block_1` FOREIGN KEY (
 	`block_member_num`

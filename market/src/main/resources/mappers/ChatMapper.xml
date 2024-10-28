@@ -58,4 +58,15 @@
 	    VALUES (#{chat_member_num}, #{chat_chatRoom_num}, #{chat_content});
     </insert>
     
+    <select id="selectChatRoomPost" parameterType="int" resultType="MemberVO">
+	SELECT p.*
+	FROM post p
+	JOIN chat_room c ON p.post_num = c.chatRoom_post_num
+	WHERE c.chatRoom_num = #{chatRoomNum}
+    </select>
+    
+    <delete id="deleteChatRoom">
+    DELETE FROM chat_room WHERE chatRoom_num = #{chatRoomNum}
+    </delete>
+    
 </mapper>

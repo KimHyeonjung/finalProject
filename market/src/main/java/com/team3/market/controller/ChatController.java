@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.MemberVO;
+import com.team3.market.model.vo.PostVO;
 import com.team3.market.service.ChatService;
 import com.team3.market.service.WalletService;
 
@@ -61,14 +62,33 @@ public class ChatController {
 		}
 
 		// 해당 채팅방의 채팅 내역 가져오기
+		PostVO post = chatService.getChatRoomPost(chatRoomNum);
 		List<ChatRoomDTO> chatDTOs = chatService.getChatsByRoom(chatRoomNum);
 		model.addAttribute("chatDTOs", chatDTOs);
 		model.addAttribute("member", user);
+		model.addAttribute("post", post);
 		model.addAttribute("chatRoomNum", chatRoomNum);
 
 		return "/chat/chat";
 	}
 	
+	@PostMapping("/chat/leave")
+    public String leaveChatRoom(@RequestParam("chatRoomNum") int chatRoomNum, HttpSession session) {
+        // 세션에서 사용자 정보 가져오기
+        MemberVO member = (MemberVO) session.getAttribute("user");
+        if (member == null) {
+            return "redirect:/login"; // 로그인하지 않은 사용자라면 로그인 페이지로 리다이렉트
+        }
+
+        // 채팅방 삭제 로직 호출
+        boolean result = chatService.deleteChatRoom(chatRoomNum);
+
+        if (result) {
+            return "redirect:/chatRoom"; // 성공 시 채팅 목록 페이지로 리다이렉트
+        } else {
+            return "redirect:/chatRoom?error=true"; // 실패 시 에러 메시지와 함께 리다이렉트
+        }
+    }
 	
 	@PostMapping("/sendMoney")
 	public String sendMoney(

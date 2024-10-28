@@ -8,6 +8,7 @@ import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.MemberVO;
+import com.team3.market.model.vo.PostVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,14 @@ public class ChatService {
 
 	public void saveChatMessage(ChatVO chatVO) {
 		chatDAO.insertChat(chatVO);
+	}
+
+	public PostVO getChatRoomPost(int chatRoomNum) {
+		return chatDAO.selectChatRoomPost(chatRoomNum);
+	}
+
+	public boolean deleteChatRoom(int chatRoomNum) {
+		return chatDAO.deleteChatRoom(chatRoomNum);
 	}
 
     
