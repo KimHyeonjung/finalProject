@@ -455,9 +455,11 @@
 			data: JSON.stringify(obj),  // JSON 형태로 데이터 전달
 			contentType: "application/json; charSet=utf-8",
 			success: function (data) {
+				console.log(data);
 				if (data.success) {
 					// 채팅방 생성 또는 존재 -> 해당 채팅창으로 이동
-					location.href = `<c:url value="/chat"/>?chatRoomNum=${data.chatRoomNum}`;
+					console.log(${data.chatRoomNum});
+					location.href = `<c:url value="/chat"/>?chatRoomNum=\${data.chatRoomNum}`;
 				} else {
 					alert("채팅 신청에 실패했습니다.");
 				}
