@@ -213,12 +213,12 @@
 	</insert>
 	
 	<!-- 게시물 삽입 (생성) -->
-    <insert id="insertAfter" parameterType="PostVO" useGeneratedKeys="true" keyProperty="after_num">
-        insert into post (
-            after_review1, after_review2, after_review3, after_message
-        ) 
-        values (
-            #{after_review1}, #{after_review2}, #{after_review3}, #{after_message}
-        )
-    </insert>
+	<insert id="insertAfter" parameterType="AfterVO" useGeneratedKeys="true" keyProperty="after_num">
+	    insert into after (
+	        after_member_num, after_review1, after_review2, after_review3, after_message
+	    ) 
+	    values (
+	        #{after_member_num}, #{after_review1}, #{after_review2}, #{after_review3}, #{after_message}
+	    )
+	</insert>
 </mapper>

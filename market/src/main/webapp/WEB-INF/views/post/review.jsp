@@ -30,7 +30,7 @@
 <div class="container mt-4">
 	<h1>거래 리뷰</h1>
 	<hr>
-	<form action="<c:url value='/post/review'/>" method="review" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
+	<form action="<c:url value='/post/review'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
 		<!-- 거래 형태 입력 -->
 		<div class="form-group">
 		    <div class="btn-group" role="group" aria-label="옵션 선택">
@@ -52,24 +52,24 @@
 		<!-- 슬라이더들 추가 -->
 		<div class="form-group">
 		    <label for="slider1" style="font-weight: bold;">가격 평가</label>
-		    <input type="range" class="custom-range" id="after_review1" name="slider1" min="1" max="3" step="1" onchange="showSliderValue('slider1', 'slider1Value')">
+		    <input type="range" class="custom-range" id="after_review1" name="after_review1" min="-1" max="1" step="1" onchange="showSliderValue('slider1', 'slider1Value')">
 		    <p id="slider1Value">보통이에요</p>
 		</div>
 		<div class="form-group">
 		    <label for="slider2" style="font-weight: bold;">매너 평가</label>
-		    <input type="range" class="custom-range" id="after_review2" name="slider2" min="1" max="3" step="1" onchange="showSliderValue('slider2', 'slider2Value')">
+		    <input type="range" class="custom-range" id="after_review2" name="after_review2" min="-1" max="1" step="1" onchange="showSliderValue('slider2', 'slider2Value')">
 		    <p id="slider2Value">보통이에요</p>
 		</div>
 		<div class="form-group">
-		    <label id="slider3Label" for="slider3" style="font-weight: bold;">시간 평가</label>
-		    <input type="range" class="custom-range" id="after_review3" name="slider3" min="1" max="3" step="1" onchange="showSliderValue('slider3', 'slider3Value')">
+		    <label id="after_review3Label" for="slider3" style="font-weight: bold;">시간 평가</label>
+		    <input type="range" class="custom-range" id="after_review3" name="after_review3" min="-1" max="1" step="1" onchange="showSliderValue('slider3', 'slider3Value')">
 		    <p id="slider3Value">보통이에요</p>
 		</div>
 		
 		<!-- 상품 설명 -->
 		<div class="form-group">
 			<label for="content" style="font-weight: bold;">소중한 후기를 더 자세히 적어주세요.</label>
-			<textarea class="form-control" id="post_content" name="post_content" rows="5" oninput="updateCharCount()" maxlength="200"
+			<textarea class="form-control" id="after_message" name="after_message" rows="5" oninput="updateCharCount()" maxlength="200"
 			placeholder="남겨주신 후기는 더 나은 중고거래 환경을 만드는데 보탬이 돼요. (선택사항)"></textarea>
 			<div class="char-count">0 / 200</div>
 		</div>

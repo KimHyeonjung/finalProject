@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.model.dto.MessageDTO;
+import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
@@ -93,6 +94,30 @@ public class PostController {
 		 */
 
         return "/post/review";
+    }
+    
+    // 게시글 생성 처리
+    @PostMapping("/review")
+    public String insertReview(Model model, AfterVO review, HttpSession session) {
+    	System.out.println("Request received"); // 디버깅 메시지 추가
+    	
+    	MemberVO user = (MemberVO)session.getAttribute("user");
+    	
+    	System.out.println(review);
+		
+    	boolean res = postService.insertReview(review, user);
+
+		MessageDTO message;
+		
+		if(res) {	
+			message = new MessageDTO("/", "리뷰를 등록했습니다.");
+		}else {
+			message = new MessageDTO("/post/review", "리뷰를 등록하지 못했습니다.");
+		}
+		
+		model.addAttribute("message",message);
+		
+		return "/main/message";
     }
 	
 	@GetMapping("/detail/{post_num}")

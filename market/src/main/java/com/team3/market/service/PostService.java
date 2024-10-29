@@ -108,6 +108,13 @@ public class PostService {
 		
 		return true;
 	}
+	
+	public boolean insertReview(AfterVO review, MemberVO user) {
+		
+		review.setAfter_member_num(user.getMember_num());
+		
+		return postDao.insertAfter(review);
+	}
 
 	public Map<String, Object> getPostMap(int post_num) {
 		Map<String, Object> post = postDao.selectPostMap(post_num);

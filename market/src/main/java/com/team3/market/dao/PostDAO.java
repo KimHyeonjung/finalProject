@@ -84,5 +84,5 @@ public interface PostDAO {
 
 	boolean insertChat(ChatVO chat);
 	
-	boolean insertAfter(PostVO post);
+	boolean insertAfter(AfterVO after);
 }
