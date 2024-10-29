@@ -166,6 +166,32 @@
 									</c:if>
 									<c:if test="${user.member_num eq post.post_member_num }">
 										<div>
+											<select class="state" data-post_num="${post.post_num}">
+												<c:choose>
+							                    	<c:when test="${post.post_position_num == 1}">
+							                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
+								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
+								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+							                    	</c:when>
+							                    	<c:when test="${post.post_position_num == 2}">
+								                        <option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매중</option>
+								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
+								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+							                    	</c:when>
+							                    	<c:when test="${post.post_position_num == 3}">
+								                        <option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료나눔</option>
+								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
+								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+							                    	</c:when>
+							                    	<c:otherwise>
+							                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
+							                    		<option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매중</option>
+							                    		<option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료나눔</option>
+								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
+								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+							                    	</c:otherwise>
+												</c:choose>
+						                    </select>
 											<a class="btn btn-outline-info" href="<c:url value="/mypage/post/list"/>">내 상점 관리</a>
 										</div>
 									</c:if>
@@ -434,6 +460,41 @@
 		alert(1);
 	});
 	
+	// 거래 상태 변경
+	$(document).on('change','.state', function(){
+		var state = $(this).val();
+		var post_num = $(this).data('post_num');
+		$(this).find('option').show();
+		console.log(state);
+		if(state == '1'){
+			$(this).find('option[value="2"]').hide();
+			$(this).find('option[value="3"]').hide();
+		}
+		if(state == '2'){
+			$(this).find('option[value="1"]').hide();
+			$(this).find('option[value="3"]').hide();
+		}
+		if(state == '3'){
+			$(this).find('option[value="1"]').hide();
+			$(this).find('option[value="2"]').hide();
+		}
+		$(this).find('option[value="' + state + '"]').hide();
+		let obj = {
+				post_num : post_num,
+				post_position_num : state
+		}
+		$.ajax({
+			async : true, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/mypage/post/state"/>', 
+			type : 'post', 
+			data : JSON.stringify(obj), 
+			contentType : "application/json; charset=utf-8",
+			success : function (data){
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+			}
+		});
+	});
 </script>
 </body>
 </html>
