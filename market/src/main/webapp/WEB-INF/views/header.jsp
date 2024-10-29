@@ -65,7 +65,7 @@
 			<p>온도</p>
 		</div>
 		<div>
-			<p>${point}원</p>
+			<p>${user.member_money}원</p>
 			<a href="<c:url value="/wallet/list"/>">내역</a>
 			<a href="<c:url value="/wallet/point"/>">충전</a>
 		</div>

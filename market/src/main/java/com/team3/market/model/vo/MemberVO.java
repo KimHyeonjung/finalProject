@@ -23,6 +23,7 @@ public class MemberVO {
     private int member_money; // 잔액
     private int member_fail; // 실패 횟수
     private Date member_locked; //계정 잠금 시간
+    private int member_fake_money; // 거래용 계좌
     
 		
 	public MemberVO(String id, String email) {

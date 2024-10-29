@@ -1,22 +1,19 @@
 package com.team3.market.dao;
 
-import java.util.List;
-
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PointVO;
+import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
 
+@Mapper
 public interface WalletDAO {
+    // 결제 정보를 저장하는 메서드
+    void insertPoint(PointVO pointVO);
 
-	void insertPayment(PointVO point);
+    MemberVO selectMemberById(int member_num);
+    
+	void updatePoint(MemberVO memberVO);
 
-	boolean updatePoint(MemberVO user);
-
-	MemberVO selectMemberById(int point_member_num);
-
-	List<PointVO> pointList(int member_num);
-
-	void deletePayment(PointVO senderPointLog);
-
-	void updatePoint(int memberNum, int points);
+	List<PointVO> selectPointHistory(int member_num);
 
 }

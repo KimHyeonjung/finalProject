@@ -33,26 +33,6 @@
         }
     </style>
     
-    <script>
-    
-    var targetMemberNum = "${chatDTO.targetMember.member_num}";
-    console.log("송금 대상 회원 번호:", targetMemberNum);
-    
-	    window.onload = function() {
-	        // 에러 메시지가 존재하는지 확인
-	        var errorMessage = "${errorMessage}";
-	        if (errorMessage) {
-	            alert(errorMessage);
-	        }
-	
-	        // 성공 메시지가 존재하는지 확인
-	        var successMessage = "${successMessage}";
-	        if (successMessage) {
-	            alert(successMessage);
-	        }
-	    };
-	</script>	
-    
 </head>
 <body>
     <h2>채팅 내역</h2>
@@ -70,13 +50,6 @@
         <textarea name="chatContent" class="chat-input" rows="3" placeholder="메시지를 입력하세요..."></textarea>
         <button type="submit">전송</button>
     </form>
-    
-   <form action="${pageContext.request.contextPath}/sendMoney" method="post">
-	    <input type="hidden" name="chatRoomNum" value="${chatRoomNum}"/>
-	    <input type="hidden" name="targetMemberNum" value="${chatDTO.getTargetMember().member_num}"/> <!-- targetMemberNum 추가 -->
-	    <input type="number" name="amount" placeholder="송금할 금액" required />
-	    <button type="submit" class="send-money-button">송금</button>
-	</form>
     
 </body>
 </html>

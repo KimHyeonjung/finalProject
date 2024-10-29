@@ -1,133 +1,107 @@
 package com.team3.market.service;
 
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.team3.market.dao.WalletDAO;
+import com.team3.market.model.dto.ApproveResponse;
+import com.team3.market.model.dto.ReadyResponse;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PointVO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class WalletService {
 	
 	@Autowired
-    private WalletDAO walletDao;
+	WalletDAO walletDao;
 	
-	@Autowired
-	private RestTemplate restTemplate;
-	
-	// 결제 처리 메서드
-    public PointVO processPayment(PointVO point, String paymentMethod) {
-    	
-        // 결제 날짜 설정
-        point.setPoint_date(new Date());
+   public ReadyResponse payReady(String name, int totalPrice) {
+       Map<String, String> parameters = new HashMap<>();
+       parameters.put("cid", "TC0ONETIME");
+       parameters.put("partner_order_id", "1234567890");
+       parameters.put("partner_user_id", "roommake");
+       parameters.put("item_name", name);
+       parameters.put("quantity", "1");
+       parameters.put("total_amount", String.valueOf(totalPrice));
+       parameters.put("tax_free_amount", "0");
+       parameters.put("approval_url", "http://localhost:8080/market/wallet/pay/completed");
+       parameters.put("cancel_url", "http://localhost:8080/market/wallet/pay/cancel");
+       parameters.put("fail_url", "http://localhost:8080/market/wallet/pay/fail");
+       
+       HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+       
+       RestTemplate template = new RestTemplate();
+       String url = "https://open-api.kakaopay.com/online/v1/payment/ready";
+       
+       ResponseEntity<ReadyResponse> responseEntity = template.postForEntity(url, requestEntity, ReadyResponse.class);
+       log.info("결제준비 응답객체: " + responseEntity.getBody());
+       return responseEntity.getBody();
+   }
+   
+   public ApproveResponse payApprove(String tid, String pgToken) {
+       Map<String, String> parameters = new HashMap<>();
+       parameters.put("cid", "TC0ONETIME");
+       parameters.put("tid", tid);
+       parameters.put("partner_order_id", "1234567890");
+       parameters.put("partner_user_id", "roommake");
+       parameters.put("pg_token", pgToken);
+       
+       HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+       RestTemplate template = new RestTemplate();
+       String url = "https://open-api.kakaopay.com/online/v1/payment/approve";
+       ApproveResponse approveResponse = template.postForObject(url, requestEntity, ApproveResponse.class);
+       log.info("결제승인 응답객체: " + approveResponse);
+       return approveResponse;
+   }
+
+   private HttpHeaders getHeaders() {
+       HttpHeaders headers = new HttpHeaders();
+       headers.set("Authorization", "SECRET_KEY DEV30E5B7E8E62918CD3056B123793265D2C9A78");
+       headers.set("Content-type", "application/json");
+       return headers;
+   }
+
+	public void updatePoint(int member_num, int totalPrice, HttpSession session) {
+		
+		PointVO pointVO = new PointVO();
+        pointVO.setPoint_member_num(member_num);
+        pointVO.setPoint_money(totalPrice);
+        walletDao.insertPoint(pointVO); // 포인트 충전 기록 저장
         
-        switch (paymentMethod.toLowerCase()) {
-        case "kakao":
-            return processKakaoPay(point);
-        case "toss":
-            return processTossPay(point);
-        default:
-            return point;
+        MemberVO memberVO = walletDao.selectMemberById(member_num); 
+        if (memberVO != null) {
+            // 3. 잔액을 업데이트하고 다시 저장
+            int updateMoney = memberVO.getMember_money() + totalPrice;
+            memberVO.setMember_money(updateMoney);
+            walletDao.updatePoint(memberVO); // 잔액 업데이트
+            
+            MemberVO user = (MemberVO) session.getAttribute("user");
+            
+            if (user != null && user.getMember_num() == member_num) {
+            	user.setMember_money(updateMoney);  // 세션의 잔액 정보 갱신
+                session.setAttribute("user", user);  // 세션에 다시 저장
+            }
+            
+        } else {
+            throw new IllegalArgumentException("해당 멤버를 찾을 수 없습니다.");
         }
-    }
-
-	// 카카오페이 결제 처리
-    private PointVO processKakaoPay(PointVO point) {
-        String apiUrl = "https://kapi.kakao.com/v1/payment/ready";
-        String requestBody = String.format(
-                "{\"cid\": \"TC0ONETIME\", \"partner_order_id\": \"12345\", \"partner_user_id\": \"%d\", "
-                + "\"item_name\": \"중고날아\", \"quantity\": 1, \"total_amount\": %d, \"tax_free_amount\": 0, "
-                + "\"approval_url\": \"http://localhost:8080/market/wallet/paymentResult\", "
-                + "\"cancel_url\": \"http://localhost:8080/market\", \"fail_url\": \"http://localhost:8080/market/wallet/paymentResult\"}",
-                point.getPoint_member_num(), point.getPoint_money()
-        );
-
-        String response = restTemplate.postForObject(apiUrl, requestBody, String.class);
-        System.out.println("KakaoPay Response: " + response);
-
-        walletDao.insertPayment(point);
-        return point;
-    }
-
-    // 토스페이 결제 처리
-    private PointVO processTossPay(PointVO point) {
-    	String apiUrl = "https://api.tosspayments.com/v1/charges";
-        String requestBody = String.format(
-                "{\"amount\": %d, \"orderId\": \"12345\", \"orderName\": \"중고날아\", "
-                + "\"successUrl\": \"http://localhost:8080/market/wallet/paymentResult\", "
-                + "\"cancelUrl\": \"http://localhost:8080/market/wallet/paymentResult\"}",
-                point.getPoint_money()
-        );
-
-        String authHeader = "Bearer test_ck_GePWvyJnrK2N9XBJpgPOVgLzN97E";
-        String response = restTemplate.postForObject(apiUrl, requestBody, String.class, authHeader);
-        System.out.println("TossPay Response: " + response);
-
-        walletDao.insertPayment(point);
-        return point;
-    }
-
-	public void updatePoint(PointVO pointRequest) {
-		
-		MemberVO member = walletDao.selectMemberById(pointRequest.getPoint_member_num());
-        int newMemberPoint = member.getMember_money() + pointRequest.getPoint_money();
-
-        member.setMember_money(newMemberPoint);
-        walletDao.updatePoint(member);
-		
 	}
 
-	public List<PointVO> PointList(int member_num) {
-		return walletDao.pointList(member_num);
+	public List<PointVO> getPointHistory(int member_num) {
+		return walletDao.selectPointHistory(member_num);
 	}
-
-	@Transactional(rollbackFor = Exception.class)
-    public Integer transferMoney(Integer senderMemberNum, Integer targetMemberNum, int amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("송금 금액이 유효하지 않습니다.");
-        }
-
-        // 송금자 포인트 조회 및 차감
-        MemberVO sender = walletDao.selectMemberById(senderMemberNum);
-        if (sender.getMember_money() < amount) {
-            throw new IllegalStateException("잔액이 부족합니다.");
-        }
-
-        // 수신자 포인트 조회 및 추가
-        MemberVO receiver = walletDao.selectMemberById(targetMemberNum);
-
-        sender.setMember_money(sender.getMember_money() - amount);
-        receiver.setMember_money(receiver.getMember_money() + amount);
-
-        walletDao.updatePoint(sender);
-        walletDao.updatePoint(receiver);
-
-        // 송금 내역 기록
-        logTransaction(senderMemberNum, -amount, "거래 송금");
-        logTransaction(targetMemberNum, amount, "거래 입금");
-
-        return sender.getMember_money();
-    }
-
-	private void logTransaction(int memberNum, int amount, String type) {
-        PointVO pointLog = new PointVO();
-        pointLog.setPoint_member_num(memberNum);
-        pointLog.setPoint_money(amount);
-        pointLog.setPoint_type(type);
-        pointLog.setPoint_date(new Date());
-
-        walletDao.insertPayment(pointLog);
-    }
-	
-	public int getUpdatedPoints(int memberNum) {
-	    MemberVO member = walletDao.selectMemberById(memberNum);
-	    return member != null ? member.getMember_money() : 0; // 멤버가 없으면 0 반환
-	}
-
+   
 }

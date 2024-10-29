@@ -80,11 +80,6 @@ public class HomeController {
 			if (user != null) {
 				session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
 				
-		        // 사용자 포인트 정보를 데이터베이스에서 가져옴
-				int point = walletService.getUpdatedPoints(user.getMember_num());
-		        session.setAttribute("point", point);
-	
-				
 				// 자동 로그인 체크 여부 확인
 				String auto = request.getParameter("autoLogin");
 				if (auto != null && auto.equals("Y")) {

@@ -244,6 +244,18 @@
 		    <version>2.18.0</version>
 		</dependency>
 		
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20210307</version> <!-- 원하는 버전으로 변경 가능 -->
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>4.5.13</version> <!-- 또는 최신 버전 -->
+		</dependency>
+						
 	</dependencies>
     <build>
         <plugins>

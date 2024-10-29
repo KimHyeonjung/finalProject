@@ -21,7 +21,8 @@ CREATE TABLE `member` (
 	`member_fail`	int	NULL	DEFAULT 0,
 	`member_cookie`	varchar(255)	NULL,
 	`member_limit`	DATETIME	NULL,
-  `member_locked` DATETIME NULL
+	`member_locked` DATETIME NULL,
+    `member_fake_money`	int	NULL	DEFAULT 0
 
 );
 
@@ -162,6 +163,7 @@ CREATE TABLE `point` (
 	`point_money`	int	NULL,
 	`point_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
 	`point_type`	varchar(20)	NOT NULL
+
 );
 
 DROP TABLE IF EXISTS `notification`;
