@@ -11,7 +11,6 @@
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-	
 </head>
 <body>
 	<form action="<c:url value="/mypage"/>" method="post" id="form">
@@ -37,7 +36,7 @@
 		</div>
 		<div class="form-group">
 			<label for="phone">연락처</label>
-			<label class="form-control" for="phone">${user.member_phone}</label>
+			<label class="form-control">${user.member_phone}</label>
 		</div>
 		<div class="d-flex justify-content-left">
 			<div class="btn btn-dark m-auto" data-toggle="modal" data-target="#modal_phone">연락처 변경</div>
@@ -128,23 +127,30 @@
 	            <div class="modal-header">
 	                <h5 class="modal-title" id="phoneModalLabel">연락처 변경</h5>
 	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage'">&times;</button>
-	            </div>
+                </div>
 	
 	            <!-- Modal body -->
 	            <div class="modal-body">
-	                <form id="passwordForm" method="post" action="<c:url value="/updatephone"/>">
-	                    <div id="error-message" class="alert alert-danger d-none"></div> <!-- 오류 메시지 표시 -->
-	                    <div class="form-group">
-	                        <label for="member_phone">새 연락처 : </label>
-	                       	<input type="tel" class="form-control" name="member_phone" id="member_phone">
-	                    </div>
-	                </form>
+	                <form id="phoneForm" method="post">
+                        <div class="form-group">
+                            <label for="member_phone">새 연락처:</label>
+                            <input type="tel" class="form-control" id="member_phone" required>
+                        </div>
+                        <button type="button" id="smsVerifyBtn" class="btn btn-secondary mt-2">인증 요청</button>
+                        
+                        <!-- 인증 코드 입력 필드 -->
+                        <div class="form-group mt-3" id="verification-field">
+                            <label for="verification_code">인증 코드:</label>
+                            <input type="text" class="form-control" id="verification_code" required>
+                            <span id="code-check-msg" class="text-danger"></span>
+                        </div>
+                    </form>
 	            </div>
 	
 	            <!-- Modal footer -->
 	            <div class="modal-footer">
-	                <button type="button" id="submitPhoneBtn" class="btn btn-primary">확인</button>
-	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
+	                <button type="button" id="submitPhoneBtn" class="btn btn-primary" disabled>확인</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
 	            </div>
 	        </div>
 	    </div>
@@ -281,59 +287,91 @@
 	            errorMessageElement.classList.remove("d-none");
 	        }
 	    })
-	});   
-	    
-    document.getElementById("submitPhoneBtn").addEventListener("click", function() {
-	    // 입력값 가져오기
-	    const newPhone = document.getElementById("member_phone").value;
-	    
-	    // 오류 메시지 초기화
-	    const errorMessageElement = document.getElementById("error-message");
-	    errorMessageElement.classList.add("d-none");
-	    errorMessageElement.textContent = "";
+	});
+    $(document).ready(function() {
+        let isVerified = false;
+        
+        // 인증 요청 버튼 클릭 시
+        $('#smsVerifyBtn').click(function () {
+            const newPhone = $('#member_phone').val();
+            const phonePattern = /^(010)(\d{4})(\d{4})$/;
 
-	    // 비밀번호 검증
-	   	const phonePattern = /^^(010)(\d{4})(\d{4})$/;
+            if (!phonePattern.test(newPhone)) {
+                alert('올바른 연락처 형식으로 입력하세요.');
+                return;
+            }
 
-	    if (!phonePattern.test(newPhone)) {
-	        errorMessageElement.textContent = "반드시 숫자만 입력하세요.";
-	        errorMessageElement.classList.remove("d-none");
-	        return;
-	    }
+            $.ajax({
+                method: 'POST',
+                url: '/market/api/sms/send',
+                data: { phoneNumber: newPhone },
+                success: function (response) {
+                    alert('인증 코드가 발송되었습니다. 인증 코드를 입력하세요.');
+                    $('#verification_code').prop('disabled', false);
+                    $('#submitPhoneBtn').prop('disabled', true); // 확인 버튼 비활성화
+                },
+                error: function () {
+                    $('#code-check-msg').text('인증 코드 발송에 실패했습니다.').css('color', 'red');
+                }
+            });
+        });
 
-	    const formData = new FormData();
-	    
-	    formData.append("member_phone", newPhone);
-	    
-	    console.log(formData);
-	    
-	    event.preventDefault(); // 기본 제출 방지
-	    
-	    $.ajax({
-	        method: 'post',
-	        url: '/market/updatephone',
-	        data: {
-	        	member_phone: newPhone
-	        },
-	        success: function(data) {
-	            console.log(data);
-	            // 서버에서 문자열을 반환한다고 가정
-	            if (data === '/market/mypage') {
-	                alert("연락처가 성공적으로 변경되었습니다.");
-	                window.location.href = '/market/mypage'; // 페이지 이동
-	            } else {
-	                errorMessageElement.textContent = "연락처 변경 실패: " + data;
-	                errorMessageElement.classList.remove("d-none");
-	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.log('Eroor : ' + error);
-	            errorMessageElement.textContent = "서버 오류가 발생했습니다.";
-	            errorMessageElement.classList.remove("d-none");
-	        }
-	    })
-	});   
-	    
+        // 인증 코드 입력 확인
+        $('#verification_code').on('input', function () {
+            const enteredCode = $(this).val();
+
+            if (enteredCode.length === 6) {
+                $.ajax({
+                    method: 'POST',
+                    url: '/market/api/sms/verify',
+                    data: { userInputCode: enteredCode },
+                    success: function (isValid) {
+                        if (isValid) {
+                            $('#code-check-msg').text('인증 성공! 연락처를 변경할 수 있습니다.').css('color', 'green');
+                            $('#submitPhoneBtn').prop('disabled', false); // 확인 버튼 활성화
+                            isVerified = true;
+                        } else {
+                            $('#code-check-msg').text('잘못된 인증 코드입니다. 다시 입력해주세요.').css('color', 'red');
+                            $('#submitPhoneBtn').prop('disabled', true);
+                            isVerified = false;
+                        }
+                    },
+                    error: function () {
+                        $('#code-check-msg').text('서버 오류가 발생했습니다.').css('color', 'red');
+                    }
+                });
+            } else {
+                $('#code-check-msg').text('');
+            }
+        });
+
+        // 확인 버튼 클릭 시 연락처 업데이트
+        $('#submitPhoneBtn').click(function () {
+            if (!isVerified) {
+                $('#code-check-msg').text('연락처 인증을 완료해주세요.').css('color', 'red');
+                return;
+            }
+
+            const newPhone = $('#member_phone').val();
+
+            $.ajax({
+                method: 'POST',
+                url: '/market/updatephone',
+                data: { member_phone: newPhone },
+                success: function (response) {
+                    if (response === '/market/mypage') {
+                        alert('연락처가 성공적으로 변경되었습니다.');
+                        window.location.href = '/market/mypage';
+                    } else {
+                        $('#code-check-msg').text('연락처 변경에 실패했습니다: ' + response).css('color', 'red');
+                    }
+                },
+                error: function () {
+                    $('#code-check-msg').text('서버 오류가 발생했습니다.').css('color', 'red');
+                }
+            });
+        });
+    });
 	    
 	$(document).ready(function() {
 	    $('#delete').on('click', function() {
