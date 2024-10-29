@@ -208,7 +208,10 @@ CREATE TABLE `after` (
 	`after_num`	int primary key auto_increment	NOT NULL,
 	`after_member_num`	int	NOT NULL,
 	`after_post_num`	int	NOT NULL,
-	`after_message`	varchar(255)	NULL
+	`after_message`	varchar(255)	NULL,
+    `after_review1`	int	NOT NULL,
+    `after_review2`	int	NOT NULL,
+    `after_review3`	int	NOT NULL
 );
 
 DROP TABLE IF EXISTS `grade`;

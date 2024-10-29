@@ -82,6 +82,18 @@ public class PostController {
 		
 		return "/main/message";
     }
+    
+    @GetMapping("/review")
+    public String review(Model model, HttpSession session) {
+        // 로그인 여부 확인
+        MemberVO user = (MemberVO) session.getAttribute("user");
+		/*
+		 * if (user == null) { // 로그인이 되어 있지 않으면 메인 페이지로 리다이렉트 return "redirect:/login";
+		 * // 로그인 페이지로 변경 가능 }
+		 */
+
+        return "/post/review";
+    }
 	
 	@GetMapping("/detail/{post_num}")
 	public String detail(Model model, @PathVariable("post_num")int post_num, HttpSession session) {
