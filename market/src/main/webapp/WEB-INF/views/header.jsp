@@ -46,15 +46,15 @@
 		
 		<div class="collapse navbar-collapse" id="collapsibleNavbar">
 			<ul class="navbar-nav">
-				<%-- <c:if test="${user == null}"> --%>
+				<c:if test="${user == null}">
 				    <li class="nav-item">
 						<a class="nav-link" href="<c:url value="/signup"/>">회원가입</a>
 				    </li>
 				    <li class="nav-item">
 						<a class="nav-link" href="<c:url value="/login"/>">로그인</a>
 				    </li>
-			    <%-- </c:if> --%>
-			    <%-- <c:if test="${user != null}"> --%>
+			    </c:if> 
+			    <%-- <c:if test="${user != null}">  --%>
 			    	<li class="nav-item">
 						<a class="nav-link" href="<c:url value="/chatRoom"/>">채팅</a>
 					</li>
@@ -64,6 +64,11 @@
 					<li class="nav-item">
 						<a class="nav-link" href="<c:url value="/logout"/>">로그아웃</a>
 					</li>
+					<%-- <c:if test="${user.member_auth eq 'ADMIN'}"> --%>
+						<li class="nav-item">
+							<a class="nav-link" href="<c:url value="/report/list"/>">신고 현황</a>
+						</li>
+					<%-- </c:if> --%>
 					<li class="nav-item">
 						<div class="dropdown">
 							<button data-toggle="collapse" data-target="#demo">
@@ -192,6 +197,9 @@ $(document).ready(function (){
 
     $('#noti-btn').on('mouseenter', function(){
     	if(${user != null}){
+    		if(count == 0){
+    			return;
+    		}
 	    	notiListDisplay();
 	        // 클릭한 요소의 위치값을 구함
 	        var position = $(this).offset();

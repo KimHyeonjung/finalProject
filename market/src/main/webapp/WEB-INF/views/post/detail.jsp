@@ -11,6 +11,7 @@
 	object-fit: contain; /* 이미지 비율 유지하면서 컨테이너에 맞춤 */
 }
 .container-detail {
+	position: relative;
 	width: 900px;
 	margin: 0 auto;
 }
@@ -24,6 +25,26 @@
 #article-profile-image img {
 	width: 80px; height: 80px;
 	border-radius: 40px;
+}
+/* 화면 전체를 덮는 흐림 효과 */
+.blind {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 어두운 흐림 효과 */
+    backdrop-filter: blur(5px); /* 흐리게 처리 */
+    display: none; /* 기본적으로 숨김 처리 */
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+/* 중앙 텍스트 스타일 */
+.blind-text {
+    color: white;
+    font-size: 2em;
+    text-align: center;
 }
 /* 전체 화면을 덮는 반투명 배경 */
 .overlay {
@@ -245,6 +266,9 @@
 			<p id="article-counts">
 				관심 ${post.post_wishcount} ∙ 채팅 85 ∙ 조회 ${post.post_view}</p>
 		</section>
+		<div class="blind" id="blind">
+			<div class="blind-text">신고 누적으로 블라인드 처리된 게시물입니다.</div>
+		</div>
 	</div>
 	<div class="overlay" id="overlay"></div>
 	<div class="report-modal" id="report-modal">
@@ -257,8 +281,13 @@
 	$(document).ready(function () {
 	const $overlay = $("#overlay");
 	const $reportModal = $("#report-modal");
-	   
-	    // 닫기 버튼 클릭 시 모달을 닫기
+	//신고 횟수 초과시 블라인드
+	let post_report = ${post.post_report};
+	if(post_report > 3){
+		document.getElementById("blind").style.display = "flex";
+	}
+	
+		// 닫기 버튼 클릭 시 모달을 닫기
 	    $("#closeBtn").click(function () {
 	        $overlay.hide();
 	        $reportModal.hide();
@@ -269,21 +298,7 @@
 	        $overlay.hide();
 	        $reportModal.hide();
 	    });
-	    $('#test-btn').click(function(){
-	    	var userId = 'qweqwe';
-	    	var message = '테스트메세지야';
-	    	$.ajax({
-				async : true, //비동기 : true(비동기), false(동기)
-				url : '<c:url value="/notification/notify-user"/>', 
-				type : 'post',
-				data : {userId : userId, message : message},
-				success : function (data){
-					console.log(data);
-				}, 
-				error : function(jqXHR, textStatus, errorThrown){
-				}
-			});
-	    });
+	    
 	});
 	//로그인 상태 체크
 	function checkLogin(){
@@ -307,7 +322,7 @@
 		let post_num = $(this).data('post_num');
 		$.ajax({
 			async : false, //비동기 : true(비동기), false(동기)
-			url : '<c:url value="/report/category"/>', 
+			url : '<c:url value="/report/category/post"/>', 
 			type : 'post',
 			data : {post_num : post_num},
 			dataType : "json", 

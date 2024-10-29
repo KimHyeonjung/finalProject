@@ -5,30 +5,62 @@
 <mapper namespace="com.team3.market.dao.AdminDAO">
 	<select id="selectPostReportList" resultType="map">
 		SELECT 
-		    post_title,
-		    post_date,
-		    member_id,
-		    member_nick,
-		    post_report		    
+		    *
 		FROM
-		    report
+		    report r
 		        JOIN
-		    post ON report_post_num = post_num
+		    post p ON r.report_post_num = p.post_num
 		        JOIN
-		    member ON post_member_num = member_num
-		GROUP BY report_post_num	
+		    member m1 ON r.report_member_num = m1.member_num
+		        JOIN
+		    member m2 ON p.post_member_num = m2.member_num
+		ORDER BY report_date;
 	</select>
 	<select id="selectUserReportList" resultType="map">
-		SELECT     
-		    member_id,
-		    member_nick,
-		    member_state,
-		    member_report,
-		    member_score		    
+		SELECT 
+		    *
 		FROM
-		    report    
+		    report r     
 		        JOIN
-		    member ON report_member_num2 = member_num
-		GROUP BY report_member_num2;
+		    member m1 ON r.report_member_num = m1.member_num
+		        JOIN
+		    member m2 ON r.report_member_num2 = m2.member_num
+		ORDER BY report_date;
+	</select> 
+	<select id="selectReportCategoryPostList" resultType="ReportCategoryVO">
+		select * from report_category where report_category_type = #{post}
+	</select>
+	<select id="selectReportCategoryMemberList" resultType="ReportCategoryVO">
+		select * from report_category where report_category_type = #{member}
+	</select>
+	<select id="selectReportPostListByCaNum" resultType="map">
+		SELECT 
+			p.post_title as post_title, p.post_date as post_date, m2.member_id as post_member_id, 
+			m2.member_nick as post_member_nick, r.report_date, m1.member_id as report_member_id, 
+			m1.member_nick as report_member_nick, r.report_content
+		FROM
+			report r
+				JOIN
+			post p ON r.report_post_num = p.post_num
+				JOIN
+			member m1 ON r.report_member_num = m1.member_num
+				JOIN
+			member m2 ON p.post_member_num = m2.member_num
+		where report_category_num = #{category_num}
+		ORDER BY report_date;
+	</select>	
+	<select id="selectReportMemberListByCaNum" resultType="map">
+		SELECT 
+			m2.member_id as report_member_id2, 
+			m2.member_nick as report_member_nick2, r.report_date, m1.member_id as report_member_id, 
+			m1.member_nick as report_member_nick, r.report_content
+		FROM
+			report r				
+				JOIN
+			member m1 ON r.report_member_num = m1.member_num
+				JOIN
+			member m2 ON r.report_member_num2 = m2.member_num
+		where report_category_num = #{category_num} 
+		ORDER BY report_date;
 	</select>
 </mapper>

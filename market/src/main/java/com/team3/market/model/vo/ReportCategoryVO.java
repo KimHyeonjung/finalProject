@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 public class ReportCategoryVO {
 	private int report_category_num;
 	private String report_category_name;
+	private String report_category_type;
 }
