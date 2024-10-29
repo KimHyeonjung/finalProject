@@ -156,15 +156,16 @@ $(document).ready(function(){
 		location.href = `<c:url value="/post/detail/\${post_num}"/>`;	
 	});
 	$('#categoryButton').mouseenter(function() {
+		var contextPath = '${pageContext.request.contextPath}';
 	    $.ajax({
-	        url: '<c:url value="/category"/>',
+	    	url: contextPath + '/category',
 	        type: 'GET',
 	        dataType: 'json', 
 	        success: function(data) {
 	            
 	            var html = '';
 	            $.each(data, function(index, category) {
-	                html += '<div><a href="/post/list/' + category.category_num + '">' + category.category_name + '</a></div>';
+	            	html += '<div><a href="' + contextPath +'/post/list/' + category.category_num + '">' + category.category_name + '</a></div>';
 	            });
 	            
 	            $('#categoryList').html(html);  // 생성된 HTML을 카테고리 목록에 삽입
