@@ -2,10 +2,10 @@ USE marketplace;
 
 -- 알림 타입
 INSERT INTO `notification_type` (`notification_type_num`, `notification_type_name`) VALUES 
-(1,'가격제안'), (2,'가격하락'), (3,'가격상승');
+(1,'가격제안'), (2,'가격하락'), (3,'가격상승'), (4,'채팅수신');
 -- 신고 항목
 INSERT INTO `report_category` (`report_category_num`, `report_category_name`) VALUES
-(1, '광고성 콘텐츠예요'			),
+(1, '광고성 콘텐츠예요'			), 
 (2, '거래 금지 품목으로 판단돼요'	),
 (3, '안전한 거래를 거부해요'		),
 (4, '부적절한 내용이 포함돼있어요'	),

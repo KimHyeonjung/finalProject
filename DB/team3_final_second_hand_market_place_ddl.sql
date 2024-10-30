@@ -181,9 +181,9 @@ CREATE TABLE `notification` (
 	`notification_num`	int primary key auto_increment	NOT NULL,
 	`notification_member_num`	int	NOT NULL,
 	`notification_type_num`	int	NOT NULL,
-    `notification_post_num`	int	NULL,
+  `notification_post_num`	int	NULL,
 	`notification_message`	varchar(255)	NULL,
-	`notification_message`	varchar(50)	NULL,
+  `notification_chatRoom_num`	int	NULL,
 	`notification_read`	boolean	NULL	DEFAULT false,
 	`notification_date`	datetime	NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -401,7 +401,7 @@ ALTER TABLE `chat` ADD CONSTRAINT `FK_chat_room_TO_chat_1` FOREIGN KEY (
 )
 REFERENCES `chat_room` (
 	`chatRoom_num`
-);
+) ON DELETE CASCADE;
 
 ALTER TABLE `block` ADD CONSTRAINT `FK_member_TO_block_1` FOREIGN KEY (
 	`block_member_num`
