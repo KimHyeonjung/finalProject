@@ -67,15 +67,21 @@
 			</div>
 		</c:forEach>
 	</div>
-	<!-- 메시지 입력창 -->
-	<input type="text" id="message" style="width: 80%;">
-	<!-- 메시지 전송 버튼 -->
-	<button onclick="sendMessage()">Send</button>
-	  <form action="${pageContext.request.contextPath}/sendMoney" method="post">
-	    <input type="hidden" name="chatRoomNum" value="${chatRoomNum}"/>
-	    <input type="number" name="amount" placeholder="송금할 금액" required />
-	    <button type="submit" class="send-money-button">송금</button>
-	  </form>
+	
+	<!-- 송금 버튼 -->
+	<button id="openModalBtn">송금하기</button>
+
+	<!-- 송금용 모달 -->
+	<div id="myModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<form action="${pageContext.request.contextPath}/sendMoney" method="post">
+			    <input type="hidden" name="chatRoomNum" value="${chatRoomNum}"/>
+			    <input type="number" name="amount" placeholder="송금할 금액" required />
+			    <button type="submit" class="send-money-button">송금</button>
+			</form>
+		</div>
+	</div>
 
   
 	<script>
@@ -150,19 +156,43 @@
 		    document.getElementById("message").value = '';
 
 		}
-    window.onload = function() {
-      // 에러 메시지가 존재하는지 확인
-      var errorMessage = "<c:out value='${errorMessage}' />";
-      if (errorMessage) {
-          alert(errorMessage);
-      }
+		
+	    window.onload = function() {
+		    // 에러 메시지가 존재하는지 확인
+		    var errorMessage = "<c:out value='${errorMessage}' />";
+		    if (errorMessage) {
+		        alert(errorMessage);
+		    }
+		
+		    // 성공 메시지가 존재하는지 확인
+		    var successMessage = "<c:out value='${successMessage}' />";
+		    if (successMessage) {
+		        alert(successMessage);
+		    }
+	 	};
+	 	
+	 	// 모달 동작 설정
+		const modal = document.getElementById("myModal");
+		const btn = document.getElementById("openModalBtn");
+		const span = document.getElementsByClassName("close")[0];
 
-      // 성공 메시지가 존재하는지 확인
-      var successMessage = "<c:out value='${successMessage}' />";
-      if (successMessage) {
-          alert(successMessage);
-      }
-  };
+		// 송금 버튼 클릭 시 모달 열기
+		btn.onclick = function() {
+			modal.style.display = "block";
+		}
+
+		// X 버튼 클릭 시 모달 닫기
+		span.onclick = function() {
+			modal.style.display = "none";
+		}
+
+		// 모달 외부 클릭 시 닫기
+		window.onclick = function(event) {
+			if (event.target == modal) {
+				modal.style.display = "none";
+			}
+		}
+	 	
 	</script>
 </body>
 </html>
