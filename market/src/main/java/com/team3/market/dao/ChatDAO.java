@@ -1,6 +1,7 @@
 package com.team3.market.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -32,5 +33,7 @@ public interface ChatDAO {
 	boolean insertNotification(@Param("member_num") int member_num, @Param("type") int type, @Param("chatRoom_num") int chatRoom_num, @Param("content") String content);
 
 	MemberVO selectChatRoomByMember(@Param("chatRoom_num") Integer chatRoom_num, @Param("member_num") Integer member_num);
+	
+	List<MemberVO> selectChatRoomByMember(Map<String, Integer> params);
 
 }

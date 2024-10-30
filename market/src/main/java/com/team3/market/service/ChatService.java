@@ -1,5 +1,10 @@
 package com.team3.market.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,11 +14,6 @@ import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class ChatService {
@@ -89,5 +89,17 @@ public class ChatService {
 		return chatDAO.selectChatRoomByMember(chatRoom_num, member_num);
 	}
 
-    
+	public Integer getTargetMemberNumByChatRoomNum(int chatRoomNum, int senderMemberNum) {
+	    Map<String, Integer> params = new HashMap<>();
+	    params.put("chatRoomNum", chatRoomNum);
+	    params.put("senderMemberNum", senderMemberNum);
+
+	    List<MemberVO> members = chatDAO.selectChatRoomByMember(params);
+	    
+	    if (!members.isEmpty()) {
+	        return members.get(0).getMember_num(); // 상대방을 반환
+	    }
+
+	    return null; // 상대방을 찾지 못한 경우
+	}
 }

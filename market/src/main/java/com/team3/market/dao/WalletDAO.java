@@ -10,10 +10,19 @@ public interface WalletDAO {
     // 결제 정보를 저장하는 메서드
     void insertPoint(PointVO pointVO);
 
-    MemberVO selectMemberById(int member_num);
+    MemberVO selectMemberById(Integer senderMemberNum);
     
 	void updatePoint(MemberVO memberVO);
 
 	List<PointVO> selectPointHistory(int member_num);
+
+	void updatePayment(PointVO senderPointLog);
+
+	void deletePayment(PointVO senderPointLog);
+
+	void insertPayment(PointVO receiverPointLog);
+
+	void updateFakeMoney(MemberVO sender);
+
 
 }

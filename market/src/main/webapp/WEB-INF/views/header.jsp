@@ -95,11 +95,10 @@
 		<div>
 			<p>${user.member_nick}</p>
 			<a href="<c:url value="/mypage"/>">개인정보 변경</a>
-			<a href="#">알림</a>
 			<p>온도</p>
 		</div>
 		<div>
-			<p>${user.member_money}원</p>
+			<p><span id="balance">0</span> 원</p>
 			<a href="<c:url value="/wallet/list"/>">내역</a>
 			<a href="<c:url value="/wallet/point"/>">충전</a>
 		</div>
@@ -122,6 +121,7 @@
 	</div>
 </body>
 <script type="text/javascript">
+
 var count = 0;
 function notiCheck(){
 	if(${user != null}){
@@ -262,5 +262,6 @@ $(document).on('click', '.close.checked', function(){
 		}
 	});
 });
+
 </script>
 </html>
