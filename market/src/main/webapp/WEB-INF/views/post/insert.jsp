@@ -472,6 +472,7 @@ function searchDetailAddrFromCoords(coords, callback) {
 		// 거래 방법 체크 확인
         const transactionCheckboxes = document.querySelectorAll('input[name="transaction"]');
         const isTransactionSelected = Array.from(transactionCheckboxes).some(checkbox => checkbox.checked);
+        const directChecked = document.getElementById('direct').checked;
         
         // 파일 첨부 확인
         const fileInput = document.getElementById("fileInput");
@@ -493,7 +494,7 @@ function searchDetailAddrFromCoords(coords, callback) {
 	            alert("거래 방법을 선택해주세요.");
 	            event.preventDefault(); // 폼 제출 중단
 	            return;
-	    } else if (!address) {
+	    } else if (directChecked && !address) {
             alert("직거래 주소를 선택해주세요.");
             event.preventDefault(); // 폼 제출 중단
             return;

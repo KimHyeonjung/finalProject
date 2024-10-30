@@ -40,8 +40,6 @@ public interface MemberDAO {
              @Param("member_email") String memberEmail);
 
 	void updateMemberFail(MemberVO user);
-
-
-
+	
 
 }

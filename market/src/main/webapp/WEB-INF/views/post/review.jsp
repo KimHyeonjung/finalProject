@@ -53,6 +53,9 @@
 		</div>
 		<br>
 		
+		<!-- 숨겨진 필드: after_post_num -->
+		<input type="hidden" id="after_post_num" name="after_post_num" value="${post_num}">
+		
 		<!-- 숨겨진 필드: after_review_avg -->
 		<input type="hidden" id="after_review_sum" name="after_review_sum" value="1.5">
 		

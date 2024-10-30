@@ -93,21 +93,24 @@ public class PostController {
 		return "/main/message";
     }
     
-    @GetMapping("/review")
+    @GetMapping("/review/{post_num}")
     public String review(Model model, HttpSession session) {
         // 로그인 여부 확인
         MemberVO user = (MemberVO) session.getAttribute("user");
+        
 		/*
 		 * if (user == null) { // 로그인이 되어 있지 않으면 메인 페이지로 리다이렉트 return "redirect:/login";
 		 * // 로그인 페이지로 변경 가능 }
 		 */
-
-        return "/post/review";
+        
+        // 추가적으로 post_num을 사용하여 필요한 정보를 모델에 추가할 수 있습니다.
+        
+        return "/post/review"; // 리뷰 작성 페이지로 이동
     }
     
     // 게시글 생성 처리
     @PostMapping("/review")
-    public String insertReview(Model model, AfterVO review, HttpSession session) {
+    public String insertReview(@RequestParam("post_num") int postNum, Model model, AfterVO review, HttpSession session) {
     	System.out.println("Request received"); // 디버깅 메시지 추가
     	
     	MemberVO user = (MemberVO)session.getAttribute("user");
@@ -118,7 +121,7 @@ public class PostController {
 
 		MessageDTO message;
 		
-		if(res) {	
+		if(res) {
 			message = new MessageDTO("/", "리뷰를 등록했습니다.");
 		}else {
 			message = new MessageDTO("/post/review", "리뷰를 등록하지 못했습니다.");

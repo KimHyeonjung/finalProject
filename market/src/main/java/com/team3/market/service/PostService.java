@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.dao.MemberDAO;
 import com.team3.market.dao.PostDAO;
 import com.team3.market.model.dto.CombineNotificationWithFileDTO;
 import com.team3.market.model.dto.CombinePostWithFileDTO;
@@ -38,6 +39,9 @@ public class PostService {
 
 	@Autowired
 	PostDAO postDao;
+	
+    @Autowired
+    private MemberDAO memberDao;
 	
     @Autowired
     private String uploadPath; // WebMvcConfig에서 설정된 경로 주입
@@ -115,6 +119,7 @@ public class PostService {
 	public boolean insertReview(AfterVO review, MemberVO user) {
 		
 		review.setAfter_member_num(user.getMember_num());
+		
 		
 		return postDao.insertAfter(review);
 	}
