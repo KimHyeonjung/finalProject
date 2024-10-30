@@ -8,7 +8,7 @@
 <style>
 .carousel-item img {
 	height: 500px;
-	object-fit: contain; /* 이미지 비율 유지하면서 컨테이너에 맞춤 */
+	object-fit: cover; /* 이미지 비율 유지하면서 컨테이너에 맞춤 */
 }
 .container-detail {
 	position: relative;
@@ -117,7 +117,7 @@
 								<div class="carousel-item <c:if test="${status.first}">active</c:if>"> 
 									<img src="<c:url value="/uploads/${file.file_name}"/>"
 										onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';"
-										alt="${file.file_ori_name}" width="700" height="500"> 
+										alt="${file.file_ori_name}" width="500" height="500"> 
 								</div>
 							</c:forEach>
 						</c:if>
@@ -278,7 +278,7 @@
 		</div>
 	</div>
 <script>
-	$(document).ready(function () {
+$(document).ready(function () {
 	const $overlay = $("#overlay");
 	const $reportModal = $("#report-modal");
 	//신고 횟수 초과시 블라인드
@@ -287,193 +287,194 @@
 		document.getElementById("blind").style.display = "flex";
 	}
 	
-		// 닫기 버튼 클릭 시 모달을 닫기
-	    $("#closeBtn").click(function () {
-	        $overlay.hide();
-	        $reportModal.hide();
-	    });
-	
-	    // 오버레이 클릭 시 모달을 닫기
-	    $overlay.click(function () {
-	        $overlay.hide();
-	        $reportModal.hide();
-	    });
+	// 닫기 버튼 클릭 시 모달을 닫기
+    $("#closeBtn").click(function () {
+        $overlay.hide();
+        $reportModal.hide();
+    });
+
+    // 오버레이 클릭 시 모달을 닫기
+    $overlay.click(function () {
+        $overlay.hide();
+        $reportModal.hide();
+    });
 	    
+});
+//로그인 상태 체크
+function checkLogin(){
+	return '${user.member_id}' != '';
+}
+function alertLogin(){
+	if(checkLogin()){
+		return false;
+	}
+	if(confirm('로그인이 필요한 서비스입니다.\n로그인 하시겠습니까?')){
+		location.href="<c:url value="/login"/>";
+	}
+	return true;
+}
+	
+//신고하기 클릭
+var res = false;
+$(document).on('click','#report',function(){
+	if(alertLogin()){
+		return;
+	}
+	let post_num = $(this).data('post_num');
+	$.ajax({
+		async : false, //비동기 : true(비동기), false(동기)
+		url : '<c:url value="/report/category/post"/>', 
+		type : 'post',
+		data : {post_num : post_num},
+		dataType : "json", 
+		success : function (data){
+			res = data.res;
+			if(res){
+				alert('이미 신고한 게시글입니다.');
+				return;
+			}
+			var list = data.list;
+			var str = '';
+			for(category of list){
+				str += `<div class="list-group-item list-group-item-action click"
+						data-ca_num="\${category.report_category_num}">
+						<span>\${category.report_category_name}</span>
+						</div>
+				`;
+			}
+			$('.list-group').html(str);
+		}, 
+		error : function(jqXHR, textStatus, errorThrown){
+		}
 	});
-	//로그인 상태 체크
-	function checkLogin(){
-		return '${user.member_id}' != '';
+	if(res){
+		return;
 	}
-	function alertLogin(){
-		if(checkLogin()){
-			return false;
-		}
-		if(confirm('로그인이 필요한 서비스입니다.\n로그인 하시겠습니까?')){
-			location.href="<c:url value="/login"/>";
-		}
-		return true;
-	}
-	//신고하기 클릭
-	var res = false;
-	$(document).on('click','#report',function(){
-		if(alertLogin()){
-			return;
-		}
+	$('#overlay').show();
+	$('#report-modal').show();
+})
+	
+//신고항목 클릭
+$(document).on('click','.list-group-item', function(){
+	$('.report-content').remove();
+	var ca_num = $(this).data('ca_num');
+	var content = `
+		<div class="report-content">
+			<div>
+				<textarea class="report-content-text" name="report_content"></textarea>
+			</div>
+			<div class="btn btn-dark report-btn" 
+				data-ca_num="\${ca_num}" data-post_num="${post.post_num}">
+				<span>신고</span>
+			</div>
+		</div>
+		`;
+	$(this).after(content);
+   });
+//신고버튼 클릭
+$(document).on('click', '.report-btn', function(){		
+	if(confirm('정말 신고합니까?')){			
+		let ca_num = $(this).data('ca_num');
 		let post_num = $(this).data('post_num');
+		let content = $('.report-content').find('[name=report_content]').val();
+		let report = {
+				report_category_num : ca_num,
+				report_post_num : post_num,
+				report_content : content
+		}
 		$.ajax({
-			async : false, //비동기 : true(비동기), false(동기)
-			url : '<c:url value="/report/category/post"/>', 
-			type : 'post',
-			data : {post_num : post_num},
-			dataType : "json", 
+			async : true, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/report/post"/>', 
+			type : 'post', 
+			data : JSON.stringify(report), 
+			contentType : "application/json; charset=utf-8",
 			success : function (data){
-				res = data.res;
-				if(res){
+				if(data == 1){
+					alert('신고 완료');
+					$('#report').addClass('active');
+				}
+				else if(data == 2){
 					alert('이미 신고한 게시글입니다.');
-					return;
-				}
-				var list = data.list;
-				var str = '';
-				for(category of list){
-					str += `<div class="list-group-item list-group-item-action click"
-							data-ca_num="\${category.report_category_num}">
-							<span>\${category.report_category_name}</span>
-							</div>
-					`;
-				}
-				$('.list-group').html(str);
+				}else {
+					alert('신고 실패');
+				}					
 			}, 
 			error : function(jqXHR, textStatus, errorThrown){
 			}
 		});
-		if(res){
-			return;
-		}
-		$('#overlay').show();
-		$('#report-modal').show();
-	})
-	
-	//신고항목 클릭
-	$(document).on('click','.list-group-item', function(){
-		$('.report-content').remove();
-		var ca_num = $(this).data('ca_num');
-		var content = `
-			<div class="report-content">
-				<div>
-					<textarea class="report-content-text" name="report_content"></textarea>
-				</div>
-				<div class="btn btn-dark report-btn" 
-					data-ca_num="\${ca_num}" data-post_num="${post.post_num}">
-					<span>신고</span>
-				</div>
-			</div>
-			`;
-		$(this).after(content);
-    });
-	//신고버튼 클릭
-	$(document).on('click', '.report-btn', function(){		
-		if(confirm('정말 신고합니까?')){			
-			let ca_num = $(this).data('ca_num');
-			let post_num = $(this).data('post_num');
-			let content = $('.report-content').find('[name=report_content]').val();
-			let report = {
-					report_category_num : ca_num,
-					report_post_num : post_num,
-					report_content : content
+	$("#overlay").hide();
+    $("#report-modal").hide();
+	}
+});
+//찜하기 클릭
+$(document).on('click', '#wish', function(){	
+	if(alertLogin()){
+		return;
+	}
+	let post_num = $(this).data("post_num");
+	$.ajax({
+		async : true, //비동기 : true(비동기), false(동기)
+		url : '<c:url value="/post/wish"/>', 
+		type : 'post', 
+		data : {post_num : post_num}, 
+		success : function (data){	
+			if(data){
+				$('#wish').addClass('active');
+			}else{
+				$('#wish').removeClass('active');
 			}
-			$.ajax({
-				async : true, //비동기 : true(비동기), false(동기)
-				url : '<c:url value="/report/post"/>', 
-				type : 'post', 
-				data : JSON.stringify(report), 
-				contentType : "application/json; charset=utf-8",
-				success : function (data){
-					if(data == 1){
-						alert('신고 완료');
-						$('#report').addClass('active');
-					}
-					else if(data == 2){
-						alert('이미 신고한 게시글입니다.');
-					}else {
-						alert('신고 실패');
-					}					
-				}, 
-				error : function(jqXHR, textStatus, errorThrown){
-				}
-			});
-		$("#overlay").hide();
-	    $("#report-modal").hide();
+		}, 
+		error : function(jqXHR, textStatus, errorThrown){
+			console.log(jqXHR);
 		}
-	});
-	//찜하기 클릭
-	$(document).on('click', '#wish', function(){	
-		if(alertLogin()){
-			return;
-		}
-		let post_num = $(this).data("post_num");
-		$.ajax({
-			async : true, //비동기 : true(비동기), false(동기)
-			url : '<c:url value="/post/wish"/>', 
-			type : 'post', 
-			data : {post_num : post_num}, 
-			success : function (data){	
-				if(data){
-					$('#wish').addClass('active');
-				}else{
-					$('#wish').removeClass('active');
-				}
-			}, 
-			error : function(jqXHR, textStatus, errorThrown){
-				console.log(jqXHR);
+	});	
+});
+// 드롭다운 클릭 시 닫히지 않도록 기본 동작 취소
+   $(document).on('click', '.dropdown-menu', function (e) {
+     e.stopPropagation(); // 클릭 이벤트 전파 막기
+   });
+// 흥정하기
+$(document).on('click', '.discount', function (){
+	let discount = +$('#input-discount').val() - +$(this).data('price');
+	//var formattedDc = discount.toLocaleString();
+	if(discount < 0 ){
+		discount = 0;
+	}
+	$('#input-discount').val(discount);
+});
+$(document).on('click', '#input-discount', function (){
+	if($(this).val() == 0){
+		$('#input-discount').val('');
+	}
+});
+// 제안
+$(document).on('click', '#propose', function () {
+	let proposePrice = +$('#input-discount').val();
+	let post_num = +${post.post_num};
+	let member_num = +${post.post_member_num};
+	let obj = {
+			post_num : post_num,
+			member_num : member_num,
+			proposePrice : proposePrice
+	}
+	$.ajax({
+		async : true, //비동기 : true(비동기), false(동기)
+		url : '<c:url value="/post/propose"/>', 
+		type : 'post', 
+		data : JSON.stringify(obj), 
+		contentType : "application/json; charSet=utf-8",
+		success : function (data){	
+			if(data){
+				$('.dropdown-toggle').click();
+				/* location.href = `<c:url value="/채팅룸"/>`; */
 			}
-		});	
-	});
-	// 드롭다운 클릭 시 닫히지 않도록 기본 동작 취소
-    $(document).on('click', '.dropdown-menu', function (e) {
-      e.stopPropagation(); // 클릭 이벤트 전파 막기
-    });
-	// 흥정하기
-	$(document).on('click', '.discount', function (){
-		let discount = +$('#input-discount').val() - +$(this).data('price');
-		//var formattedDc = discount.toLocaleString();
-		if(discount < 0 ){
-			discount = 0;
+		}, 
+		error : function(jqXHR, textStatus, errorThrown){				
+			console.log(jqXHR);
 		}
-		$('#input-discount').val(discount);
-	});
-	$(document).on('click', '#input-discount', function (){
-		if($(this).val() == 0){
-			$('#input-discount').val('');
-		}
-	});
-	// 제안
-	$(document).on('click', '#propose', function () {
-		let proposePrice = +$('#input-discount').val();
-		let post_num = +${post.post_num};
-		let member_num = +${post.post_member_num};
-		let obj = {
-				post_num : post_num,
-				member_num : member_num,
-				proposePrice : proposePrice
-		}
-		$.ajax({
-			async : true, //비동기 : true(비동기), false(동기)
-			url : '<c:url value="/post/propose"/>', 
-			type : 'post', 
-			data : JSON.stringify(obj), 
-			contentType : "application/json; charSet=utf-8",
-			success : function (data){	
-				if(data){
-					$('.dropdown-toggle').click();
-					/* location.href = `<c:url value="/채팅룸"/>`; */
-				}
-			}, 
-			error : function(jqXHR, textStatus, errorThrown){				
-				console.log(jqXHR);
-			}
-		});	
-		alert(1);
-	});
+	});	
+	alert(1);
+});
 	//채팅신청
 	$(document).on('click', '#chat', function() {
 		if (alertLogin()) {
@@ -505,42 +506,45 @@
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.log(jqXHR);
-	
-	// 거래 상태 변경
-	$(document).on('change','.state', function(){
-		var state = $(this).val();
-		var post_num = $(this).data('post_num');
-		$(this).find('option').show();
-		console.log(state);
-		if(state == '1'){
-			$(this).find('option[value="2"]').hide();
-			$(this).find('option[value="3"]').hide();
-		}
-		if(state == '2'){
-			$(this).find('option[value="1"]').hide();
-			$(this).find('option[value="3"]').hide();
-		}
-		if(state == '3'){
-			$(this).find('option[value="1"]').hide();
-			$(this).find('option[value="2"]').hide();
-		}
-		$(this).find('option[value="' + state + '"]').hide();
-		let obj = {
-				post_num : post_num,
-				post_position_num : state
-		}
-		$.ajax({
-			async : true, //비동기 : true(비동기), false(동기)
-			url : '<c:url value="/mypage/post/state"/>', 
-			type : 'post', 
-			data : JSON.stringify(obj), 
-			contentType : "application/json; charset=utf-8",
-			success : function (data){
-			}, 
-			error : function(jqXHR, textStatus, errorThrown){
 			}
 		});
 	});
+	
+// 거래 상태 변경
+$(document).on('change','.state', function(){
+	var state = $(this).val();
+	var post_num = $(this).data('post_num');
+	$(this).find('option').show();
+	console.log(state);
+	if(state == '1'){
+		$(this).find('option[value="2"]').hide();
+		$(this).find('option[value="3"]').hide();
+	}
+	if(state == '2'){
+		$(this).find('option[value="1"]').hide();
+		$(this).find('option[value="3"]').hide();
+	}
+	if(state == '3'){
+		$(this).find('option[value="1"]').hide();
+		$(this).find('option[value="2"]').hide();
+	}
+	$(this).find('option[value="' + state + '"]').hide();
+	let obj = {
+			post_num : post_num,
+			post_position_num : state
+	}
+	$.ajax({
+		async : true, //비동기 : true(비동기), false(동기)
+		url : '<c:url value="/mypage/post/state"/>', 
+		type : 'post', 
+		data : JSON.stringify(obj), 
+		contentType : "application/json; charset=utf-8",
+		success : function (data){
+		}, 
+		error : function(jqXHR, textStatus, errorThrown){
+		}
+	});
+});
 </script>
 </body>
 </html>

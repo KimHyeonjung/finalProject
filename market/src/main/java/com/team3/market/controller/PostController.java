@@ -117,6 +117,14 @@ public class PostController {
 		model.addAttribute("profile", profileImg);
 		return "/post/detail";
 	}	
+	@GetMapping("/update/{post_num}")
+	public String postUpdate(Model model, @PathVariable("post_num")int post_num, HttpSession session) {
+		Map<String, Object> post = postService.getPostMap(post_num);
+		List<FileVO> fileList = postService.selectFileList(post_num, "post");
+		model.addAttribute("post", post);
+		model.addAttribute("fileList", fileList);
+		return "/post/update";
+	}	
 	
 	@ResponseBody
 	@PostMapping("/wish")

@@ -7,10 +7,6 @@
 <head>
 	<meta charset="UTF-8">
 	<title>상품 등록</title>
-	<!-- Bootstrap CDN -->
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 	<style>
 		.textarea {
 			height: 400px;
@@ -317,7 +313,7 @@ function searchDetailAddrFromCoords(coords, callback) {
 	        postWayInput.value = '';  // 아무 것도 선택되지 않음
 	    }
 	    
-	    checkFormCompletion(); // 거래 방식 선택 시 폼 완료 상태 확인
+	    //checkFormCompletion(); // 거래 방식 선택 시 폼 완료 상태 확인
 	}
 	
     // 직거래 체크박스 선택 시 지도 및 주소 입력창 보이게
