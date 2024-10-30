@@ -10,7 +10,8 @@ public class AfterVO {
 	private int after_member_num; 
 	private int after_post_num;
 	private String after_message;
-	private int after_review1;
-	private int after_review2;
-	private int after_review3;
+	private float after_review_sum;
+	private float after_review1;
+	private float after_review2;
+	private float after_review3;
 }

@@ -8,9 +8,9 @@
 	<meta charset="UTF-8">
 	<title>거래 리뷰</title>
 	<!-- Bootstrap CDN -->
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<style>
 		.btn-option {
 	        border: 1px solid #007bff; /* 기본 파란색 테두리 */
@@ -18,12 +18,24 @@
 	        color: black; /* 기본 검은색 글자 */
 	    }
 	    
-	    [type="radio"] {
-		  width: 30px;
-		  height: 30px;
-		  marign-right: 100px;
-		  margin-bottom: 15px;
-		}
+	    
+        .radio-group {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .radio-group label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+		.radio-group input[type="radio"] {
+	        transform: scale(1.5); /* 라디오 버튼 크기 조정 */
+	        margin-bottom: 5px; /* 텍스트와 라디오 버튼 사이 여백 */
+	    }
 	</style>
 </head>
 <body>
@@ -39,32 +51,79 @@
 		    </div>
 		    <input type="hidden" id="selectedOption" name="selectedOption" value="">
 		</div>
+		<br>
 		
-		<!-- 		<div class="form-check">
-			<input type="radio" class="form-check-input" id="radio1" name="optradio" value="option1" checked>
-			<label class="form-check-label" for="radio1" style="margin-right: 50px"></label>
-			<input type="radio" class="form-check-input" id="radio1" name="optradio" value="option1" checked>
-		 	<label class="form-check-label" for="radio1" style="margin-right: 50px"></label>
-		 	<input type="radio" class="form-check-input" id="radio1" name="optradio" value="option1" checked>
-		 	<label class="form-check-label" for="radio1"></label>
-		</div> -->
+		<!-- 숨겨진 필드: after_review_avg -->
+		<input type="hidden" id="after_review_sum" name="after_review_sum" value="1.5">
 		
-		<!-- 슬라이더들 추가 -->
-		<div class="form-group">
-		    <label for="slider1" style="font-weight: bold;">가격 평가</label>
-		    <input type="range" class="custom-range" id="after_review1" name="after_review1" min="-1" max="1" step="1" onchange="showSliderValue('slider1', 'slider1Value')">
-		    <p id="slider1Value">보통이에요</p>
+		<div class="container">
+		    <label style="font-weight: bold;">가격 평가</label>
+		    <div class="radio-group">
+		        <label>
+		            <input type="radio" name="after_review1" value="-1">
+		            <span class="text-muted">별로예요</span>
+		        </label>
+		        <label>
+		            <input type="radio" name="after_review1" value="0.5" checked="checked">
+		            <span class="text-muted">보통이에요</span>
+		        </label>
+		        <label>
+		            <input type="radio" name="after_review1" value="1">
+		            <span class="text-muted">좋아요</span>
+		        </label>
+				<label>
+		            <input type="radio" name="after_review1" value="2">
+		            <span class="text-muted">매우 좋아요</span>
+		        </label>
+		    </div>
 		</div>
-		<div class="form-group">
-		    <label for="slider2" style="font-weight: bold;">매너 평가</label>
-		    <input type="range" class="custom-range" id="after_review2" name="after_review2" min="-1" max="1" step="1" onchange="showSliderValue('slider2', 'slider2Value')">
-		    <p id="slider2Value">보통이에요</p>
+		
+		<!-- 매너 평가 라디오 그룹 -->
+		<div class="container">
+		    <label style="font-weight: bold;">매너 평가</label>
+		    <div class="radio-group">
+		        <label>
+		            <input type="radio" name="after_review2" value="-1">
+		            <span class="text-muted">별로예요</span>
+		        </label>
+		        <label>
+		            <input type="radio" name="after_review2" value="0.5" checked="checked">
+		            <span class="text-muted">보통이에요</span>
+		        </label>
+		        <label>
+		            <input type="radio" name="after_review2" value="1">
+		            <span class="text-muted">좋아요</span>
+		        </label>
+				<label>
+		            <input type="radio" name="after_review2" value="2">
+		            <span class="text-muted">매우 좋아요</span>
+		        </label>
+		    </div>
 		</div>
-		<div class="form-group">
-		    <label id="after_review3Label" for="slider3" style="font-weight: bold;">시간 평가</label>
-		    <input type="range" class="custom-range" id="after_review3" name="after_review3" min="-1" max="1" step="1" onchange="showSliderValue('slider3', 'slider3Value')">
-		    <p id="slider3Value">보통이에요</p>
+
+		<!-- 시간 또는 배송 평가 라디오 그룹 -->
+		<div class="container">
+		    <label id="after_review3Label" style="font-weight: bold;">시간 평가</label>
+		    <div class="radio-group">
+		        <label>
+		            <input type="radio" name="after_review3" value="-1">
+		            <span class="text-muted">별로예요</span>
+		        </label>
+		        <label>
+		            <input type="radio" name="after_review3" value="0.5" checked="checked">
+		            <span class="text-muted">보통이에요</span>
+		        </label>
+		        <label>
+		            <input type="radio" name="after_review3" value="1">
+		            <span class="text-muted">좋아요</span>
+		        </label>
+				<label>
+		            <input type="radio" name="after_review3" value="2">
+		            <span class="text-muted">매우 좋아요</span>
+		        </label>
+		    </div>
 		</div>
+		<br>
 		
 		<!-- 상품 설명 -->
 		<div class="form-group">
@@ -137,6 +196,21 @@
 		var content = document.getElementById('post_content').value;
 		document.querySelector('.char-count').innerText = content.length + " / 200";
 	}
+	
+	// after_review1, after_review2, after_review3의 합계를 계산하여 after_review_sum에 설정
+	function updateReviewSum() {
+	    const review1 = parseFloat(document.querySelector('input[name="after_review1"]:checked').value) || 0;
+	    const review2 = parseFloat(document.querySelector('input[name="after_review2"]:checked').value) || 0;
+	    const review3 = parseFloat(document.querySelector('input[name="after_review3"]:checked').value) || 0;
+	    
+	    const sum = review1 + review2 + review3;
+	    document.getElementById('after_review_sum').value = sum;
+	}
+
+	// 각 라디오 버튼의 클릭 이벤트에 updateReviewSum 함수 연결
+	document.querySelectorAll('input[name="after_review1"], input[name="after_review2"], input[name="after_review3"]').forEach(radio => {
+	    radio.addEventListener('click', updateReviewSum);
+	});
 </script>
 </body>
 </html>
