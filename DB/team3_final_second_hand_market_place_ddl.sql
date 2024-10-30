@@ -179,6 +179,7 @@ CREATE TABLE `notification` (
 	`notification_member_num`	int	NOT NULL,
 	`notification_type_num`	int	NOT NULL,
     `notification_post_num`	int	NULL,
+    `notification_chatRoom_num`	int	NULL,
 	`notification_message`	varchar(255)	NULL,
 	`notification_read`	boolean	NULL	DEFAULT false,
 	`notification_date`	datetime	NULL DEFAULT CURRENT_TIMESTAMP
