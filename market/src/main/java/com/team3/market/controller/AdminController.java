@@ -73,18 +73,36 @@ public class AdminController {
 	
 	@GetMapping("/report/list") // 신고 현황 페이지
 	public String reportList(Model model) {
-		List<Map<String, Object>> postList = adminService.getReportPostList();
-		List<Map<String, Object>> userList = adminService.getReportUserList();
-		List<ReportCategoryVO> reportCategoryPostList = adminService.getReportCategoryPostList("post");
-		List<ReportCategoryVO> reportCategoryMemberList = adminService.getReportCategoryMemberList("member");
-		
-		model.addAttribute("rcp", reportCategoryPostList);
-		model.addAttribute("rcm", reportCategoryMemberList);
-		model.addAttribute("postList", postList);
-		model.addAttribute("userList", userList);
+//		List<Map<String, Object>> postList = adminService.getReportPostList();
+//		List<Map<String, Object>> userList = adminService.getReportUserList();
+//		List<ReportCategoryVO> reportCategoryPostList = adminService.getReportCategoryPostList("post");
+//		List<ReportCategoryVO> reportCategoryMemberList = adminService.getReportCategoryMemberList("member");
+//		
+//		model.addAttribute("rcp", reportCategoryPostList);
+//		model.addAttribute("rcm", reportCategoryMemberList);
+//		model.addAttribute("postList", postList);
+//		model.addAttribute("userList", userList);
 		return "/admin/report";
 	}
-	
+	@PostMapping("/report/postList") // 게시물 신고 현황 페이지
+	public String reportPostList(Model model) {
+		List<Map<String, Object>> postList = adminService.getReportPostList();
+		List<ReportCategoryVO> reportCategoryPostList = adminService.getReportCategoryPostList("post");
+		
+		model.addAttribute("rcList", reportCategoryPostList);
+		model.addAttribute("list", postList);
+		return "admin/reportPost";
+	}
+	@PostMapping("/report/memberList") // 유저 신고 현황 페이지
+	public String reportMemberList(Model model) {
+		List<Map<String, Object>> userList = adminService.getReportUserList();
+		List<ReportCategoryVO> reportCategoryMemberList = adminService.getReportCategoryMemberList("member");
+		
+		model.addAttribute("rcList", reportCategoryMemberList);
+		model.addAttribute("list", userList);
+		return "admin/reportMember";
+	}
+	// 게시물 카테고리별
 	@PostMapping("/report/list/post") 
 	public String reportListPost(Model model, @RequestParam("category_num")int category_num, HttpSession session){
 		List<Map<String, Object>> list = adminService.getReportPostListByCaNum(category_num);
@@ -92,11 +110,28 @@ public class AdminController {
 		model.addAttribute("list", list);
 		return "admin/categoryPost";
 	}
+	// 유저 카테고리별
 	@PostMapping("/report/list/member") 
 	public String reportListMember(Model model, @RequestParam("category_num")int category_num, HttpSession session){
 		List<Map<String, Object>> list = adminService.getReportMemberListByCaNum(category_num);
 		
 		model.addAttribute("list", list);
 		return "admin/categoryMember";
+	}
+	@GetMapping("/report/detail/post/{post_num}")
+	public String reportDetailPost(Model model, @PathVariable("post_num")int post_num) {
+		Map<String, Object> post = postService.getPostMap(post_num);
+		List<Map<String, Object>> list = adminService.getPostReportListByPostNum(post_num);
+		model.addAttribute("list", list);
+		model.addAttribute("post", post);
+		return "/admin/detailPost";
+	}
+	@GetMapping("/report/detail/member/{member_num}")
+	public String reportDetailMember(Model model, @PathVariable("member_num")int member_num) {
+		MemberVO user = postService.getMember(member_num);
+		List<Map<String, Object>> list = adminService.getPostReportListByMemberNum(member_num);
+		model.addAttribute("list", list);
+		model.addAttribute("user", user);
+		return "/admin/detailPost";
 	}
 }

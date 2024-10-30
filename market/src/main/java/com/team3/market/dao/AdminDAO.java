@@ -19,4 +19,8 @@ public interface AdminDAO {
 
 	List<Map<String, Object>> selectReportMemberListByCaNum(int category_num);
 
+	List<Map<String, Object>> selectPostReportListByPostNum(int post_num);
+
+	List<Map<String, Object>> selectPostReportListByMemberNum(int member_num);
+
 }

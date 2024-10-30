@@ -85,7 +85,7 @@
 }
 .report-content-text {
 	width: 100%;
-	height: 80px;
+	height: 160px;
 	resize: none;
 }
 .report-content {text-align: right;}

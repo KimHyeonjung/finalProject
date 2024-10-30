@@ -101,7 +101,7 @@ CREATE TABLE `report` (
 	`report_member_num2`	int	NULL,
 	`report_post_num`	int	NULL,
 	`report_category_num`	int	NOT NULL,
-	`report_content`	varchar(100)	NULL,
+	`report_content`	varchar(300)	NULL,
 	`report_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -55,4 +55,12 @@ public class AdminService {
 		return adminDao.selectReportMemberListByCaNum(category_num);
 	}
 
+	public List<Map<String, Object>> getPostReportListByPostNum(int post_num) {
+		return adminDao.selectPostReportListByPostNum(post_num);
+	}
+
+	public List<Map<String, Object>> getPostReportListByMemberNum(int member_num) {
+		return adminDao.selectPostReportListByMemberNum(member_num);
+	}
+
 }
