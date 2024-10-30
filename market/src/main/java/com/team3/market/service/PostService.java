@@ -16,11 +16,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.PostDAO;
+import com.team3.market.model.dto.CombineNotificationWithFileDTO;
+import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
+import com.team3.market.model.vo.NotificationVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportCategoryVO;
 import com.team3.market.model.vo.ReportVO;
@@ -182,9 +185,9 @@ public class PostService {
 		postDao.deleteFile(file.getFile_num());
 	}
 
-	public List<FileVO> selectFileList(int post_num, String target) {
+	public List<FileVO> selectFileList(int target_num, String target) {
 		
-		return postDao.selectFileList(post_num, target);
+		return postDao.selectFileList(target_num, target);
 	}
 
 	public List<PostVO> getPostList() {
@@ -329,9 +332,9 @@ public class PostService {
 		return -2;
 	}
 
-	public FileVO getFile(int post_num, String target) {
+	public FileVO getFile(int target_num, String target) {
 		
-		return postDao.selectFile(post_num, target);
+		return postDao.selectFile(target_num, target);
 	}
 
 	public ChatRoomVO getChatRoom(Map<String, Object> post, MemberVO user) {
@@ -346,7 +349,8 @@ public class PostService {
 		int newPrice = (Integer) post.get("proposePrice");
 		int post_num = (Integer) post.get("post_num");
 		int member_num = (Integer) post.get("member_num");
-		String propStr = user.getMember_nick() + "님이 다른 가격 제안을 했습니다. (" + price.format(newPrice) + "원)";
+		String propStr = "<div>" + user.getMember_id() + "(" + user.getMember_nick() 
+						+ ")님이 가격제안을 했습니다.</div>(희망가격: " + price.format(newPrice) + "원)";
 		
 		return postDao.insertNotification(member_num, type, post_num, propStr);
 	}
@@ -356,10 +360,9 @@ public class PostService {
 		int newPrice = (Integer) post.get("proposePrice");
 		int post_num = (Integer) post.get("post_num");
 		int member_num = (Integer) post.get("member_num");
-		String propStr = "가격제안 : 이 가격에 사고 싶어요. (" + price.format(newPrice) + "원)";
+		String propStr = "가격제안 : 이 가격에 사고 싶어요.\n(" + price.format(newPrice) + "원)";
 		ChatRoomVO chatRoom = new ChatRoomVO(member_num, user.getMember_num(), post_num);
 		postDao.insertChatRoom(chatRoom);
-		System.out.println("챗룸 번호 :" + chatRoom.getChatRoom_num());
 		ChatVO chat = new ChatVO(chatRoom.getChatRoom_member_num2(), chatRoom.getChatRoom_num(), propStr);
 		return postDao.insertChat(chat);
 		
@@ -371,6 +374,52 @@ public class PostService {
 		String propStr = "가격제안 : 이 가격에 사고 싶어요. (" + price.format(newPrice) + "원)";
 		ChatVO chat = new ChatVO(chatRoom.getChatRoom_member_num2(), chatRoom.getChatRoom_num(), propStr);
 		return postDao.insertChat(chat);
+	}
+
+	public List<NotificationVO> getNotification(MemberVO user) {
+		if(user == null) {
+			return null;
+		}
+		return postDao.selectNotification(user.getMember_num());
+	}
+
+	public int getNotReadCount(MemberVO user) {
+		if(user == null) {
+			return 0;
+		}
+		return postDao.selectNotReadCount(user.getMember_num());
+	}
+	// 알림 읽기여부를 읽음으로 변경
+	public boolean checkedNotification(int notification_num, MemberVO user) {
+		if(user == null) {
+			return false;
+		}		
+		return postDao.updateNotiReadTrue(notification_num);
+	}
+
+	public FileVO getProfileImg(int target_num, String target) {
+		
+		return postDao.selectFile(target_num, target);
+	}
+
+	public MemberVO getMember(int member_num) {
+		
+		return postDao.selectMember(member_num);
+	}
+
+	public List<CombineNotificationWithFileDTO> getNotificationListWithFile(MemberVO user) {
+		if(user == null) {
+			return null;
+		}
+		return postDao.selectNotificationListWithFile(user.getMember_num());
+	}
+
+	public List<CombinePostWithFileDTO> getPostListWithFileByCategory(int category_num) {
+		return postDao.selectPostListWithFileByCategory(category_num);
+	}
+
+	public String getCategoryName(int category_num) {
+		return postDao.selectCategoryName(category_num);
 	}
 
 	

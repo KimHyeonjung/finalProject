@@ -24,6 +24,10 @@
  	width: 700px;
 	margin: 0 auto;
 }
+#article-profile-image img {
+	width: 80px; height: 80px;
+	border-radius: 40px;
+}
 /* 전체 화면을 덮는 반투명 배경 */
 .overlay {
     position: fixed;
@@ -74,7 +78,7 @@
 		<h1 class="hide">상세</h1>
 		<section id="article-images">
 			<h3 class="hide">이미지</h3>
-			<div id="carousel-indicators" class="carousel slide">
+			<div id="carousel-indicators" class="carousel slide" data-ride="false">
 				<!-- Indicators -->
 				<ul class="carousel-indicators"> 
 					<c:if test="${fileList.size() != 0 }">
@@ -90,12 +94,15 @@
 				</ul>
 				<!-- The slideshow -->
 				<div class="carousel-inner">
-					<c:forEach items="${fileList}" var="file" varStatus="status">
-						<div class="carousel-item <c:if test="${status.first}">active</c:if>"> 
-							<img src="<c:url value="/uploads/${file.file_name}"/>"
-								alt="${file.file_ori_name}" width="700" height="500"> 
-						</div>
-					</c:forEach>
+						<c:if test="${fileList.size() != 0 }">
+							<c:forEach items="${fileList}" var="file" varStatus="status">
+								<div class="carousel-item <c:if test="${status.first}">active</c:if>"> 
+									<img src="<c:url value="/uploads/${file.file_name}"/>"
+										onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';"
+										alt="${file.file_ori_name}" width="700" height="500"> 
+								</div>
+							</c:forEach>
+						</c:if>
 					<c:if test="${fileList.size() == 0 }">
 						<div class="carousel-item active"> 
 							<img src="<c:url value="/resources/img/none_image.jpg"/>"
@@ -119,8 +126,14 @@
 			<div class="d-flex justify-content-between">
 				<div style="display: flex;">
 					<div id="article-profile-image">
-						<img alt=${post.member_nick }
-							src="<c:url value="/resources/img/none_profile_image.png"/>" />
+						<c:if test="${profile != null}">
+							<img alt="${profile.file_ori_name}"
+								src="<c:url value="/uploads/${profile.file_name}"/>" />
+						</c:if>
+						<c:if test="${profile == null}">
+							<img alt="none"
+								src="<c:url value="/resources/img/none_profile_image.png"/>" />
+						</c:if>
 					</div>
 					<div id="article-profile-left">
 						<div id="nickname">${post.member_nick }</div>
@@ -232,6 +245,21 @@
 	    $overlay.click(function () {
 	        $overlay.hide();
 	        $reportModal.hide();
+	    });
+	    $('#test-btn').click(function(){
+	    	var userId = 'qweqwe';
+	    	var message = '테스트메세지야';
+	    	$.ajax({
+				async : true, //비동기 : true(비동기), false(동기)
+				url : '<c:url value="/notification/notify-user"/>', 
+				type : 'post',
+				data : {userId : userId, message : message},
+				success : function (data){
+					console.log(data);
+				}, 
+				error : function(jqXHR, textStatus, errorThrown){
+				}
+			});
 	    });
 	});
 	//로그인 상태 체크
@@ -366,7 +394,7 @@
     $(document).on('click', '.dropdown-menu', function (e) {
       e.stopPropagation(); // 클릭 이벤트 전파 막기
     });
-	
+	// 흥정하기
 	$(document).on('click', '.discount', function (){
 		let discount = +$('#input-discount').val() - +$(this).data('price');
 		//var formattedDc = discount.toLocaleString();
@@ -380,6 +408,7 @@
 			$('#input-discount').val('');
 		}
 	});
+	// 제안
 	$(document).on('click', '#propose', function () {
 		let proposePrice = +$('#input-discount').val();
 		let post_num = +${post.post_num};
@@ -396,7 +425,10 @@
 			data : JSON.stringify(obj), 
 			contentType : "application/json; charSet=utf-8",
 			success : function (data){	
-				console.log(data);
+				if(data){
+					$('.dropdown-toggle').click();
+					/* location.href = `<c:url value="/채팅룸"/>`; */
+				}
 			}, 
 			error : function(jqXHR, textStatus, errorThrown){
 				console.log(jqXHR);

@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.MemberVO;
@@ -35,14 +36,17 @@ public class ChatController {
 		if (user == null) {
 			return "redirect:/login"; // 로그인 페이지로 리다이렉트
 		}
+		
+		// 사용자 포인트 정보를 데이터베이스에서 가져옴
+	    Integer updatedPoints = walletService.getUpdatedPoints(user.getMember_num());
+	    model.addAttribute("point", updatedPoints); // 포인트 정보를 모델에 추가
 
 		System.out.println(user.getMember_num());
 
-//    	List<ChatRoomVO> chatRooms = chatService.getChatRoomsByMember(user.getMember_num());
 		List<ChatRoomDTO> chatRoomDTOs = chatService.getChatRoomsWithMembers(user.getMember_num());
 
-//    	model.addAttribute("chatRooms", chatRooms);
 		model.addAttribute("chatRooms", chatRoomDTOs);
+		model.addAttribute("member", user);
 
 		return "/chat/chatRoom";
 	}
@@ -57,10 +61,9 @@ public class ChatController {
 		}
 
 		// 해당 채팅방의 채팅 내역 가져오기
-//		List<ChatVO> chats = chatService.getChatsByRoom(chatRoomNum);
 		List<ChatRoomDTO> chatDTOs = chatService.getChatsByRoom(chatRoomNum);
-//		model.addAttribute("chats", chats);
 		model.addAttribute("chatDTOs", chatDTOs);
+		model.addAttribute("member", user);
 		model.addAttribute("chatRoomNum", chatRoomNum);
 
 		return "/chat/chat";
@@ -72,7 +75,7 @@ public class ChatController {
 	        @RequestParam("amount") Integer amount,
 	        @RequestParam("chatRoomNum") Integer chatRoomNum,
 	        HttpSession session,
-	        Model model) {
+	        RedirectAttributes redirectAttributes) {
 	    
 	    // 세션에서 송금자 정보 가져오기
 	    Integer senderMemberNum = (Integer) session.getAttribute("memberNum");
@@ -108,12 +111,20 @@ public class ChatController {
 
 	        // 송금 서비스 호출
 	        walletService.transferMoney(senderMemberNum, targetMemberNum, amount);
-
-	        return "redirect:/chatRoom?chatRoomNum=" + chatRoomNum;
+	        
+	        // 송금 후 포인트 업데이트 (예시)
+	        Integer updatedPoints = walletService.getUpdatedPoints(senderMemberNum);
+	        session.setAttribute("point", updatedPoints); // 세션에 최신 포인트 저장
+	        
+	        // 성공 시 성공 메시지를 추가
+	        redirectAttributes.addFlashAttribute("successMessage", "송금이 완료되었습니다.");
 
 	    } catch (Exception e) {
-	        return "redirect:/chatRoom?chatRoomNum=" + chatRoomNum; // Redirect back to chat room
+	    	// 실패 시 에러 메시지를 추가
+	        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 	    }
+	    
+	    return "redirect:/chat?chatRoomNum=" + chatRoomNum;
 	}
 
 

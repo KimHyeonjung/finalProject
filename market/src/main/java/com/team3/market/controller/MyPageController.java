@@ -1,5 +1,6 @@
 package com.team3.market.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
+import com.team3.market.model.vo.NotificationVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.pagination.MyPostCriteria;
 import com.team3.market.pagination.PageMaker;

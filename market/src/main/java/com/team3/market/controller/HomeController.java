@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.MessageDTO;
@@ -26,6 +25,7 @@ import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.service.MemberService;
 import com.team3.market.service.PostService;
+import com.team3.market.service.WalletService;
 
 
 @Controller
@@ -35,6 +35,8 @@ public class HomeController {
 	MemberService memberService;
 	@Autowired
 	PostService postService;
+	@Autowired
+	WalletService walletService;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model) {
@@ -76,19 +78,18 @@ public class HomeController {
 			MemberVO user = memberService.login(member);
 			
 			if (user != null) {
-			session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
-			session.setAttribute("memberNum", user.getMember_num()); // 로그인 성공 시 세션에 memberNum 저장 // chatRoom 송금 시 사용
-			
-			// 자동 로그인 체크 여부 확인
-			String auto = request.getParameter("autoLogin");
-			if (auto != null && auto.equals("Y")) {
-				Cookie cookie = memberService.createCookie(user, request);
-				response.addCookie(cookie);
-			}
+				session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
+				
+				// 자동 로그인 체크 여부 확인
+				String auto = request.getParameter("autoLogin");
+				if (auto != null && auto.equals("Y")) {
+					Cookie cookie = memberService.createCookie(user, request);
+					response.addCookie(cookie);
+				}
 					
-			MessageDTO message = new MessageDTO("/", "로그인에 성공했습니다.");
-			model.addAttribute("message", message);
-			return "/main/message";  // 메시지 페이지로 이동
+				MessageDTO message = new MessageDTO("/", "로그인에 성공했습니다.");
+				model.addAttribute("message", message);
+				return "/main/message";  // 메시지 페이지로 이동
 		    } else {
 		    	MemberVO failedUser = memberService.getMemberById(member.getMember_id());
 		    	if (failedUser != null && failedUser.getMember_locked() != null && failedUser.getMember_locked().after(new Date())) {

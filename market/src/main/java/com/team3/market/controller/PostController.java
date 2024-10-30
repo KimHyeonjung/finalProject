@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.dto.MessageDTO;
 import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
@@ -26,6 +27,7 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.WishVO;
 import com.team3.market.service.PostService;
+import com.team3.market.utils.NotificationWebSocketHandler;
 
 @Controller
 @RequestMapping("/post")
@@ -33,6 +35,8 @@ public class PostController {
 	
 	@Autowired
 	PostService postService;
+	@Autowired
+    private NotificationWebSocketHandler notificationHandler;
 	
     @GetMapping("/insert")
     public String insert(Model model, HttpSession session) {
@@ -118,20 +122,29 @@ public class PostController {
 		model.addAttribute("message",message);
 		
 		return "/main/message";
+    @GetMapping("/list/{category_num}")
+    public String postList(Model model, @PathVariable("category_num") int category_num) {
+    	List<CombinePostWithFileDTO> list = postService.getPostListWithFileByCategory(category_num);
+    	String category_name = postService.getCategoryName(category_num);
+    	model.addAttribute("list", list);
+    	model.addAttribute("category_name", category_name);
+    	return "/post/list";
     }
 	
 	@GetMapping("/detail/{post_num}")
-	public String detail(Model model, @PathVariable("post_num")int post_num, HttpSession session) {
+	public String postDetail(Model model, @PathVariable("post_num")int post_num, HttpSession session) {
 		postService.updateView(post_num);
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		Map<String, Object> post = postService.getPostMap(post_num);
 		List<FileVO> fileList = postService.selectFileList(post_num, "post");
 		WishVO wish = postService.getWish(post_num, user);
 		ReportVO report = postService.getReportPost(post_num, user);
+		FileVO profileImg = postService.getProfileImg((Integer)post.get("post_member_num"), "member");
 		model.addAttribute("report", report);		
 		model.addAttribute("wish", wish);
 		model.addAttribute("post", post);
 		model.addAttribute("fileList", fileList);
+		model.addAttribute("profile", profileImg);
 		return "/post/detail";
 	}	
 	
@@ -165,6 +178,17 @@ public class PostController {
 			res = postService.addChat(post, chatRoom);
 		}
 		res = postService.notify(post, user);
+		if(res) {
+			MemberVO postUser = postService.getMember((Integer)post.get("member_num"));
+			try {
+				notificationHandler.sendNotificationToUser(postUser.getMember_id(), "notification");
+				return true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
 		return res;
 	}
+
 }
