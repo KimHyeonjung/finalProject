@@ -139,6 +139,24 @@ public class SocketHandler extends TextWebSocketHandler implements InitializingB
 			}
 		}
 	}
+	
+	public void sendMessage2(String message, int chatRoomNum) {
+		for(WebSocketSession session: this.sessionSet) {
+			if(session.isOpen()) {
+				try {
+	                // session에서 chatRoomNum을 String으로 가져옴
+	                String sessionChatRoomNumStr = (String) session.getAttributes().get(chatRoomNum);
+
+	                // String을 int로 변환 후 비교
+	                if (sessionChatRoomNumStr != null && Integer.parseInt(sessionChatRoomNumStr) == chatRoomNum) {
+	                    session.sendMessage(new TextMessage(message));
+	                }
+	            } catch (Exception ignored) {
+	                this.logger.error("메시지 전송 실패!", ignored);
+	            }
+			}
+		}
+	}
 
 	public void afterPropertiesSet() throws Exception {
 		Thread thread = new Thread() {

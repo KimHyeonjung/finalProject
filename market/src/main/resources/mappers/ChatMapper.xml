@@ -58,7 +58,7 @@
 	    VALUES (#{chat_member_num}, #{chat_chatRoom_num}, #{chat_content});
     </insert>
     
-    <select id="selectChatRoomPost" parameterType="int" resultType="MemberVO">
+    <select id="selectChatRoomPost" parameterType="int" resultType="PostVO">
 	SELECT p.*
 	FROM post p
 	JOIN chat_room c ON p.post_num = c.chatRoom_post_num

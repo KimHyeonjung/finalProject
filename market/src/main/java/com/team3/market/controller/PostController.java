@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.handler.SocketHandler;
 import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.dto.MessageDTO;
 import com.team3.market.model.vo.ChatRoomVO;
@@ -37,6 +38,9 @@ public class PostController {
 	PostService postService;
 	@Autowired
     private NotificationWebSocketHandler notificationHandler;
+	@Autowired
+    private SocketHandler socketHandler; // SocketHandler 주입
+
 	
     @GetMapping("/insert")
     public String insert(Model model) {
@@ -140,6 +144,7 @@ public class PostController {
 			MemberVO postUser = postService.getMember((Integer)post.get("member_num"));
 			try {
 				notificationHandler.sendNotificationToUser(postUser.getMember_id(), "notification");
+				socketHandler.sendMessage2("null", chatRoom.getChatRoom_num());
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
