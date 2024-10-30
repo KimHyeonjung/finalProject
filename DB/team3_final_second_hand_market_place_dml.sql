@@ -56,6 +56,11 @@ VALUES
 (6, 3, 1	, 3	, 	9	, '드라이버 팝니다'		, '드라이버'	, 20000, 	false,	'부산, 한국'),
 (7, 2, 1	, 1	, 	12	, '중고차 팝니다'		, '중고차'	, 2000000, 	false,	'부산, 한국');
 
+INSERT INTO `notice`
+(`notice_num`, `notice_member_num`, `notice_title`,  `notice_date`, `notice_pin`)
+VALUES
+(1,1,'분쟁조정센터 공식 운영 안내',20241029,false);
+
 
 INSERT INTO `sido_areas` (`sido_name`) VALUES
 ('서울특별시'),('부산광역시'),('대구광역시'),('인천광역시'),('광주광역시'),('대전광역시'),('울산광역시'),

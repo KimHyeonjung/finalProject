@@ -84,6 +84,8 @@ public class HomeController {
 	        // 사용자 포인트 정보를 데이터베이스에서 가져옴
 		    Integer updatedPoints = walletService.getUpdatedPoints(user.getMember_num());
 		    session.setAttribute("point", updatedPoints); // 포인트 세션에 저장
+		    
+		    session.setAttribute("memberAuth", user.getMember_auth()); // 사용자 권한 정보를 세션에 저장
 
 			
 			// 자동 로그인 체크 여부 확인
