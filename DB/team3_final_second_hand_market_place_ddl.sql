@@ -31,6 +31,7 @@ DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
 	`post_num`	int primary key auto_increment	NOT NULL,
 	`post_member_num`	int	NOT NULL,
+	`post_state_num`	int	NOT NULL	DEFAULT 1,
 	`post_position_num`	int	NOT NULL,
 	`post_way_num`	int	NOT NULL,
 	`post_category_num`	int	NOT NULL,
@@ -39,11 +40,19 @@ CREATE TABLE `post` (
 	`post_price`	int	NULL,
 	`post_deal`	boolean	NOT NULL,
 	`post_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
-	`post_refresh`	datetime	NULL,
+	`post_refresh`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
 	`post_address`	varchar(100)	NULL,
 	`post_view`	int	NULL	DEFAULT 0,
     `post_report`	int	NULL	DEFAULT 0
 );
+
+DROP TABLE IF EXISTS `state`;
+
+CREATE TABLE `state` (
+	`state_num`	int primary key auto_increment	NOT NULL,
+	`state_name`	varchar(10)	NULL
+);
+
 
 DROP TABLE IF EXISTS `category`;
 
@@ -172,9 +181,11 @@ CREATE TABLE `notification` (
 	`notification_num`	int primary key auto_increment	NOT NULL,
 	`notification_member_num`	int	NOT NULL,
 	`notification_type_num`	int	NOT NULL,
+    `notification_post_num`	int	NULL,
+	`notification_message`	varchar(255)	NULL,
 	`notification_message`	varchar(50)	NULL,
 	`notification_read`	boolean	NULL	DEFAULT false,
-	`notification_date`	date	NULL
+	`notification_date`	datetime	NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `deal`;
@@ -292,6 +303,13 @@ ALTER TABLE `post` ADD CONSTRAINT `FK_category_TO_post_1` FOREIGN KEY (
 )
 REFERENCES `category` (
 	`category_num`
+);
+
+ALTER TABLE `post` ADD CONSTRAINT `FK_state_TO_post_1` FOREIGN KEY (
+	`post_state_num`
+)
+REFERENCES `state` (
+	`state_num`
 );
 
 ALTER TABLE `wish` ADD CONSTRAINT `FK_post_TO_wish_1` FOREIGN KEY (
@@ -434,6 +452,13 @@ REFERENCES `notification_type` (
 	`notification_type_num`
 );
 
+ALTER TABLE `notification` ADD CONSTRAINT `FK_post_TO_notification_1` FOREIGN KEY (
+	`notification_post_num`
+)
+REFERENCES `post` (
+	`post_num`
+);
+
 ALTER TABLE `deal` ADD CONSTRAINT `FK_post_TO_deal_1` FOREIGN KEY (
 	`deal_post_num`
 )
@@ -510,5 +535,3 @@ ALTER TABLE `rating` ADD CONSTRAINT `FK_after_TO_rating_1` FOREIGN KEY (
 REFERENCES `after` (
 	`after_num`
 );
-
-
