@@ -7,11 +7,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
+
+import com.team3.market.interceptor.AdminInterceptor;
+import com.team3.market.interceptor.PrevUrlInterceptor;
 
 @Configuration
 @EnableWebMvc
@@ -48,12 +52,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return tilesConfigurer;
     }
     
-	/*
-	 * @Override public void addInterceptors(InterceptorRegistry registry) { // 인터셉터
-	 * 추가 및 URL 패턴 설정 registry.addInterceptor(new MemberInterceptor())
-	 * .addPathPatterns("/**") // 모든 경로에 대해 인터셉터 적용 .excludePathPatterns("/login",
-	 * "/logout"); //제외할 경로 // 특정 경로 제외 }
-	 */
+	
+	  @Override 
+	  public void addInterceptors(InterceptorRegistry registry) { 
+		  registry.addInterceptor(new PrevUrlInterceptor()).addPathPatterns("/login");
+//		  registry.addInterceptor(new AdminInterceptor()).addPathPatterns("/report/list"); // 관리자만 접근
+	  }
+	  // .excludePathPatterns("/login", "/logout");
+	  // 인터셉터추가 및 URL 패턴 설정 // 모든 경로에 대해 인터셉터 적용 //제외할 경로, 특정 경로 제외 }
+	 
     
     @Bean
     public CommonsMultipartResolver multipartResolver() {

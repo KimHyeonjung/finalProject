@@ -68,7 +68,11 @@ public class HomeController {
         return "/main/message";
     }
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(HttpServletRequest request) {
+    	String prevUrl = request.getHeader("Referer");
+		if(prevUrl != null && !prevUrl.contains("/login")) {
+			request.getSession().setAttribute("prevUrl", prevUrl);
+		}
         return "/member/login";
     }
     @PostMapping("/login")

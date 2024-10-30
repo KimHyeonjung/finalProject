@@ -5,60 +5,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 폰트어썸 -->
-<script src="https://kit.fontawesome.com/c9d8812a57.js"
-	crossorigin="anonymous"></script>
 <style>
-
+#table-user {
+	display: none;
+}
+.link {cursor: pointer;}
 </style>
 </head>
 <body>
 	<div class="container">
-		<h2>게시글 신고 </h2>
-		<table class="table table-hover">
-	    	<thead>
-		      <tr>
-		        <th>제목</th>
-		        <th>날짜</th>
-		        <th>작성자</th>
-		        <th>게시글 신고 횟수</th>        
-		      </tr>
-		    </thead>
-		    <tbody>
-		    	<c:forEach items="${postList }" var="post">
-			      <tr>
-			        <td>${post.post_title}</td>
-			        <td>${post.post_date}</td>
-			        <td>${post.member_id}(${post.member_nick})</td>
-			        <td>${post.post_report}</td>
-			      </tr>
-		    	</c:forEach>
-		    </tbody>
-	  	</table>
-		<h2>유저 신고 </h2>
-		<table class="table table-hover">
-	    	<thead>
-		      <tr>
-		        <th>신고받은 회원</th>
-		        <th>회원 상태</th>
-		        <th>회원 점수</th>
-		        <th>신고 횟수</th> 
-		      </tr>
-		    </thead>
-		    <tbody>
-		    	<c:forEach items="${userList }" var="user">
-			      <tr>
-			        <td>${user.member_id}(${user.member_nick})</td>
-			        <td>${user.member_state}</td>
-			        <td>${user.member_score}</td>
-			        <td>${user.member_report}</td>
-			      </tr>
-		    	</c:forEach>
-		    </tbody>
-	  	</table>
+		<h2 class="report-title mt-3">게시물 신고 내역</h2>
+		<button type="button" class="btn btn-outline-dark" id="btn-post">게시물</button>
+		<button type="button" class="btn btn-outline-dark" id="btn-user">유저</button>
+		<div id="table-report">
+			
+		</div>
 	</div>
 <script>
-	
+$(document).ready(function(){
+	$('#btn-post').click(function(){
+		$('.report-title').text('게시물 신고 내역');
+		$.ajax({
+			async : false, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/report/postList"/>', 
+			type : 'post', 
+			success : function (data){	
+				$('#table-report').html(data);
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+			}
+		});	
+	});
+	$('#btn-post').click();
+	$('#btn-user').click(function(){
+		$('.report-title').text('유저 신고 내역');
+		$.ajax({
+			async : false, //비동기 : true(비동기), false(동기)
+			url : '<c:url value="/report/memberList"/>', 
+			type : 'post', 
+			success : function (data){	
+				$('#table-report').html(data);
+			}, 
+			error : function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+			}
+		});	
+	});
+});
 </script>
 </body>
 </html>

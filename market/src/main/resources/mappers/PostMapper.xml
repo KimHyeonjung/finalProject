@@ -44,18 +44,28 @@
 	<delete id="deletePost">
 		delete from post where post_num = #{post_num}
 	</delete>	
-	<select id="selectReport_category" resultType="ReportCategoryVO">
-		select * from report_category
+	<select id="selectReportCategory" resultType="ReportCategoryVO">
+		select * from report_category where report_category_type = #{type}
 	</select>
 	<insert id="insertReportPost">
 		insert into report(report_member_num, report_post_num, report_category_num, report_content) 
-		values(#{member_num}, #{report.report_post_num}, #{report.report_category_num}, #{report.report_content})
+		values(#{report_member_num}, #{report_post_num}, #{report_category_num}, #{report_content})
+	</insert>
+	<insert id="insertReportMember">
+		insert into report(report_member_num, report_member_num2, report_category_num, report_content) 
+		values(#{report_member_num}, #{report_member_num2}, #{report_category_num}, #{report_content})
 	</insert>
 	<update id="updatePostReport">
 		update post set post_report = post_report + 1 where post_num = #{report_post_num}
 	</update>
-	<select id="getReport" resultType="ReportVO">
+	<update id="updateMemberReport">
+		update member set member_report = member_report + 1 where member_num = #{member_num}
+	</update>
+	<select id="selectReportByPost" resultType="ReportVO">
 		select * from report where report_post_num = #{report_post_num}
+	</select>
+	<select id="selectReportByMember" resultType="ReportVO">
+		select * from report where report_member_num2 = #{report_member_num2}
 	</select>
 	<select id="selectReportPost" resultType="ReportVO">
 		select * from report where report_post_num = #{post_num} and report_member_num = #{member_num}
@@ -126,11 +136,17 @@
 			<when test="type == 'selling'">
 				and post_position_num = 1
 			</when>
-			<when test="type == 'reserved'">
+			<when test="type == 'buying'">
 				and post_position_num = 2
 			</when>
-			<when test="type == 'soldout'">
+			<when test="type == 'forfree'">
 				and post_position_num = 3
+			</when>
+			<when test="type == 'reserved'">
+				and post_position_num = 4
+			</when>
+			<when test="type == 'soldout'">
+				and post_position_num = 5
 			</when>
 		</choose>
 		and post_title like concat('%', #{search}, '%')
@@ -147,11 +163,17 @@
 			<when test="type == 'selling'">
 				and post_position_num = 1
 			</when>
-			<when test="type == 'reserved'">
+			<when test="type == 'buying'">
 				and post_position_num = 2
 			</when>
-			<when test="type == 'soldout'">
+			<when test="type == 'forfree'">
 				and post_position_num = 3
+			</when>
+			<when test="type == 'reserved'">
+				and post_position_num = 4
+			</when>
+			<when test="type == 'soldout'">
+				and post_position_num = 5
 			</when>
 		</choose>
 		and post_title like concat('%', #{search}, '%')
@@ -293,5 +315,5 @@
 	</select>
 	<select id="selectCategoryName" resultType="String">
 		select category_name from category where category_num = #{category_num}
-	</select>
+	</select>	
 </mapper>

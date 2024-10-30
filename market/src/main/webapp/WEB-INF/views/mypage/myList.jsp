@@ -6,9 +6,6 @@
 <html>
 <title>찜목록</title>
 <head>
-<!-- 폰트어썸 -->
-<script src="https://kit.fontawesome.com/c9d8812a57.js"
-	crossorigin="anonymous"></script>
  <style>
     table {
         width: 100%;
@@ -65,15 +62,17 @@
 	        </select>
 	        <button id="btn-all" class="<c:if test="${pm.cri.type == '' }">type-selected</c:if>">전체</button>
 	        <button id="btn-selling" class="<c:if test="${pm.cri.type == 'selling' }">type-selected</c:if>">판매중</button>
+	        <button id="btn-buying" class="<c:if test="${pm.cri.type == 'buying' }">type-selected</c:if>">구매중</button>
 	        <button id="btn-reserved" class="<c:if test="${pm.cri.type == 'reserved' }">type-selected</c:if>">예약중</button>
 	        <button id="btn-soldout" class="<c:if test="${pm.cri.type == 'soldout' }">type-selected</c:if>">거래완료</button>
+	        <button id="btn-forfree" class="<c:if test="${pm.cri.type == 'forfree' }">type-selected</c:if>">무료나눔</button>
 	    </div>
     </form>
     <table>
         <thead>
             <tr>
                 <th>사진</th>
-                <th>판매상태</th>
+                <th>거래상태</th>
                 <th>상품명</th>
                 <th>가격</th>
                 <th>찜</th>
@@ -94,9 +93,30 @@
 	            </td>
                 <td>
                     <select class="state" data-post_num="${post.post_num}">
-                        <option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
-                        <option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>예약중</option>
-                        <option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>거래완료</option>
+                    	<c:choose>
+	                    	<c:when test="${post.post_position_num == 1}">
+	                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
+		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
+		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+	                    	</c:when>
+	                    	<c:when test="${post.post_position_num == 2}">
+		                        <option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매중</option>
+		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
+		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+	                    	</c:when>
+	                    	<c:when test="${post.post_position_num == 3}">
+		                        <option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료나눔</option>
+		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
+		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+	                    	</c:when>
+	                    	<c:otherwise>
+	                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
+	                    		<option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매중</option>
+	                    		<option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료나눔</option>
+		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
+		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+	                    	</c:otherwise>
+						</c:choose>
                     </select>
                 </td>
                 <td><a href="<c:url value="/post/detail/${post.post_num}"/>">${post.post_title}</a></td>
@@ -184,6 +204,11 @@ $(document).ready(function() {
 		$('[name=type]').val('selling');
 		$('#form').submit();
 	});
+	// 구매중
+	$('#btn-buying').click(function(){
+		$('[name=type]').val('buying');
+		$('#form').submit();
+	});
 	// 예약중
 	$('#btn-reserved').click(function(){
 		$('[name=type]').val('reserved');
@@ -192,6 +217,11 @@ $(document).ready(function() {
 	// 거래완료
 	$('#btn-soldout').click(function(){
 		$('[name=type]').val('soldout');
+		$('#form').submit();
+	});  
+	// 무료나눔
+	$('#btn-forfree').click(function(){
+		$('[name=type]').val('forfree');
 		$('#form').submit();
 	});  
 	
@@ -282,6 +312,19 @@ $(document).on('change','.state', function(){
 	var state = $(this).val();
 	var post_num = $(this).data('post_num');
 	$(this).find('option').show();
+	console.log(state);
+	if(state == '1'){
+		$(this).find('option[value="2"]').hide();
+		$(this).find('option[value="3"]').hide();
+	}
+	if(state == '2'){
+		$(this).find('option[value="1"]').hide();
+		$(this).find('option[value="3"]').hide();
+	}
+	if(state == '3'){
+		$(this).find('option[value="1"]').hide();
+		$(this).find('option[value="2"]').hide();
+	}
 	$(this).find('option[value="' + state + '"]').hide();
 	let obj = {
 			post_num : post_num,

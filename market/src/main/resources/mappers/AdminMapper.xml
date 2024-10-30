@@ -5,30 +5,128 @@
 <mapper namespace="com.team3.market.dao.AdminDAO">
 	<select id="selectPostReportList" resultType="map">
 		SELECT 
-		    post_title,
-		    post_date,
-		    member_id,
-		    member_nick,
-		    post_report		    
+		    p.post_num, p.post_title, p.post_date, m2.member_id, m2.member_nick,
+		    (select rc.report_category_name FROM marketplace.report re
+						join report_category rc on rc.report_category_num = re.report_category_num
+						where report_post_num = r.report_post_num
+						group by rc.report_category_name				
+						limit 1) as mostCategory,
+		    (select count(re.report_category_num) as count FROM marketplace.report re
+						join report_category rc on rc.report_category_num = re.report_category_num
+						where report_post_num = r.report_post_num
+									group by re.report_category_num
+						order by count desc
+						limit 1) as categoryCount,
+		                count(r.report_post_num) as reportCount
 		FROM
-		    report
+		    report r
 		        JOIN
-		    post ON report_post_num = post_num
+		    post p ON r.report_post_num = p.post_num
 		        JOIN
-		    member ON post_member_num = member_num
-		GROUP BY report_post_num	
+		    member m1 ON r.report_member_num = m1.member_num
+		        JOIN
+		    member m2 ON p.post_member_num = m2.member_num
+		group by r.report_post_num
+		ORDER BY reportCount desc	
 	</select>
 	<select id="selectUserReportList" resultType="map">
-		SELECT     
-		    member_id,
-		    member_nick,
-		    member_state,
-		    member_report,
-		    member_score		    
+		SELECT 
+		    m2.member_id, m2.member_nick, m2.member_state, m2.member_score,
+		    (select rc.report_category_name FROM marketplace.report re
+						join report_category rc on rc.report_category_num = re.report_category_num
+						where re.report_member_num2 = r.report_member_num2
+						group by rc.report_category_name				
+						limit 1) as mostCategory,
+		    (select count(re.report_category_num) as count FROM marketplace.report re
+						join report_category rc on rc.report_category_num = re.report_category_num
+						where re.report_member_num2 = r.report_member_num2
+						group by re.report_category_num
+						order by count desc
+						limit 1) as categoryCount,
+		                count(r.report_member_num2) as reportCount
 		FROM
-		    report    
+		    report r        
 		        JOIN
-		    member ON report_member_num2 = member_num
-		GROUP BY report_member_num2;
+		    member m1 ON r.report_member_num = m1.member_num
+		        JOIN
+		    member m2 ON r.report_member_num2 = m2.member_num
+		group by r.report_member_num2
+		ORDER BY reportCount desc
+	</select> 
+	<select id="selectReportCategoryPostList" resultType="ReportCategoryVO">
+		select * from report_category where report_category_type = #{post}
+	</select>
+	<select id="selectReportCategoryMemberList" resultType="ReportCategoryVO">
+		select * from report_category where report_category_type = #{member}
+	</select>
+	<select id="selectReportPostListByCaNum" resultType="map">
+		SELECT 
+			p.post_title as post_title, p.post_date as post_date, m2.member_id as post_member_id, 
+			m2.member_nick as post_member_nick, r.report_date, m1.member_id as report_member_id, 
+			m1.member_nick as report_member_nick, r.report_content
+		FROM
+			report r
+				JOIN
+			post p ON r.report_post_num = p.post_num
+				JOIN
+			member m1 ON r.report_member_num = m1.member_num
+				JOIN
+			member m2 ON p.post_member_num = m2.member_num
+		where report_category_num = #{category_num}
+		ORDER BY report_date;
+	</select>	
+	<select id="selectReportMemberListByCaNum" resultType="map">
+		SELECT 
+			m2.member_id as report_member_id2, 
+			m2.member_nick as report_member_nick2, r.report_date, m1.member_id as report_member_id, 
+			m1.member_nick as report_member_nick, r.report_content
+		FROM
+			report r				
+				JOIN
+			member m1 ON r.report_member_num = m1.member_num
+				JOIN
+			member m2 ON r.report_member_num2 = m2.member_num
+		where report_category_num = #{category_num} 
+		ORDER BY report_date;
+	</select>
+	<select id="selectPostReportListByPostNum" resultType="map">
+		SELECT 
+		    r.*, rc.*, m.member_id, m.member_nick, category_count.count
+		FROM
+		    report r
+				join
+					report_category rc on
+						r.report_category_num = rc.report_category_num
+				join member m on
+					r.report_member_num = m.member_num            
+		        JOIN
+		    (SELECT 
+		        report_category_num, COUNT(*) AS count
+		    FROM
+		        report
+		    GROUP BY report_category_num) AS category_count 
+				on r.report_category_num = category_count.report_category_num
+		where r.report_post_num = #{post_num}
+			order by category_count.count desc
+	</select>
+	<select id="selectPostReportListByMemberNum" resultType="map">
+		SELECT 
+		    r.*, rc.*, m.member_id, m.member_nick, category_count.count
+		FROM
+		    report r
+				join
+					report_category rc on
+						r.report_category_num = rc.report_category_num
+				join member m on
+					r.report_member_num = m.member_num            
+		        JOIN
+		    (SELECT 
+		        report_category_num, COUNT(*) AS count
+		    FROM
+		        report
+		    GROUP BY report_category_num) AS category_count 
+				on r.report_category_num = category_count.report_category_num
+		where r.report_member_num2 = #{member_num}
+			order by category_count.count desc
 	</select>
 </mapper>

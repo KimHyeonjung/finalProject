@@ -103,7 +103,7 @@ CREATE TABLE `report` (
 	`report_member_num2`	int	NULL,
 	`report_post_num`	int	NULL,
 	`report_category_num`	int	NOT NULL,
-	`report_content`	varchar(100)	NULL,
+	`report_content`	varchar(300)	NULL,
 	`report_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -273,7 +273,8 @@ DROP TABLE IF EXISTS `report_category`;
 
 CREATE TABLE `report_category` (
 	`report_category_num`	int primary key auto_increment	NOT NULL,
-	`report_category_name`	varchar(20)	NOT NULL
+	`report_category_name`	varchar(20)	NOT NULL,
+    `report_category_type`	varchar(10)	NOT NULL	DEFAULT 'user'
 );
 
 

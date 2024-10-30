@@ -6,9 +6,6 @@
 <html>
 <title>찜목록</title>
 <head>
-<!-- 폰트어썸 -->
-<script src="https://kit.fontawesome.com/c9d8812a57.js"
-	crossorigin="anonymous"></script>
 <style>
 * {
     box-sizing: border-box;
