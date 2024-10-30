@@ -81,14 +81,15 @@
 		</c:forEach>
 	</div>
 	<!-- 메시지 입력창 -->
-	<input type="text" id="message" style="width: 80%;">
-	<!-- 메시지 전송 버튼 -->
+	<input type="text" id="message" placeholder="메시지를 입력하세요." style="width: 80%;" onkeypress="checkEnter(event)">
+    <!-- 메시지 전송 버튼 -->
 	<button onclick="sendMessage()">Send</button>
-	  <form action="${pageContext.request.contextPath}/sendMoney" method="post">
-	    <input type="hidden" name="chatRoomNum" value="${chatRoomNum}"/>
-	    <input type="number" name="amount" placeholder="송금할 금액" required />
-	    <button type="submit" class="send-money-button">송금</button>
-	  </form>
+	
+	<form action="${pageContext.request.contextPath}/sendMoney" method="post">
+		<input type="hidden" name="chatRoomNum" value="${chatRoomNum}"/>
+		<input type="number" name="amount" placeholder="송금할 금액" required />
+		<button type="submit" class="send-money-button">송금</button>
+	</form>
 
   
 	<script>
@@ -158,6 +159,10 @@
 
 		function sendMessage() {
 			const content = document.getElementById("message").value;
+			if (content === "") {
+                return;
+            }
+			
 			const message = {
 				//type : "chat",			
 				chat_member_num : '${member.member_num}', // 세션 또는 전역 변수에서 사용자 ID 가져옴
@@ -169,7 +174,31 @@
 
 		    // 메시지 입력 필드 초기화
 		    document.getElementById("message").value = '';
-
+		    
+			//알림
+			let member_num = ${member.member_num};
+			let chatRoom_num = ${chatRoomNum};
+			let obj = {
+					member_num : member_num,
+					chatRoom_num : chatRoom_num,
+					content : content
+			}
+			console.log(obj)
+			$.ajax({
+				async : true, //비동기 : true(비동기), false(동기)
+				url : '<c:url value="/chat/notification"/>', 
+				type : 'post', 
+				data : JSON.stringify(obj), 
+				contentType : "application/json; charSet=utf-8",
+				success : function (data){	
+					if(data){
+						console.log("채팅 알람 전송");
+					}
+				}, 
+				error : function(jqXHR, textStatus, errorThrown){
+					console.log(jqXHR);
+				}
+			});	
 		}
 		
 		function refreshChatHistory() {
@@ -189,20 +218,34 @@
             });
         }
 		
-    window.onload = function() {
-		// 에러 메시지가 존재하는지 확인
-		var errorMessage = "<c:out value='${errorMessage}' />";
-		if (errorMessage) {
-			alert(errorMessage);
-		}
-
-		// 성공 메시지가 존재하는지 확인
-		var successMessage = "<c:out value='${successMessage}' />";
-		if (successMessage) {
-			alert(successMessage);
-		
-		}
-	};
+		function checkEnter(event) {
+            if (event.keyCode === 13) { // Enter 키가 눌렸을 때
+                event.preventDefault(); // 기본 동작 방지
+                sendMessage(); // 메시지 전송
+            }
+        }
+		/* 
+		function checkEnter(event) {
+            if (event.key === "Enter") { // Enter 키가 눌렸을 때
+                event.preventDefault(); // 기본 동작 방지
+                sendMessage(); // 메시지 전송
+            }
+        }
+		 */
+	    window.onload = function() {
+			// 에러 메시지가 존재하는지 확인
+			var errorMessage = "<c:out value='${errorMessage}' />";
+			if (errorMessage) {
+				alert(errorMessage);
+			}
+	
+			// 성공 메시지가 존재하는지 확인
+			var successMessage = "<c:out value='${successMessage}' />";
+			if (successMessage) {
+				alert(successMessage);
+			
+			}
+		};
 	</script>
 </body>
 </html>

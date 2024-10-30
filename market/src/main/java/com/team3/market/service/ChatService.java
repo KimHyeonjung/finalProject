@@ -67,12 +67,26 @@ public class ChatService {
 		return chatDAO.deleteChatRoom(chatRoomNum);
 	}
 	
-	public boolean notify(Map<String, Object> item, MemberVO user) {
-		int type = 1;
-		int member_num = (Integer) item.get("member_num");
-		String propStr = "<div>읽지 않은 채팅이 있습니다.</div>";
+	public boolean notify(Map<String, Object> item, MemberVO user, MemberVO postUser) {
+		int type = 4;
+		int chatRoom_num = (Integer)item.get("chatRoom_num");
+		String content = (String)item.get("content");
 		
-		return chatDAO.insertNotification(member_num, type, null, propStr);
+		int maxLength = 15;
+	    if (content.length() > maxLength) {
+	        content = content.substring(0, maxLength) + "..."; // 15자를 넘으면 자르고 "..." 추가
+	    }
+		
+		String propStr = "<div>" + user.getMember_id() + "(" + user.getMember_nick() 
+		+ ")</div>" + "<div>" + content + "</div>";
+		
+		System.out.println(propStr);
+		
+		return chatDAO.insertNotification(postUser.getMember_num(), type, chatRoom_num, propStr);
+	}
+
+	public MemberVO getMember(Integer chatRoom_num, Integer member_num) {
+		return chatDAO.selectChatRoomByMember(chatRoom_num, member_num);
 	}
 
     

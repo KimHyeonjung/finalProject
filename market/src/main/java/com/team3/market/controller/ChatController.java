@@ -1,6 +1,7 @@
 package com.team3.market.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,17 +10,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.ChatRoomDTO;
+import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.service.ChatService;
 import com.team3.market.service.WalletService;
+import com.team3.market.utils.NotificationWebSocketHandler;
 
 
 @Controller
@@ -30,6 +34,10 @@ public class ChatController {
     
     @Autowired
     private WalletService walletService; 
+    
+	@Autowired
+    private NotificationWebSocketHandler notificationHandler;
+
 
 	@GetMapping("/chatRoom")
 	public String chatRoom(HttpSession session, Model model) {
@@ -93,6 +101,30 @@ public class ChatController {
             return "redirect:/chatRoom?error=true"; // 실패 시 에러 메시지와 함께 리다이렉트
         }
     }
+	
+	@PostMapping("/chat/notification")
+	public boolean chatNoti(@RequestBody Map<String, Object> item, HttpSession session) {
+		boolean res = false;
+		System.out.println("13579");
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(item == null || user == null) {
+			return false;
+		}
+		MemberVO postUser = chatService.getMember((Integer)item.get("chatRoom_num"), (Integer)item.get("member_num"));
+		System.out.println(postUser.toString());
+		res = chatService.notify(item, user, postUser);
+		System.out.println(res);
+		if(res) {
+			try {
+				notificationHandler.sendNotificationToUser(postUser.getMember_id(), "notification");
+				return true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return res;
+	}
 	
 	@RequestMapping(value = "/chat/loadChatHistory", method = RequestMethod.GET)
 	public String loadChatHistory(@RequestParam("chatRoomNum") int chatRoomNum, HttpSession session, Model model) {

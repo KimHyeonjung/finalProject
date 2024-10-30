@@ -69,4 +69,28 @@
     DELETE FROM chat_room WHERE chatRoom_num = #{chatRoomNum}
     </delete>
     
+    <insert id="insertNotification">
+    INSERT INTO notification (
+            notification_member_num,
+            notification_type_num,
+            notification_chatRoom_num,
+            notification_message
+        ) VALUES (
+            #{member_num},
+            #{type},
+            #{chatRoom_num},
+            #{content}
+        )
+    </insert>
+    
+    <select id="selectChatRoomByMember" parameterType="map" resultType="MemberVO">
+        SELECT m.*
+        FROM chat_room cr
+        JOIN member m ON (m.member_num = CASE
+            WHEN cr.chatRoom_member_num != #{member_num} THEN cr.chatRoom_member_num
+            WHEN cr.chatRoom_member_num2 != #{member_num} THEN cr.chatRoom_member_num2
+        END)
+        WHERE cr.chatRoom_num = #{chatRoom_num}
+    </select>
+    
 </mapper>
