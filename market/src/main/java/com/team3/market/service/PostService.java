@@ -415,6 +415,13 @@ public class PostService {
 		return postDao.selectCategoryName(category_num);
 	}
 
+	public boolean makeChatRoom2(Map<String, Object> post, MemberVO user) {
+		int post_num = (Integer) post.get("post_num");
+		int member_num = (Integer) post.get("member_num");
+		ChatRoomVO chatRoom = new ChatRoomVO(member_num, user.getMember_num(), post_num);
+		return postDao.insertChatRoom(chatRoom);
+	}
+
 	
 	
 }

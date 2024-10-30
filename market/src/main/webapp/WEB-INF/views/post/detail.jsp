@@ -146,7 +146,7 @@
 											id="wish" data-post_num="${post.post_num}">찜하기</div>
 										<div class="btn btn-outline-danger <c:if test="${report.report_member_num == user.member_num}">active</c:if>" 
 											id="report" data-post_num="${post.post_num}">신고하기</div>
-										<div class="btn btn-warning" id="chat" data-post_num="${post.post_num}">채팅</div>
+										<div class="btn btn-warning" id="chat" data-post_num="${post.post_num}">채팅방</div>
 										<div class="dropdown dropright">
 										    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 												흥정하기
@@ -179,7 +179,7 @@
 									<div class="btn btn-dark" 
 										id="report">신고하기</div>
 									<div class="btn btn-dark" 
-										id="chat">채팅</div>
+										id="chat">채팅신청</div>
 								</c:otherwise>
 							</c:choose>
 						</div>
@@ -435,7 +435,40 @@
 			}
 		});	
 	});
-	
+	//채팅신청
+	$(document).on('click', '#chat', function() {
+		if (alertLogin()) {
+			return;
+		}
+
+		let post_num = +${post.post_num};
+		let member_num = +${post.post_member_num};
+		let obj = {
+				post_num : post_num,
+				member_num : member_num,
+		}
+
+		$.ajax({
+			async: true,
+			url: '<c:url value="/post/chat"/>',  // 채팅 요청 URL
+			type: 'post',
+			data: JSON.stringify(obj),  // JSON 형태로 데이터 전달
+			contentType: "application/json; charSet=utf-8",
+			success: function (data) {
+				console.log(data);
+				if (data.success) {
+					// 채팅방 생성 또는 존재 -> 해당 채팅창으로 이동
+					console.log(${data.chatRoomNum});
+					location.href = `<c:url value="/chat"/>?chatRoomNum=\${data.chatRoomNum}`;
+				} else {
+					alert("채팅 신청에 실패했습니다.");
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				console.log(jqXHR);
+			}
+		});
+	});
 </script>
 </body>
 </html>

@@ -8,9 +8,12 @@ import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.MemberVO;
+import com.team3.market.model.vo.PostVO;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChatService {
@@ -54,6 +57,22 @@ public class ChatService {
 
 	public void saveChatMessage(ChatVO chatVO) {
 		chatDAO.insertChat(chatVO);
+	}
+
+	public PostVO getChatRoomPost(int chatRoomNum) {
+		return chatDAO.selectChatRoomPost(chatRoomNum);
+	}
+
+	public boolean deleteChatRoom(int chatRoomNum) {
+		return chatDAO.deleteChatRoom(chatRoomNum);
+	}
+	
+	public boolean notify(Map<String, Object> item, MemberVO user) {
+		int type = 1;
+		int member_num = (Integer) item.get("member_num");
+		String propStr = "<div>읽지 않은 채팅이 있습니다.</div>";
+		
+		return chatDAO.insertNotification(member_num, type, null, propStr);
 	}
 
     
