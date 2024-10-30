@@ -143,6 +143,7 @@ function notiListDisplay(){
 		type : 'post', 
 		success : function (data){	
 			var list = data.list;
+			console.log(list);
 			var str = '';
 			notiCheck();				
 			if(count != 0) {
@@ -163,11 +164,16 @@ function notiListDisplay(){
 							width="70" height="70" alt="none"/>
 						`;
 					}
-					str += `
-					<div class="list-group-item list-group-item-action d-flex justify-content-between">
-							
-						<a href='<c:url value="/post/detail/\${item.notification.notification_post_num}"/>'>
-							\${item.notification.notification_message}	
+					str += `<div class="list-group-item list-group-item-action d-flex justify-content-between">
+							<a href=`;
+					if (item.notification.notification_type_num == 1) {
+						str += `'<c:url value="/post/detail/\${item.notification.notification_post_num}"/>'`;
+					} else if (item.notification.notification_type_num == 4) {
+						str += `'<c:url value="/chat?chatRoomNum=\${item.notification.notification_chatRoom_num}"/>'`;
+					}
+					
+					str += `>
+						\${item.notification.notification_message}	
 						</a>
 						<button type="button" class="close checked"
 							data-num="\${item.notification.notification_num}"
