@@ -246,6 +246,7 @@
         <result property="notification_member_num" column="notification_member_num"/>
         <result property="notification_type_num" column="notification_type_num"/>
         <result property="notification_post_num" column="notification_post_num"/>
+        <result property="notification_chatRoom_num" column="notification_chatRoom_num"/>
         <result property="notification_message" column="notification_message"/>
         <result property="notification_read" column="notification_read"/>
         <result property="notification_date" column="notification_date"/>
