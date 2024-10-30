@@ -1,5 +1,6 @@
 package com.team3.market.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.handler.SocketHandler;
 import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.dto.MessageDTO;
 import com.team3.market.model.vo.AfterVO;
@@ -37,6 +39,9 @@ public class PostController {
 	PostService postService;
 	@Autowired
     private NotificationWebSocketHandler notificationHandler;
+	@Autowired
+    private SocketHandler socketHandler; // SocketHandler 주입
+
 	
     @GetMapping("/insert")
     public String insert(Model model, HttpSession session) {
@@ -184,6 +189,7 @@ public class PostController {
 			MemberVO postUser = postService.getMember((Integer)post.get("member_num"));
 			try {
 				notificationHandler.sendNotificationToUser(postUser.getMember_id(), "notification");
+				socketHandler.sendMessage2("null", chatRoom.getChatRoom_num());
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -191,6 +197,39 @@ public class PostController {
 			}
 		}
 		return res;
+	}
+	
+	@ResponseBody
+	@PostMapping("/chat")
+	public Map<String, Object> requestChat(@RequestBody Map<String, Object> post, HttpSession session) {
+		MemberVO user = (MemberVO) session.getAttribute("user");
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		if (post == null || user == null) {
+			result.put("success", false);
+			return result;
+		}
+
+		ChatRoomVO chatRoom = postService.getChatRoom(post, user);
+		if (chatRoom == null) {
+			// 채팅방이 없으면 생성
+			boolean chatRoomCreated = postService.makeChatRoom2(post, user);
+			if (chatRoomCreated) {
+				chatRoom = postService.getChatRoom(post, user); // 새로 생성된 채팅방 가져오기
+			}
+		}
+
+		if (chatRoom != null) {
+			// 채팅방 번호를 반환해서 해당 채팅방으로 이동
+			System.out.println("ChatRoomNum: " + chatRoom.getChatRoom_num());
+			
+			result.put("chatRoomNum", chatRoom.getChatRoom_num());
+			result.put("success", true);
+		} else {
+			result.put("success", false);
+		}
+
+		return result;
 	}
 
 }

@@ -55,10 +55,23 @@
 }
 </style>
 </head>
-<!-- 페이지 로드 시 WebSocket 연결 -->
 <body>
+	<!-- 게시물 정보 표시 영역 -->
+	<div class="post-info" 
+	     style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; cursor: pointer;" 
+	     onclick="window.location.href='<c:url value='/post/detail/${post.post_num}' />'">
+		<!-- 게시물 프로필 이미지 (썸네일) -->
+		<%-- <img src="${post.post_thumbnail}" alt="게시물 이미지" style="width: 100px; height: 100px; object-fit: cover; margin-right: 15px; display: inline-block;"> --%>
+		
+		<!-- 게시물 제목 및 가격 -->
+		<div style="display: inline-block; vertical-align: top;">
+			<h3>${post.post_title}</h3> <!-- 게시물 제목 -->
+			<p><strong>가격:</strong> ${post.post_price}원</p> <!-- 게시물 가격 -->
+		</div>
+	</div>
+	
 	<!-- 채팅 내용 표시 영역 -->
-	<div class="chat-history">
+	<div id="chat-history">
 		<c:forEach var="chatDTO" items="${chatDTOs}">
 			<div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
 				<strong>${chatDTO.getTargetMember().member_nick}</strong>: 
@@ -79,8 +92,8 @@
 
   
 	<script>
-		let websocket = new WebSocket("http://localhost:8080/market/chat/echo.do?chatRoomNum=${chatRoomNum}&member_nick=${member.member_nick}");
-		
+		//let websocket = new WebSocket("http://localhost:8080/market/chat/echo.do?chatRoomNum=${chatRoomNum}&member_nick=${member.member_nick}");
+		let websocket = new WebSocket("http://localhost:8080/market/ws/notify?chatRoomNum=${chatRoomNum}&member_nick=${member.member_nick}");
 		websocket.onopen = function(evt) {
 			console.log("open websocket");
 			//websocket.send(JSON.stringify({ type: "join", chatRoomNum: ${chatRoomNum} }));
@@ -102,7 +115,15 @@
 		// 메시지 수신
 		function onMessage(evt) {
 			writeToScreen("메시지 수신 : " + evt.data);
-			const message = JSON.parse(evt.data); // 서버로부터 받은 데이터를 JSON으로 파싱
+			
+			//location.reload(true);
+			
+			$("#chat-history").load(window.location.href + " #chat-history");
+			
+			 // 새로운 메시지를 수신할 때마다 채팅 내역을 갱신
+		    //refreshChatHistory();
+			
+			/* const message = JSON.parse(evt.data); // 서버로부터 받은 데이터를 JSON으로 파싱
 	        const chatArea = document.querySelector(".chat-history");
 	        
 	        // 상대방이 보낸 메시지를 화면에 출력
@@ -118,7 +139,7 @@
 	        `;
 			console.log(chatArea);
 	        chatArea.appendChild(messageElement);
-	        chatArea.scrollTop = chatArea.scrollHeight;
+	        chatArea.scrollTop = chatArea.scrollHeight; */
 		}
 		
 		// 에러 발생
@@ -150,19 +171,38 @@
 		    document.getElementById("message").value = '';
 
 		}
+		
+		function refreshChatHistory() {
+            $.ajax({
+                url: '/market/chat/loadChatHistory',
+                type: 'GET',
+                data: {
+                    chatRoomNum: '${chatRoomNum}' // 현재 채팅방 번호 전송
+                },
+                success: function(response) {
+                    // 채팅 기록 부분만 업데이트
+                    $('#chat-history').html(response);
+                },
+                error: function(error) {
+                    console.log("채팅 내역을 불러오는 중 오류 발생:", error);
+                }
+            });
+        }
+		
     window.onload = function() {
-      // 에러 메시지가 존재하는지 확인
-      var errorMessage = "<c:out value='${errorMessage}' />";
-      if (errorMessage) {
-          alert(errorMessage);
-      }
+		// 에러 메시지가 존재하는지 확인
+		var errorMessage = "<c:out value='${errorMessage}' />";
+		if (errorMessage) {
+			alert(errorMessage);
+		}
 
-      // 성공 메시지가 존재하는지 확인
-      var successMessage = "<c:out value='${successMessage}' />";
-      if (successMessage) {
-          alert(successMessage);
-      }
-  };
+		// 성공 메시지가 존재하는지 확인
+		var successMessage = "<c:out value='${successMessage}' />";
+		if (successMessage) {
+			alert(successMessage);
+		
+		}
+	};
 	</script>
 </body>
 </html>

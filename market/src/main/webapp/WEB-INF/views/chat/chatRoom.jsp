@@ -40,6 +40,28 @@
 	        };
 	    }
 	}
+	
+	function leaveChatRoom(chatRoomNum) {
+        // 서버로 채팅방 나가기 요청을 보냄
+        fetch(`/market/chat/leave?chatRoomNum=\${chatRoomNum}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("채팅방을 나갔습니다.");
+                // 채팅방 목록을 새로 고침하거나 페이지를 리로드할 수 있음
+                location.reload();
+            } else {
+                alert("채팅방 나가기에 실패했습니다.");
+            }
+        })
+        .catch(error => {
+            console.error("오류:", error);
+        });
+    }
 </script>
 </head>
 <body>
@@ -63,6 +85,7 @@
 				<span class="last-time">${chatRoom.getChat().chat_date}</span>
 				<!-- 마지막 메시지 시간 -->
 			</div>
+			<button onclick="leaveChatRoom('${chatRoom.getChatRoom().chatRoom_num}')">채팅방 나가기</button>
 		</c:forEach>
 	</div>
 </body>

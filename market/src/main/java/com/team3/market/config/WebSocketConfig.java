@@ -18,20 +18,22 @@ import com.team3.market.service.ChatService;
 @ComponentScan(basePackages = "com.team3.market")
 public class WebSocketConfig implements WebSocketConfigurer {
 
-@Autowired
-ChatService chatService;
+	@Autowired
+	ChatService chatService;
 
-    //@Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new NotificationWebSocketHandler(), "/ws/notify") // 클라이언트에서 접속할 수 있는 URL
-                .setAllowedOrigins("*")
-                .addInterceptors(new HttpSessionHandshakeInterceptor()); 
-        registry.addHandler(new SocketHandler(chatService), "/chat/echo.do")
-                .setAllowedOrigins("*");  // 필요한 경우 특정 오리진만 허용 가능
-    }
-    
-    @Bean
-    public NotificationWebSocketHandler notificationWebSocketHandler() {
-        return new NotificationWebSocketHandler();
-    }
+	@Override
+	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+		registry.addHandler(new NotificationWebSocketHandler(), "/ws/notify") // 클라이언트에서 접속할 수 있는 URL
+				.setAllowedOrigins("*").addInterceptors(new HttpSessionHandshakeInterceptor());
+//		registry.addHandler(new SocketHandler(chatService), "/chat/echo.do")
+//				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
+		registry.addHandler(new SocketHandler(chatService), "/ws/notify")
+				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
+																										// 허용 가능
+	}
+
+	@Bean
+	public NotificationWebSocketHandler notificationWebSocketHandler() {
+		return new NotificationWebSocketHandler();
+	}
 }
