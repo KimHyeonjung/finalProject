@@ -1,11 +1,10 @@
 package com.team3.market.dao;
 
 import java.util.List;
+import java.util.Map;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.MemberVO;
@@ -29,5 +28,7 @@ public interface ChatDAO {
 	PostVO selectChatRoomPost(int chatRoomNum);
 
 	boolean deleteChatRoom(int chatRoomNum);
+
+	List<MemberVO> selectChatRoomByMember(Map<String, Integer> params);
 
 }

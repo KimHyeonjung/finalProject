@@ -79,6 +79,12 @@ public class HomeController {
 			
 			if (user != null) {
 				session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
+				session.setAttribute("memberNum", user.getMember_num()); // 로그인 성공 시 세션에 memberNum 저장 // chatRoom 송금 시 사용
+				
+				// 사용자 포인트 정보를 데이터베이스에서 가져옴
+			    walletService.updateSessionMoney(user.getMember_num(), session);
+			    int updatedTotalMoney = (int) session.getAttribute("totalMoney");
+				model.addAttribute("totalMoney", updatedTotalMoney); // JSP에서 사용할 수 있도록 모델에 추가
 				
 				// 자동 로그인 체크 여부 확인
 				String auto = request.getParameter("autoLogin");
