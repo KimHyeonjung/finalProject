@@ -21,7 +21,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 @Autowired
 ChatService chatService;
 
-    @Override
+    //@Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new NotificationWebSocketHandler(), "/ws/notify") // 클라이언트에서 접속할 수 있는 URL
                 .setAllowedOrigins("*")

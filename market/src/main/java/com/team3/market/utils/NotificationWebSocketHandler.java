@@ -13,7 +13,7 @@ import com.team3.market.model.vo.MemberVO;
 @Component  // 빈으로 등록
 public class NotificationWebSocketHandler extends TextWebSocketHandler {
 
-    private static ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<String, WebSocketSession>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {

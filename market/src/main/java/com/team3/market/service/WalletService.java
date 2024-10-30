@@ -29,7 +29,7 @@ public class WalletService {
 	WalletDAO walletDao;
 	
    public ReadyResponse payReady(String name, int totalPrice) {
-       Map<String, String> parameters = new HashMap<>();
+       Map<String, String> parameters = new HashMap<String, String>();
        parameters.put("cid", "TC0ONETIME");
        parameters.put("partner_order_id", "1234567890");
        parameters.put("partner_user_id", "roommake");
@@ -41,7 +41,7 @@ public class WalletService {
        parameters.put("cancel_url", "http://localhost:8080/market/wallet/pay/cancel");
        parameters.put("fail_url", "http://localhost:8080/market/wallet/pay/fail");
        
-       HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+       HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(parameters, this.getHeaders());
        
        RestTemplate template = new RestTemplate();
        String url = "https://open-api.kakaopay.com/online/v1/payment/ready";
@@ -52,14 +52,14 @@ public class WalletService {
    }
    
    public ApproveResponse payApprove(String tid, String pgToken) {
-       Map<String, String> parameters = new HashMap<>();
+       Map<String, String> parameters = new HashMap<String, String>();
        parameters.put("cid", "TC0ONETIME");
        parameters.put("tid", tid);
        parameters.put("partner_order_id", "1234567890");
        parameters.put("partner_user_id", "roommake");
        parameters.put("pg_token", pgToken);
        
-       HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+       HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(parameters, this.getHeaders());
        RestTemplate template = new RestTemplate();
        String url = "https://open-api.kakaopay.com/online/v1/payment/approve";
        ApproveResponse approveResponse = template.postForObject(url, requestEntity, ApproveResponse.class);

@@ -38,16 +38,18 @@ public class ChatController {
 		}
 		
 		// 사용자 포인트 정보를 데이터베이스에서 가져옴
-	    Integer updatedPoints = walletService.getUpdatedPoints(user.getMember_num());
-	    model.addAttribute("point", updatedPoints); // 포인트 정보를 모델에 추가
-
-		System.out.println(user.getMember_num());
-
-		List<ChatRoomDTO> chatRoomDTOs = chatService.getChatRoomsWithMembers(user.getMember_num());
-
-		model.addAttribute("chatRooms", chatRoomDTOs);
-		model.addAttribute("member", user);
-
+		/*
+		 * Integer updatedPoints = walletService.getUpdatedPoints(user.getMember_num());
+		 * model.addAttribute("point", updatedPoints); // 포인트 정보를 모델에 추가
+		 * 
+		 * System.out.println(user.getMember_num());
+		 * 
+		 * List<ChatRoomDTO> chatRoomDTOs =
+		 * chatService.getChatRoomsWithMembers(user.getMember_num());
+		 * 
+		 * model.addAttribute("chatRooms", chatRoomDTOs); model.addAttribute("member",
+		 * user);
+		 */
 		return "/chat/chatRoom";
 	}
     
@@ -76,7 +78,7 @@ public class ChatController {
 	        @RequestParam("chatRoomNum") Integer chatRoomNum,
 	        HttpSession session,
 	        RedirectAttributes redirectAttributes) {
-	    
+	    /*
 	    // 세션에서 송금자 정보 가져오기
 	    Integer senderMemberNum = (Integer) session.getAttribute("memberNum");
 	    
@@ -123,7 +125,8 @@ public class ChatController {
 	    	// 실패 시 에러 메시지를 추가
 	        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 	    }
-	    
+	    */
+	        
 	    return "redirect:/chat?chatRoomNum=" + chatRoomNum;
 	}
 

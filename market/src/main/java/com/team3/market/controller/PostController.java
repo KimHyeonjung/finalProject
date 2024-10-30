@@ -122,6 +122,8 @@ public class PostController {
 		model.addAttribute("message",message);
 		
 		return "/main/message";
+    }
+    
     @GetMapping("/list/{category_num}")
     public String postList(Model model, @PathVariable("category_num") int category_num) {
     	List<CombinePostWithFileDTO> list = postService.getPostListWithFileByCategory(category_num);
