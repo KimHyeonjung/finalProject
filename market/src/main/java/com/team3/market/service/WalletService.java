@@ -1,5 +1,6 @@
 package com.team3.market.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.team3.market.dao.WalletDAO;
@@ -102,6 +104,68 @@ public class WalletService {
 
 	public List<PointVO> getPointHistory(int member_num) {
 		return walletDao.selectPointHistory(member_num);
+	}
+
+
+	@Transactional(rollbackFor = Exception.class)
+	public void transferMoney(Integer senderMemberNum, Integer targetMemberNum, int amount) {
+		
+	    // 1. 송금할 금액이 유효한지 확인
+	    if (amount <= 0) {
+	        throw new IllegalArgumentException("송금 금액이 유효하지 않습니다.");
+	    }
+
+	    // 2. 송금자의 포인트 정보 조회
+	    MemberVO sender = walletDao.selectMemberById(senderMemberNum);
+	    int senderBalance = sender.getMember_money();
+	    int senderfake = sender.getMember_fake_money();
+	    int totalMoney = senderBalance + senderfake;
+	    
+	    if (totalMoney < amount) {
+	        throw new IllegalStateException("잔액이 부족합니다.");
+	    }
+	    
+	    int senderaftermoney = senderfake - amount;
+
+	    // 3. 수신자의 포인트 정보 조회
+	    MemberVO receiver = walletDao.selectMemberById(targetMemberNum);
+	    int receiverfake = receiver.getMember_fake_money();
+	    int receiveraftermoney = receiverfake + amount;
+
+	    // 4. 송금자의 포인트 차감
+	    sender.setMember_fake_money(senderaftermoney);
+	    walletDao.updateFakeMoney(sender);
+
+	    // 5. 수신자의 포인트 추가
+	    receiver.setMember_fake_money(receiveraftermoney);
+	    walletDao.updateFakeMoney(receiver);
+
+	    // 6. 송금 및 수신 내역을 포인트 기록으로 남김 (옵션)
+	    PointVO senderPointLog = new PointVO();
+	    senderPointLog.setPoint_member_num(senderMemberNum);
+	    senderPointLog.setPoint_money(-amount); // 포인트 차감
+	    senderPointLog.setPoint_type("거래 송금");
+	    senderPointLog.setPoint_date(new Date());
+	    walletDao.deletePayment(senderPointLog);
+
+	    PointVO receiverPointLog = new PointVO();
+	    receiverPointLog.setPoint_member_num(targetMemberNum);
+	    receiverPointLog.setPoint_money(amount); // 포인트 증가
+	    receiverPointLog.setPoint_type("거래 입금");
+	    receiverPointLog.setPoint_date(new Date());
+	    walletDao.insertPayment(receiverPointLog);
+	    
+	}
+	
+	public void updateSessionMoney(Integer memberNum, HttpSession session) {
+	    MemberVO member = walletDao.selectMemberById(memberNum);
+	    if (member != null) {
+	        // member_money와 member_fake_money를 더합니다.
+	        int totalMoney = member.getMember_money() + member.getMember_fake_money();
+	        session.setAttribute("totalMoney", totalMoney);
+	        
+	        log.info("세션에 업데이트된 totalMoney: " + totalMoney);
+	    }
 	}
    
 }

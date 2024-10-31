@@ -14,7 +14,7 @@
    <h1>카카오페이 결제 페이지</h1>
    <form id="paymentForm">
        <label for="totalPrice">충전 금액:</label>
-       <input type="number" id="totalPrice" name="totalPrice" required><br><br>
+       <input type="number" min="1000" id="totalPrice" name="totalPrice" required><br><br>
        <button type="button" id="btn-pay-ready">결제하기</button>
    </form>
    <script type="text/javascript">

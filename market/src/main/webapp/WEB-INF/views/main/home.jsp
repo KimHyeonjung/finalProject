@@ -11,8 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>home</title>
-    <script src="https://kit.fontawesome.com/c9d8812a57.js"
-	crossorigin="anonymous"></script>
+    
     <style>
     	* a,a:hover {
     		text-decoration: none;

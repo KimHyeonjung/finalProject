@@ -92,7 +92,9 @@ CREATE TABLE `notice` (
 	`notice_num`	int primary key auto_increment	NOT NULL,
 	`notice_member_num`	int	NOT NULL,
 	`notice_title`	varchar(20)	NULL,
-	`notice_content`	varchar(255)	NULL
+	`notice_content`	varchar(255)	NULL,
+    `notice_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `notice_pin` tinyint(1) NOT NULL default '0'
 );
 
 DROP TABLE IF EXISTS `report`;
@@ -103,7 +105,7 @@ CREATE TABLE `report` (
 	`report_member_num2`	int	NULL,
 	`report_post_num`	int	NULL,
 	`report_category_num`	int	NOT NULL,
-	`report_content`	varchar(100)	NULL,
+	`report_content`	varchar(300)	NULL,
 	`report_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -181,9 +183,9 @@ CREATE TABLE `notification` (
 	`notification_num`	int primary key auto_increment	NOT NULL,
 	`notification_member_num`	int	NOT NULL,
 	`notification_type_num`	int	NOT NULL,
-  `notification_post_num`	int	NULL,
+    `notification_post_num`	int	NULL,
+    `notification_chatRoom_num`	int	NULL,
 	`notification_message`	varchar(255)	NULL,
-  `notification_chatRoom_num`	int	NULL,
 	`notification_read`	boolean	NULL	DEFAULT false,
 	`notification_date`	datetime	NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -277,7 +279,8 @@ DROP TABLE IF EXISTS `report_category`;
 
 CREATE TABLE `report_category` (
 	`report_category_num`	int primary key auto_increment	NOT NULL,
-	`report_category_name`	varchar(20)	NOT NULL
+	`report_category_name`	varchar(20)	NOT NULL,
+    `report_category_type`	varchar(10)	NOT NULL	DEFAULT 'user'
 );
 
 

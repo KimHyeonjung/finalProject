@@ -32,13 +32,17 @@ public interface PostDAO {
 
 	List<PostVO> selectPostList();
 
-	List<ReportCategoryVO> selectReportCategory();
+	List<ReportCategoryVO> selectReportCategory(String type);
 
-	int insertReportPost(@Param("report")ReportVO report, @Param("member_num")int member_num);
+	int insertReportPost(ReportVO report);
+
+	int insertReportMember(ReportVO report);
 
 	void updatePostReport(int report_post_num);
 
-	List<ReportVO> getReport(int report_post_num);
+	List<ReportVO> selectReportByPost(int report_post_num);
+	
+	List<ReportVO> selectReportByMember(int report_member_num2);
 
 	ReportVO selectReportPost(@Param("post_num")int post_num, @Param("member_num")int member_num);
 
@@ -112,4 +116,9 @@ public interface PostDAO {
     // member_score를 업데이트하는 메서드
     boolean updateMemberScore(@Param("member_num") int member_num, @Param("after_review_sum") float afterReviewSum);
 	
+	void updateMemberReport(int member_num);
+
+	List<Map<String, Object>> selectReportListByPost(int post_num);
+
+
 }

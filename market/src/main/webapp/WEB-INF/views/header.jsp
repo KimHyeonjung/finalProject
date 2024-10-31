@@ -5,6 +5,8 @@
 <html>
 <head>
 	<meta charset="UTF-8">
+	<!-- 폰트어썸 -->
+	<script src="https://kit.fontawesome.com/c9d8812a57.js"	crossorigin="anonymous"></script>
 <style type="text/css">
 	.close:hover {color: red;}
 	.list-group-item.list-group-item-action {
@@ -44,15 +46,15 @@
 		
 		<div class="collapse navbar-collapse" id="collapsibleNavbar">
 			<ul class="navbar-nav">
-				<%-- <c:if test="${user == null}"> --%>
+				<c:if test="${user == null}">
 				    <li class="nav-item">
 						<a class="nav-link" href="<c:url value="/signup"/>">회원가입</a>
 				    </li>
 				    <li class="nav-item">
 						<a class="nav-link" href="<c:url value="/login"/>">로그인</a>
 				    </li>
-			    <%-- </c:if> --%>
-			    <%-- <c:if test="${user != null}"> --%>
+			    </c:if> 
+			    <%-- <c:if test="${user != null}">  --%>
 			    	<li class="nav-item">
 						<a class="nav-link" href="<c:url value="/chatRoom"/>">채팅</a>
 					</li>
@@ -62,6 +64,11 @@
 					<li class="nav-item">
 						<a class="nav-link" href="<c:url value="/logout"/>">로그아웃</a>
 					</li>
+					<%-- <c:if test="${user.member_auth eq 'ADMIN'}"> --%>
+						<li class="nav-item">
+							<a class="nav-link" href="<c:url value="/report/list"/>">신고 현황</a>
+						</li>
+					<%-- </c:if> --%>
 					<li class="nav-item">
 						<div class="dropdown">
 							<button data-toggle="collapse" data-target="#demo">
@@ -88,11 +95,10 @@
 		<div>
 			<p>${user.member_nick}</p>
 			<a href="<c:url value="/mypage"/>">개인정보 변경</a>
-			<a href="#">알림</a>
 			<p>온도</p>
 		</div>
 		<div>
-			<p>${user.member_money}원</p>
+			<p><span id="balance">0</span> 원</p>
 			<a href="<c:url value="/wallet/list"/>">내역</a>
 			<a href="<c:url value="/wallet/point"/>">충전</a>
 		</div>
@@ -115,6 +121,7 @@
 	</div>
 </body>
 <script type="text/javascript">
+
 var count = 0;
 function notiCheck(){
 	if(${user != null}){
@@ -196,6 +203,9 @@ $(document).ready(function (){
 
     $('#noti-btn').on('mouseenter', function(){
     	if(${user != null}){
+    		if(count == 0){
+    			return;
+    		}
 	    	notiListDisplay();
 	        // 클릭한 요소의 위치값을 구함
 	        var position = $(this).offset();
@@ -240,6 +250,7 @@ $(document).on('click', '.close.checked', function(){
 		data : {notification_num : notification_num},
 		success : function (data){
 			if(data){
+				
 				notiListDisplay();
 				if(count == 0){
 					$('#notiListModal').modal("hide");
@@ -251,5 +262,6 @@ $(document).on('click', '.close.checked', function(){
 		}
 	});
 });
+
 </script>
 </html>

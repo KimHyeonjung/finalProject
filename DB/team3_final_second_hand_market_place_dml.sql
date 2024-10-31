@@ -4,12 +4,17 @@ USE marketplace;
 INSERT INTO `notification_type` (`notification_type_num`, `notification_type_name`) VALUES 
 (1,'가격제안'), (2,'가격하락'), (3,'가격상승'), (4,'채팅수신');
 -- 신고 항목
-INSERT INTO `report_category` (`report_category_num`, `report_category_name`) VALUES
-(1, '광고성 콘텐츠예요'			), 
-(2, '거래 금지 품목으로 판단돼요'	),
-(3, '안전한 거래를 거부해요'		),
-(4, '부적절한 내용이 포함돼있어요'	),
-(5, '사기가 의심되요'			);
+INSERT INTO `report_category` (`report_category_num`, `report_category_name`, `report_category_type`) VALUES
+(1, '광고성 콘텐츠예요'				, 'post'),
+(2, '거래 금지 품목으로 판단돼요'		, 'post'),
+(3, '안전한 거래를 거부해요'			, 'post'),
+(4, '부적절한 내용이 포함돼있어요'		, 'post'),
+(5, '사기가 의심되요'				, 'post'),
+(6, '비매너 사용자에요'				, 'member'),
+(7, '전문 판매업자 같아요'			, 'member'),
+(8, '부적절한 성적 행위를 해요'		, 'member'),
+(9, '욕설, 비방, 혐오표현을 해요'		, 'member'),
+(10, '전문 판매업자 같아요'			, 'member');
 
 
 -- 게시글 상태
@@ -17,8 +22,8 @@ INSERT INTO `state` (`state_num`, `state_name`) VALUES
 (1,'사용'), (2,'숨김'), (3,'삭제');
 
 -- 거래 상태
-INSERT INTO `position` (`position_name`) VALUES 
-('판매중'), ('구매중'), ('무료나눔'), ('예약중'), ('거래완료');
+INSERT INTO `position` (`position_num`, `position_name`) VALUES 
+(1, '판매중'), (2, '구매중'), (3, '무료나눔'), (4, '예약중'), (5, '거래완료');
 
 -- 거래 방식
 INSERT INTO `way` (`way_name`) VALUES 
@@ -38,9 +43,12 @@ INSERT INTO `member`
 VALUES 
 ('qweqwe', '$2a$10$5dh4gkVX9JewxXDGja2ny.h1V9NeqQ8/9prqwISJX0coPFZKBaaeO', '큐더블유디', '01012345678', 'qwe@example.com'),
 ('asdasd', '$2a$10$2nko/eZx0pBwdF6fKJKSge74qbcCbCl.1KBiC3r6mQwWDkKaLDTee', '에이에스디', '01087654321', 'asd@example.com'),
-('zxczxc', '$2a$10$jLT.E7GaqFq3upcpNFugxedd/cVrQ4FKS/0y86J4e7dT04lHcY1qi', '즈엑스씨', '01013572468', 'zxc@example.com'),
-('nonuser', 'aaaaaaaa', '없는 유저', '01000000000', '123@naver.co.kr.com');
-
+('zxczxc', '$2a$10$jLT.E7GaqFq3upcpNFugxedd/cVrQ4FKS/0y86J4e7dT04lHcY1qi', '즈엑스씨', '01013572468', 'zxc@example.com');
+-- member 테이블에 대한 관리자 데이터 삽입
+INSERT INTO `member` 
+(`member_id`, `member_pw`, `member_nick`, `member_phone`, `member_email`, `member_auth`)
+VALUES 
+('admin123', '$2a$10$pkWV1ttU2oJwmZxhq9BLx.maWlDGIGfTLRe5.jkvn4FbE7xpCHyjK', '관리자', '01011112222', 'admin@example.com', 'ADMIN');
 
 -- post 테이블에 대한 샘플 데이터 삽입category
 INSERT INTO `post` 
@@ -54,6 +62,11 @@ VALUES
 (5, 3, 1	, 1	, 	7	, '목줄 팔아요'		, '목줄'		, 20000, 	false,	'부산, 한국'),
 (6, 3, 1	, 3	, 	9	, '드라이버 팝니다'		, '드라이버'	, 20000, 	false,	'부산, 한국'),
 (7, 2, 1	, 1	, 	12	, '중고차 팝니다'		, '중고차'	, 2000000, 	false,	'부산, 한국');
+
+INSERT INTO `notice`
+(`notice_num`, `notice_member_num`, `notice_title`,  `notice_date`, `notice_pin`)
+VALUES
+(1,1,'분쟁조정센터 공식 운영 안내',20241029,false);
 
 
 INSERT INTO `sido_areas` (`sido_name`) VALUES

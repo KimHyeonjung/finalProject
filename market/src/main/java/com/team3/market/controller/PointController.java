@@ -1,6 +1,9 @@
 package com.team3.market.controller;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -13,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.ApproveResponse;
 import com.team3.market.model.dto.OrderCreateForm;
 import com.team3.market.model.dto.ReadyResponse;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PointVO;
+import com.team3.market.service.ChatService;
 import com.team3.market.service.WalletService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +37,9 @@ public class PointController {
 	
 	@Autowired
 	WalletService walletService;
+	
+	@Autowired
+	ChatService chatService;
 	
 	@GetMapping("/point")
 	public String point() {
@@ -57,7 +65,7 @@ public class PointController {
 	}
 	
 	@GetMapping("/pay/completed")
-	public String payCompleted(@RequestParam("pg_token") String pgToken, HttpSession session) {
+	public String payCompleted(@RequestParam("pg_token") String pgToken, HttpSession session, Model model) {
 		
 		String tid = (String) session.getAttribute("tid");
 		int totalPrice = (Integer) session.getAttribute("totalPrice");  // 세션에서 결제 금액 가져오기
@@ -72,7 +80,13 @@ public class PointController {
 		// 결제 승인 후 포인트 충전 내역 업데이트 및 잔액 추가
 		if (approveResponse != null) {
 			walletService.updatePoint(user.getMember_num(), totalPrice, session);
+			walletService.updateSessionMoney(user.getMember_num(), session);
+			
+			// totalMoney 세션에 저장
+			int updatedTotalMoney = (int) session.getAttribute("totalMoney");
+			model.addAttribute("totalMoney", updatedTotalMoney); // JSP에서 사용할 수 있도록 모델에 추가
 		}
+		
 		
 		return "redirect:/wallet/completed";
 		
@@ -98,4 +112,48 @@ public class PointController {
         return "/wallet/list"; // JSP 파일로 이동
     }
 	
+	@PostMapping("/sendMoney")
+	public String sendMoney(@RequestBody Map<String, Integer> requestData, HttpSession session, RedirectAttributes redirectAttributes) {
+	    Integer amount = requestData.get("amount");
+	    Integer chatRoomNum = requestData.get("chatRoomNum");
+
+	    // 세션에서 송금자 정보 가져오기
+	    Integer senderMemberNum = (Integer) session.getAttribute("memberNum");
+
+	    if (senderMemberNum == null) {
+	        return "redirect:/login"; // If sender is not logged in, redirect to login
+	    }
+
+	    // ChatService를 통해 상대방의 member_num 가져오기
+	    Integer targetMemberNum = chatService.getTargetMemberNumByChatRoomNum(chatRoomNum, senderMemberNum);
+
+	    try {
+	        // 송금 서비스 호출
+	        walletService.transferMoney(senderMemberNum, targetMemberNum, amount);
+	        walletService.updateSessionMoney(senderMemberNum, session);
+	        
+			redirectAttributes.addFlashAttribute("successMessage", "송금이 완료되었습니다.");
+
+	    } catch (Exception e) {
+	    	redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+	    }
+	    
+	    return "redirect:/chat?chatRoomNum=" + chatRoomNum;
+	}
+	
+	@GetMapping("/balance")
+	@ResponseBody
+	public Map<String, Object> getBalance(HttpSession session) {
+	    Integer memberNum = (Integer) session.getAttribute("memberNum");
+	    if (memberNum == null) {
+	        return Collections.singletonMap("totalMoney", 0); // 사용자 미로그인 시 0 반환
+	    }
+
+	    // 세션에서 사용자의 잔액 계산
+	    int totalMoney = (int) session.getAttribute("totalMoney");
+	    
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("totalMoney", totalMoney);
+	    return response;
+	}
 }

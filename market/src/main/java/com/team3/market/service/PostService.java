@@ -248,8 +248,8 @@ public class PostService {
 		return postDao.selectPostList();
 	}
 
-	public List<ReportCategoryVO> getReportCategory() {
-		return postDao.selectReportCategory();
+	public List<ReportCategoryVO> getReportCategory(String type) {
+		return postDao.selectReportCategory(type);
 	}
 	// 게시글 신고
 	public int reportPost(ReportVO report, MemberVO user) {
@@ -257,14 +257,35 @@ public class PostService {
 			return 0;
 		}
 		// 신고자 중복 체크
-		List<ReportVO> reportPostList = postDao.getReport(report.getReport_post_num());
-		for(ReportVO reportPost : reportPostList) {
+		List<ReportVO> reportList = postDao.selectReportByPost(report.getReport_post_num());
+		for(ReportVO reportPost : reportList) {
 			if(reportPost.getReport_member_num() == user.getMember_num()) {
 				return 2;
 			}
 		}
+		report.setReport_member_num(user.getMember_num());
 		try {
-			return postDao.insertReportPost(report, user.getMember_num());
+			return postDao.insertReportPost(report);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	// 유저 신고
+	public int reportMember(ReportVO report, MemberVO user) {
+		if(report == null || user == null) {
+			return 0;
+		}
+		// 신고자 중복 체크
+		List<ReportVO> reportList = postDao.selectReportByMember(report.getReport_member_num2());
+		for(ReportVO reportMember : reportList) {
+			if(reportMember.getReport_member_num() == user.getMember_num()) {
+				return 2;
+			}
+		}
+		report.setReport_member_num(user.getMember_num());
+		try {
+			return postDao.insertReportMember(report);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
@@ -482,6 +503,11 @@ public class PostService {
 		ChatRoomVO chatRoom = new ChatRoomVO(member_num, user.getMember_num(), post_num);
 		return postDao.insertChatRoom(chatRoom);
 	}
+
+	public void updateMemberReport(int member_num) {
+		postDao.updateMemberReport(member_num);
+	}
+
 
 	
 	
