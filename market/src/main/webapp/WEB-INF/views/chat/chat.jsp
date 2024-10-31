@@ -278,6 +278,11 @@
 	            return;
 	        }
 
+	        if (amount < 100) {
+	            alert('송금할 금액은 최소 100원이어야 합니다.');
+	            return;
+	        }
+
 	        var data = {
 	            amount: amount,
 	            chatRoomNum: chatRoomNum
@@ -289,13 +294,61 @@
 	            data: JSON.stringify(data),
 	            contentType: 'application/json',
 	            success: function(response) {
-	                alert("송금이 완료되었습니다!");
-	                closeModal(); // 모달 닫기
-	                updateHeader(); // 헤더 업데이트
+	                alert(response.message); // 메시지 표시
+	                if (response.redirectUrl) {
+	                    window.location.href = response.redirectUrl; // 리다이렉트 URL로 이동
+	                } else {
+	                    // 송금자와 수신자 번호를 서버 응답에서 가져옴
+	                    var senderMemberNum = response.senderMemberNum;
+	                    var targetMemberNum = response.targetMemberNum;
+
+	                    // 송금 알림 전송
+	                    sendTransferNotification(senderMemberNum, targetMemberNum, amount, chatRoomNum);
+
+	                    closeModal(); // 모달 닫기
+	                    updateHeader(); // 헤더 업데이트
+	                    window.location.href = '/market/chat?chatRoomNum=' + chatRoomNum; // 기존 URL로 리다이렉트
+	                }
 	            },
-	            error: function(error) {
-	                alert("송금 중 오류가 발생했습니다.");
-	                console.error(error);
+	            error: function(xhr) {
+	                var response = xhr.responseJSON || {};
+	                var errorMessage = response.message || "송금 중 오류가 발생했습니다.";
+	                alert(errorMessage); // 오류 메시지 표시
+
+	                if (xhr.status === 400 && errorMessage.includes("잔액이 부족합니다.")) {
+	                    // 잔액 부족 시 포인트 충전 페이지로 리다이렉트
+	                    if (confirm("잔액이 부족합니다. 포인트를 충전하시겠습니까?")) {
+	                        window.location.href = '/market/wallet/point'; // 포인트 충전 URL
+	                    }
+	                }
+	            }
+	        });
+	    }
+	    
+	    function sendTransferNotification(senderMemberNum, targetMemberNum, amount, chatRoomNum) {
+	        let content = `${senderMemberNum}님이 ${amount}원을 송금했습니다.`; // 알림 내용
+
+	        let notificationObj = {
+	            member_num: targetMemberNum, // 수신자 회원 번호
+	            chatRoom_num: chatRoomNum, // 채팅방 번호
+	            content: content // 알림 내용
+	        };
+
+	        console.log(notificationObj);
+
+	        $.ajax({
+	            async: true, // 비동기 : true(비동기), false(동기)
+	            url: '/chat/notification',
+	            type: 'post',
+	            data: JSON.stringify(notificationObj),
+	            contentType: "application/json; charSet=utf-8",
+	            success: function(data) {
+	                if (data) {
+	                    console.log("송금 알람 전송");
+	                }
+	            },
+	            error: function(jqXHR, textStatus, errorThrown) {
+	                console.log(jqXHR);
 	            }
 	        });
 	    }
@@ -305,7 +358,8 @@
 	            url: '/market/wallet/balance', // 잔액을 가져오는 API 엔드포인트
 	            type: 'GET',
 	            success: function(response) {
-	                $('#balance').text(response.totalMoney); // 헤더에서 잔액을 표시하는 요소의 ID 사용
+	                console.log("Total Money from server: " + response.totalMoney); // 서버 응답 확인
+	                $('#balance').text(response.totalMoney); // 잔액을 표시하는 요소에 텍스트 추가
 	            },
 	            error: function(error) {
 	                console.error("헤더 업데이트 중 오류 발생:", error);

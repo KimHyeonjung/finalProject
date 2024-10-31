@@ -30,7 +30,6 @@ public class WalletService {
 	@Autowired
 	WalletDAO walletDao;
 	
-	
 	public ReadyResponse payReady(String name, int totalPrice) {
        Map<String, String> parameters = new HashMap<>();
        parameters.put("cid", "TC0ONETIME");
@@ -110,10 +109,9 @@ public class WalletService {
 
 	@Transactional(rollbackFor = Exception.class)
 	public void transferMoney(Integer senderMemberNum, Integer targetMemberNum, int amount) throws Exception {
-		
 	    // 1. 송금할 금액이 유효한지 확인
 	    if (amount <= 0) {
-	        throw new IllegalArgumentException("송금 금액이 유효하지 않습니다.");
+	        throw new IllegalArgumentException("송금 금액이 유효하지 않습니다."); // 예외를 던져 클라이언트에 알리기
 	    }
 
 	    // 2. 송금자의 포인트 정보 조회
@@ -121,9 +119,9 @@ public class WalletService {
 	    int senderBalance = sender.getMember_money();
 	    int senderfake = sender.getMember_fake_money();
 	    int totalMoney = senderBalance + senderfake;
-	    
+
 	    if (totalMoney < amount) {
-	        throw new IllegalStateException("잔액이 부족합니다.");
+	        throw new IllegalStateException("잔액이 부족합니다."); // 예외를 던져 클라이언트에 알리기
 	    }
 	    
 	    int senderaftermoney = senderfake - amount;
@@ -168,5 +166,13 @@ public class WalletService {
 	        log.info("세션에 업데이트된 totalMoney: " + totalMoney);
 	    }
 	}
-   
+	
+	public MemberVO getMember(int memberNum) {
+	    MemberVO member = walletDao.selectMemberById(memberNum);
+	    if (member == null) {
+	        throw new IllegalArgumentException("해당 멤버를 찾을 수 없습니다.");
+	    }
+	    return member;
+	}
+
 }

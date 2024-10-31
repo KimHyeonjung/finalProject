@@ -36,4 +36,8 @@ public interface ChatDAO {
 	
 	List<MemberVO> selectChatRoomBySender(Map<String, Integer> params);
 
+	ChatRoomVO selectChatRoomById(int chatRoomNum);
+
+	Object selectChatRoomNumByMembers(Map<String, Integer> params);
+
 }
