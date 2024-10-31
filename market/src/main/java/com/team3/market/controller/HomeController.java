@@ -84,6 +84,7 @@ public class HomeController {
 			if (user != null) {
 				session.setAttribute("user", user); // 로그인 성공 시 세션에 사용자 정보 저장
 				session.setAttribute("memberNum", user.getMember_num()); // 로그인 성공 시 세션에 memberNum 저장 // chatRoom 송금 시 사용
+				session.setAttribute("memberAuth", user.getMember_auth());
 				
 				// 사용자 포인트 정보를 데이터베이스에서 가져옴
 			    walletService.updateSessionMoney(user.getMember_num(), session);
