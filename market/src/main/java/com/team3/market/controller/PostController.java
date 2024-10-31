@@ -94,7 +94,7 @@ public class PostController {
     }
     
     @GetMapping("/review/{post_num}")
-    public String review(Model model, HttpSession session) {
+    public String review(Model model, HttpSession session, @PathVariable("post_num")int post_num) {
         // 로그인 여부 확인
         MemberVO user = (MemberVO) session.getAttribute("user");
         
@@ -105,32 +105,36 @@ public class PostController {
         
         // 추가적으로 post_num을 사용하여 필요한 정보를 모델에 추가할 수 있습니다.
         
+        model.addAttribute("post_num", post_num);
+        
         return "/post/review"; // 리뷰 작성 페이지로 이동
     }
     
-    // 게시글 생성 처리
+    // 리뷰 생성 처리
     @PostMapping("/review")
-    public String insertReview(@RequestParam("post_num") int postNum, Model model, AfterVO review, HttpSession session) {
-    	System.out.println("Request received"); // 디버깅 메시지 추가
-    	
-    	MemberVO user = (MemberVO)session.getAttribute("user");
-    	
-    	System.out.println(review);
-		
-    	boolean res = postService.insertReview(review, user);
+    public String insertReview(@RequestParam("post_num") int postNum, Model model, AfterVO review, HttpSession session, @RequestParam("after_review_sum") float afterReviewSum) {
+        System.out.println("Request received"); // 디버깅 메시지 추가
+        System.out.println("postNum: " + postNum); // post_num 값 확인
 
-		MessageDTO message;
-		
-		if(res) {
-			message = new MessageDTO("/", "리뷰를 등록했습니다.");
-		}else {
-			message = new MessageDTO("/post/review", "리뷰를 등록하지 못했습니다.");
-		}
-		
-		model.addAttribute("message",message);
-		
-		return "/main/message";
+        MemberVO user = (MemberVO) session.getAttribute("user");
+
+        // 리뷰 생성 처리 및 member_score 업데이트
+        boolean res = postService.insertReview(review, user, afterReviewSum);
+
+        MessageDTO message;
+
+        if (res) {
+            message = new MessageDTO("/", "리뷰를 등록했습니다.");
+        } else {
+            message = new MessageDTO("/post/review", "리뷰를 등록하지 못했습니다.");
+        }
+
+        model.addAttribute("message", message);
+
+        return "/main/message";
     }
+
+
     
     @GetMapping("/list/{category_num}")
     public String postList(Model model, @PathVariable("category_num") int category_num) {

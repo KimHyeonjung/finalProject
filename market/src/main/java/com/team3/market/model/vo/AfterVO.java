@@ -14,4 +14,8 @@ public class AfterVO {
 	private float after_review1;
 	private float after_review2;
 	private float after_review3;
+	
+    public void setAfter_post_num(int after_post_num) {
+        this.after_post_num = after_post_num;
+    }	
 }
