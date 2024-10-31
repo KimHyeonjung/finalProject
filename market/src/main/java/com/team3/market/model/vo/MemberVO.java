@@ -31,5 +31,11 @@ public class MemberVO {
 		this.member_email = email;
 		
 	}
+
+
+	public boolean isAdmin() {
+		
+		return "ADMIN".equals(this.member_auth);
+	}
     
 }
