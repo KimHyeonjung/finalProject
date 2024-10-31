@@ -238,14 +238,11 @@ if (navigator.geolocation) {
 				                '</div>';
 	
 	                // 지도에 마커 생성
-	                const marker = new kakao.maps.Marker({
-	                    map: map,
-	                    position: coords
-	                });
+	                marker.setPosition(coords);
+				    marker.setMap(map);
 	
 	                // 해당 좌표로 지도 중심 이동
 	                map.setCenter(coords);
-				    marker.setMap(map);
 				
 				    // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
 				    infowindow.setContent(content);
@@ -394,14 +391,14 @@ const uploadForm = $('#uploadForm');
             addressInput.value = '';  // 주소 입력창 값 초기화
         }
     }
-    // 기존 파일 정보를 저장할 전역 변수
-    var existFiles = ${fileList};
 	// 선택된 파일 정보를 저장할 전역 변수
  	var savedFiles = [];
 	// 이미지 파일 미리보기 처리
 	const previewContainer = document.getElementById('previewContainer');
+	var previewContainerTmp = previewContainer.innerHTML;
     const fileCount = document.getElementById('fileCount');
-    var selectedCount = ${fileList.size()};
+    var existingFileCount = ${fileList.size()};
+    var selectedCount = 0;
 	function handleFiles(files) {
 	    const maxFiles = 10;
 		
@@ -412,31 +409,35 @@ const uploadForm = $('#uploadForm');
 	    } 
 		
 	    // 선택된 파일 개수를 제한
-	    selectedCount = Math.min((selectedCount + files.length), maxFiles);
+	    //selectedCount = Math.min((selectedCount + files.length), maxFiles);
 	    
-	    // 파일 개수가 10개를 초과할 경우 경고
-	    if (selectedCount > maxFiles) {
-	        alert("최대 10장까지 이미지를 업로드할 수 있습니다.");
-	        document.getElementById('fileInput').value = ''; // 파일 입력 초기화
-	        return;
-	    }
+	    
 	 	// 새로 선택된 파일 정보 저장
 	 	const newFiles = Array.from(files);
  	   	savedFiles = savedFiles.concat(newFiles);
-		
- 	    displayPreviews2(savedFiles);
+ 	   	
+ 	   	selectedCount = savedFiles.length;
+ 	   	
+ 		// 파일 개수가 10개를 초과할 경우 경고
+	    if (selectedCount > maxFiles) {
+	        alert("최대 10장까지 이미지를 업로드할 수 있습니다.");
+	        document.getElementById('fileInput').value = ''; // 파일 입력 초기화
+	        savedFiles = savedFiles.filter(item => !newFiles.includes(item));
+	        return;
+	    }
+ 		
  		// 새로운 파일들로 미리보기 생성
  	    displayPreviews(savedFiles);
 	 		
- 	   alert(selectedCount);
 	    // 파일 개수 업데이트
-	    fileCount.innerText = selectedCount + "/10 사진 선택됨";
+	    fileCount.innerText = (selectedCount + existingFileCount) + "/10 사진 선택됨";
 	}
 	// 미리보기 생성 함수
 	function displayPreviews(files) {
 		// 미리보기 컨테이너 초기화
 	    previewContainer.innerHTML = '';
 		
+	    previewContainer.innerHTML = previewContainerTmp;
 		// 각 파일을 Promise로 처리하여 onload 이벤트 순서를 보장
 	    const readFilePromises = files.map((file, index) => {
 	        return new Promise((resolve) => {
@@ -465,52 +466,22 @@ const uploadForm = $('#uploadForm');
 	        });
 	    });	       
 	}
-	// 미리보기 생성 함수
-	function displayPreviews2(fileList) {
-		// 미리보기 컨테이너 초기화
-	    previewContainer.innerHTML = '';
-		
-		// 각 파일을 Promise로 처리하여 onload 이벤트 순서를 보장
-	    const readFilePromises = files.map((file, index) => {
-	        return new Promise((resolve) => {
-	            const reader = new FileReader();
-	            reader.onload = function (e) {
-	                resolve({ src: e.target.result, index: index });
-	            };
-	            reader.readAsDataURL(file);
-	        });
-	    });
-		// 모든 파일이 읽힌 후 순서대로 미리보기 생성
-	    Promise.all(readFilePromises).then((results) => {
-	        results.forEach(({ src, index }) => {
-	            const previewDiv = document.createElement('div');
-	            previewDiv.classList.add('image-preview');
-	            const closeButton = document.createElement('button');
-	            closeButton.innerHTML = index;//'&times;'; // × 표시
-	            closeButton.dataset.index = index;
-	            closeButton.classList.add('close-button'); // CSS 클래스 추가
-	            const imgElement = document.createElement('img');
-	            imgElement.src = src;
-	            imgElement.dataset.index = index; // 파일 순서를 유지할 데이터 속성 추가
-	            previewDiv.appendChild(imgElement);
-	            previewDiv.appendChild(closeButton);
-	            previewContainer.appendChild(previewDiv);
-	        });
-	    });	       
-	}
-	//추가된 미리보기 x삭제버튼 클릭시
+	var existingFileNums = [];
+	//미리보기 x삭제버튼 클릭시
 	$(document).on('click', '.close-button', function(){
 		let index = $(this).data('index');
 		let file_num = $(this).data('file_num');
-		if(index){
+		if(index){ // 새로 추가된거
 			savedFiles.splice(index, 1);
 			$(this).parent().remove();
 			console.log(savedFiles);
 		}
-		if(file_num){
-			var input = `<input type="text" name="fileNums" value="\${file_num}">`
+		if(file_num){ // 기존거
+			existingFileNums.push(file_num);
 			$(this).parent().remove();
-			$('.image-upload').append(input);
+			existingFileCount = existingFileCount - 1;			
+			fileCount.innerText = (selectedCount + existingFileCount) + "/10 사진 선택됨";
+			previewContainerTmp = previewContainer.innerHTML;
 		}
 	});
 	// form submit
@@ -522,6 +493,8 @@ const uploadForm = $('#uploadForm');
 			console.log(file.name);
 		  formData.append("files", file); // "files"는 컨트롤러에서 받을 파라미터 이름
 		}); 
+		// 삭제할 기존 이미지 num을 서버에 전송할 수 있도록 FormData에 추가
+	    formData.append('existingFileNums', existingFileNums);
        $.ajax({
    		async : true, //비동기 : true(비동기), false(동기)
    		url : '<c:url value="/post/update"/>', 

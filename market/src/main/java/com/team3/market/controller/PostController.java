@@ -1,5 +1,6 @@
 package com.team3.market.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,10 +130,11 @@ public class PostController {
 	}	
 	@ResponseBody
 	@PostMapping("/update")
-    public String updatePost(Model model, PostVO post, HttpSession session, List<MultipartFile> files, int[] fileNums) {
+    public String updatePost(Model model, PostVO post, HttpSession session, List<MultipartFile> files, int[] existingFileNums) {
     	System.out.println("Request received"); // 디버깅 메시지 추가
     	System.out.println("post : " + post);
     	System.out.println("파일 길이 : " + files.size());
+    	 Arrays.stream(existingFileNums).forEach(System.out::println);
 	    // 파일 선택 체크
 //	    if (fileList == null || fileList.length == 0) {
 //	        model.addAttribute("message", new MessageDTO("/post/insert", "파일을 선택하지 않았습니다."));
