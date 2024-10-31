@@ -94,7 +94,7 @@ public class ChatService {
 	    params.put("chatRoomNum", chatRoomNum);
 	    params.put("senderMemberNum", senderMemberNum);
 
-	    List<MemberVO> members = chatDAO.selectChatRoomByMember(params);
+	    List<MemberVO> members = chatDAO.selectChatRoomBySender(params);
 	    
 	    if (!members.isEmpty()) {
 	        return members.get(0).getMember_num(); // 상대방을 반환

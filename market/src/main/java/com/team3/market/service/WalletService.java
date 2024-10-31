@@ -30,7 +30,8 @@ public class WalletService {
 	@Autowired
 	WalletDAO walletDao;
 	
-   public ReadyResponse payReady(String name, int totalPrice) {
+	
+	public ReadyResponse payReady(String name, int totalPrice) {
        Map<String, String> parameters = new HashMap<>();
        parameters.put("cid", "TC0ONETIME");
        parameters.put("partner_order_id", "1234567890");
@@ -108,7 +109,7 @@ public class WalletService {
 
 
 	@Transactional(rollbackFor = Exception.class)
-	public void transferMoney(Integer senderMemberNum, Integer targetMemberNum, int amount) {
+	public void transferMoney(Integer senderMemberNum, Integer targetMemberNum, int amount) throws Exception {
 		
 	    // 1. 송금할 금액이 유효한지 확인
 	    if (amount <= 0) {
