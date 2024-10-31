@@ -95,11 +95,10 @@
 		<div>
 			<p>${user.member_nick}</p>
 			<a href="<c:url value="/mypage"/>">개인정보 변경</a>
-			<a href="#">알림</a>
 			<p>온도</p>
 		</div>
 		<div>
-			<p>${user.member_money}원</p>
+			<p><span id="balance">0</span>원</p>
 			<a href="<c:url value="/wallet/list"/>">내역</a>
 			<a href="<c:url value="/wallet/point"/>">충전</a>
 		</div>
@@ -122,6 +121,7 @@
 	</div>
 </body>
 <script type="text/javascript">
+
 var count = 0;
 function notiCheck(){
 	if(${user != null}){
@@ -199,6 +199,7 @@ function notiListDisplay(){
 }
 
 $(document).ready(function (){
+	updateHeader();  // 로그인 후 헤더를 업데이트
 	notiCheck();
 
     $('#noti-btn').on('mouseenter', function(){
@@ -262,5 +263,20 @@ $(document).on('click', '.close.checked', function(){
 		}
 	});
 });
+
+function updateHeader() {
+    $.ajax({
+        url: '/market/wallet/balance', // 잔액을 가져오는 API 엔드포인트
+        type: 'GET',
+        success: function(response) {
+            console.log("Total Money from server: " + response.totalMoney); // 서버 응답 확인
+            $('#balance').text(response.totalMoney); // 헤더에서 잔액을 표시하는 요소의 ID 사용
+        },
+        error: function(error) {
+            console.error("헤더 업데이트 중 오류 발생:", error);
+        }
+    });
+}
+
 </script>
 </html>

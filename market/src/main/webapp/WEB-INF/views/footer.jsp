@@ -35,6 +35,9 @@
 				<a class="_1trxeqsg _1trxeqsp" target="_blank" href="mailto 쓰더라고요">광고 문의</a>
 				<a class="_1trxeqsg _1trxeqsp" target="_blank" href="mailto:pr@daangn.com">PR 문의</a>
 				<a class="_1trxeqsg _1trxeqsp" target="_blank" href="mailto:ir@daangn.com">IR 문의</a>
+				<br>
+				<a class="_1trxeqsg _1trxeqsp" href="/market/notice/list">공지사항</a>
+				
 			</section>
 		</section>
 	</div>

@@ -92,7 +92,9 @@ CREATE TABLE `notice` (
 	`notice_num`	int primary key auto_increment	NOT NULL,
 	`notice_member_num`	int	NOT NULL,
 	`notice_title`	varchar(20)	NULL,
-	`notice_content`	varchar(255)	NULL
+	`notice_content`	varchar(255)	NULL,
+    `notice_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `notice_pin` tinyint(1) NOT NULL default '0'
 );
 
 DROP TABLE IF EXISTS `report`;
@@ -181,9 +183,9 @@ CREATE TABLE `notification` (
 	`notification_num`	int primary key auto_increment	NOT NULL,
 	`notification_member_num`	int	NOT NULL,
 	`notification_type_num`	int	NOT NULL,
-  `notification_post_num`	int	NULL,
+    `notification_post_num`	int	NULL,
+    `notification_chatRoom_num`	int	NULL,
 	`notification_message`	varchar(255)	NULL,
-  `notification_chatRoom_num`	int	NULL,
 	`notification_read`	boolean	NULL	DEFAULT false,
 	`notification_date`	datetime	NULL DEFAULT CURRENT_TIMESTAMP
 );

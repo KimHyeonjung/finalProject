@@ -1,6 +1,7 @@
 package com.team3.market.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,17 +10,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.team3.market.model.dto.ChatRoomDTO;
-import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.service.ChatService;
 import com.team3.market.service.WalletService;
+import com.team3.market.utils.NotificationWebSocketHandler;
 
 
 @Controller
@@ -30,6 +31,9 @@ public class ChatController {
     
     @Autowired
     private WalletService walletService; 
+    
+	@Autowired
+    private NotificationWebSocketHandler notificationHandler;
 
 	@GetMapping("/chatRoom")
 	public String chatRoom(HttpSession session, Model model) {
@@ -41,10 +45,10 @@ public class ChatController {
 			return "redirect:/login"; // 로그인 페이지로 리다이렉트
 		}
 		
-		// 사용자 포인트 정보를 데이터베이스에서 가져옴
-	    Integer updatedPoints = walletService.getUpdatedPoints(user.getMember_num());
-	    model.addAttribute("point", updatedPoints); // 포인트 정보를 모델에 추가
-
+		walletService.updateSessionMoney(user.getMember_num(), session);
+	    int updatedTotalMoney = (int) session.getAttribute("totalMoney");
+		model.addAttribute("totalMoney", updatedTotalMoney); // JSP에서 사용할 수 있도록 모델에 추가
+		
 		System.out.println(user.getMember_num());
 
 		List<ChatRoomDTO> chatRoomDTOs = chatService.getChatRoomsWithMembers(user.getMember_num());
@@ -94,6 +98,30 @@ public class ChatController {
         }
     }
 	
+	@PostMapping("/chat/notification")
+	public boolean chatNoti(@RequestBody Map<String, Object> item, HttpSession session) {
+		boolean res = false;
+		System.out.println("13579");
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(item == null || user == null) {
+			return false;
+		}
+		MemberVO postUser = chatService.getMember((Integer)item.get("chatRoom_num"), (Integer)item.get("member_num"));
+		System.out.println(postUser.toString());
+		res = chatService.notify(item, user, postUser);
+		System.out.println(res);
+		if(res) {
+			try {
+				notificationHandler.sendNotificationToUser(postUser.getMember_id(), "notification");
+				return true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return res;
+	}
+	
 	@RequestMapping(value = "/chat/loadChatHistory", method = RequestMethod.GET)
 	public String loadChatHistory(@RequestParam("chatRoomNum") int chatRoomNum, HttpSession session, Model model) {
 		MemberVO user = (MemberVO) session.getAttribute("user");
@@ -106,62 +134,4 @@ public class ChatController {
 	    return "chat/chat"; // 채팅 내역을 출력할 JSP 조각
 	}
 	
-	@PostMapping("/sendMoney")
-	public String sendMoney(
-	        @RequestParam("amount") Integer amount,
-	        @RequestParam("chatRoomNum") Integer chatRoomNum,
-	        HttpSession session,
-	        RedirectAttributes redirectAttributes) {
-	    
-	    // 세션에서 송금자 정보 가져오기
-	    Integer senderMemberNum = (Integer) session.getAttribute("memberNum");
-	    
-	    if (senderMemberNum == null) {
-	        return "redirect:/login"; // If sender is not logged in, redirect to login
-	    }
-
-	    try {
-	        // Get the chat room information to determine the target member
-//	        List<ChatRoomDTO> chatRoomDTOs = chatService.getChatRoomsWithMembers(senderMemberNum);
-//	        ChatRoomDTO targetChatRoom = null;
-
-//	        System.out.println("Chat Rooms Found: " + chatRoomDTOs.size());
-
-	        // Find the chat room that matches the chatRoomNum
-//	        for (ChatRoomDTO chatRoomDTO : chatRoomDTOs) {
-//	            System.out.println("Checking chat room: " + chatRoomDTO.getChatRoom().getChatRoom_num());
-//	            if (chatRoomDTO.getChatRoom().getChatRoom_num() == chatRoomNum) {
-//	                targetChatRoom = chatRoomDTO;
-//	                break;
-//	            }
-//	        }
-//
-//	        if (targetChatRoom == null) {
-//	            throw new IllegalStateException("채팅방을 찾을 수 없습니다."); // Handle case where chat room is not found
-//	        }
-//
-//	        Integer targetMemberNum = targetChatRoom.getTargetMember().getMember_num(); // Get the target member number
-//	        System.out.println("Target Member Num: " + targetMemberNum);
-	        
-	        Integer targetMemberNum = 1;
-
-	        // 송금 서비스 호출
-	        walletService.transferMoney(senderMemberNum, targetMemberNum, amount);
-	        
-	        // 송금 후 포인트 업데이트 (예시)
-	        Integer updatedPoints = walletService.getUpdatedPoints(senderMemberNum);
-	        session.setAttribute("point", updatedPoints); // 세션에 최신 포인트 저장
-	        
-	        // 성공 시 성공 메시지를 추가
-	        redirectAttributes.addFlashAttribute("successMessage", "송금이 완료되었습니다.");
-
-	    } catch (Exception e) {
-	    	// 실패 시 에러 메시지를 추가
-	        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-	    }
-	    
-	    return "redirect:/chat?chatRoomNum=" + chatRoomNum;
-	}
-
-
 }

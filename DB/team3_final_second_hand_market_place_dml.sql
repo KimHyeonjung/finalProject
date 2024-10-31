@@ -43,8 +43,7 @@ INSERT INTO `member`
 VALUES 
 ('qweqwe', '$2a$10$5dh4gkVX9JewxXDGja2ny.h1V9NeqQ8/9prqwISJX0coPFZKBaaeO', '큐더블유디', '01012345678', 'qwe@example.com'),
 ('asdasd', '$2a$10$2nko/eZx0pBwdF6fKJKSge74qbcCbCl.1KBiC3r6mQwWDkKaLDTee', '에이에스디', '01087654321', 'asd@example.com'),
-('zxczxc', '$2a$10$jLT.E7GaqFq3upcpNFugxedd/cVrQ4FKS/0y86J4e7dT04lHcY1qi', '즈엑스씨', '01013572468', 'zxc@example.com'),
-('nonuser', 'aaaaaaaa', '없는 유저', '01000000000', '123@naver.co.kr.com');
+('zxczxc', '$2a$10$jLT.E7GaqFq3upcpNFugxedd/cVrQ4FKS/0y86J4e7dT04lHcY1qi', '즈엑스씨', '01013572468', 'zxc@example.com');
 -- member 테이블에 대한 관리자 데이터 삽입
 INSERT INTO `member` 
 (`member_id`, `member_pw`, `member_nick`, `member_phone`, `member_email`, `member_auth`)
@@ -63,6 +62,11 @@ VALUES
 (5, 3, 1	, 1	, 	7	, '목줄 팔아요'		, '목줄'		, 20000, 	false,	'부산, 한국'),
 (6, 3, 1	, 3	, 	9	, '드라이버 팝니다'		, '드라이버'	, 20000, 	false,	'부산, 한국'),
 (7, 2, 1	, 1	, 	12	, '중고차 팝니다'		, '중고차'	, 2000000, 	false,	'부산, 한국');
+
+INSERT INTO `notice`
+(`notice_num`, `notice_member_num`, `notice_title`,  `notice_date`, `notice_pin`)
+VALUES
+(1,1,'분쟁조정센터 공식 운영 안내',20241029,false);
 
 
 INSERT INTO `sido_areas` (`sido_name`) VALUES

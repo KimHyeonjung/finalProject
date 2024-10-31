@@ -28,4 +28,20 @@
         ORDER BY point_date DESC
     </select>
     
+    <update id="updateFakeMoney" parameterType="com.team3.market.model.vo.MemberVO">
+    	UPDATE member 
+    	SET member_fake_money = #{member_fake_money} 
+    	WHERE member_num = #{member_num}
+	</update>
+	
+	<insert id="deletePayment">
+	    INSERT INTO point (point_member_num, point_money, point_date, point_type) 
+	    VALUES (#{point_member_num}, #{point_money}, #{point_date}, '거래 : 사용');
+	</insert>
+	
+	<insert id="insertPayment">
+	    INSERT INTO point (point_member_num, point_money, point_date, point_type) 
+	    VALUES (#{point_member_num}, #{point_money}, #{point_date}, '거래 : 충전');
+	</insert>
+    
 </mapper>
