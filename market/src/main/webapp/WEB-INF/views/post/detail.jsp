@@ -505,6 +505,9 @@
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.log(jqXHR);
+			}
+		});
+	});
 	
 	// 거래 상태 변경
 	$(document).on('change','.state', function(){

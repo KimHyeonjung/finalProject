@@ -93,7 +93,7 @@
         WHERE cr.chatRoom_num = #{chatRoom_num}
     </select>
     
-    <select id="selectChatRoomByMember" parameterType="map" resultType="MemberVO">
+    <select id="selectChatRoomBySender" parameterType="map" resultType="MemberVO">
         SELECT m.*
         FROM chat_room cr
         WHERE cr.chatRoom_num = #{chatRoom_num}
