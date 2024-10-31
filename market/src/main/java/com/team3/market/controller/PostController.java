@@ -121,10 +121,46 @@ public class PostController {
 	public String postUpdate(Model model, @PathVariable("post_num")int post_num, HttpSession session) {
 		Map<String, Object> post = postService.getPostMap(post_num);
 		List<FileVO> fileList = postService.selectFileList(post_num, "post");
+		List<String> categoryList = postService.getCategoryList();
+        model.addAttribute("categoryList", categoryList);    
 		model.addAttribute("post", post);
 		model.addAttribute("fileList", fileList);
 		return "/post/update";
 	}	
+	@ResponseBody
+	@PostMapping("/update")
+    public String updatePost(Model model, PostVO post, HttpSession session, List<MultipartFile> files, int[] fileNums) {
+    	System.out.println("Request received"); // 디버깅 메시지 추가
+    	System.out.println("post : " + post);
+    	System.out.println("파일 길이 : " + files.size());
+	    // 파일 선택 체크
+//	    if (fileList == null || fileList.length == 0) {
+//	        model.addAttribute("message", new MessageDTO("/post/insert", "파일을 선택하지 않았습니다."));
+//	        return "/main/message";
+//	    }
+//    	
+//    	MemberVO user = (MemberVO)session.getAttribute("user");
+//    	
+//    	System.out.println(post);
+//		
+//    	boolean res = postService.insertPost(post, user, fileList);
+//
+//		MessageDTO message;
+//		
+//		for(MultipartFile file : fileList) {
+//			System.out.println(file.getOriginalFilename());
+//		}
+//		
+//		if(res) {	
+//			message = new MessageDTO("/", "게시글을 등록했습니다.");
+//		}else {
+//			message = new MessageDTO("/post/insert", "게시글을 등록하지 못했습니다.");
+//		}
+//		
+//		model.addAttribute("message",message);
+		
+		return "success";
+    }
 	
 	@ResponseBody
 	@PostMapping("/wish")

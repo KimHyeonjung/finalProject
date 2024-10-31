@@ -42,6 +42,16 @@
             height: 100px;
             object-fit: cover;
         }
+        .close-button {
+		    position: absolute;
+		    top: 0px;
+		    right: 0px;
+		    border: none;
+		    background: none;
+		    cursor: pointer;
+		    font-size: 18px;
+		    color: white;
+		}
         .image-preview .remove-btn {
             position: absolute;
             top: 0;
@@ -79,7 +89,7 @@
 <body>
 <div class="container mt-4">
 	<h1>상품 수정</h1>
-	<form action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
+	<form id="uploadForm" action="<c:url value='/post/update'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
 		
 		<!-- 사진 첨부 -->
 		<div class="form-group">
@@ -88,10 +98,16 @@
 		      	<span>사진 추가</span>
 		        <input type="file" id="fileInput" name="fileList" multiple accept="image/*" style="display: none;" onchange="handleFiles(this.files)">
 		    </div>
-		    <div id="previewContainer" style="display: flex; flex-wrap: wrap; margin-top: 10px;"></div>
-		    <small id="fileCount" class="form-text text-muted">0/10 사진 선택됨</small>
+		    <div id="previewContainer" style="display: flex; flex-wrap: wrap; margin-top: 10px;">
+			    	<c:forEach items="${fileList}" var="file">
+			    		<div class="image-preview">
+			    			<img src="<c:url value="/uploads/${file.file_name}"/>">
+			    			<button class="close-button" data-file_num="${file.file_num }">${file.file_num }</button>
+			    		</div>
+			    	</c:forEach>
+		    </div>		    	
+		    <small id="fileCount" class="form-text text-muted">${fileList.size()}/10 사진 선택됨</small>
 		</div>
-		
 		<!-- 거래 상태 입력 -->
 		<div class="form-group">
 		    <div class="btn-group" role="group" aria-label="옵션 선택">
@@ -105,7 +121,7 @@
 		<!-- 상품명 입력 -->
 		<div class="form-group">
 			<label for="title">상품명</label>
-			<input type="text" class="form-control" id="post_title" name="post_title">
+			<input type="text" class="form-control" id="post_title" name="post_title" value="${post.post_title }">
 		</div>
 		
 		<!-- 카테고리 드롭다운 -->
@@ -122,7 +138,8 @@
 		<div class="form-group">
 			<label for="price">금액</label>
 			<div class="input-group">
-				<input type="number" class="form-control" id="post_price" name="post_price" min="0" oninput="checkNumberInput(this)">
+				<input type="number" class="form-control" id="post_price" name="post_price" min="0" 
+					oninput="checkNumberInput(this)" value="${post.post_price }">
 				<div class="input-group-append">
 					<span class="input-group-text">원</span>
 				</div>
@@ -133,14 +150,17 @@
 		<div class="form-group">
 			<label for="content">상품 설명</label>
 			<textarea class="form-control" id="post_content" name="post_content" rows="5" oninput="updateCharCount()" maxlength="1000"
-			placeholder="- 상품명(브랜드)&#10;- 구매 시기&#10;- 사용 기간&#10;- 하자 여부&#10;* 실제 촬영한 사진과 함께 상세 정보를 입력해주세요.&#10;* 게시글 규정 위반 시 게시물 삭제 및 이용제재 처리될 수 있어요."></textarea>
+			placeholder="- 상품명(브랜드)&#10;- 구매 시기&#10;- 사용 기간&#10;- 하자 여부&#10;* 실제 촬영한 사진과 함께 상세 정보를 입력해주세요.&#10;* 게시글 규정 위반 시 게시물 삭제 및 이용제재 처리될 수 있어요."
+			>${post.post_content}
+			</textarea>
 			<div class="char-count">0 / 1000</div>
 		</div>
 		
 		<!-- 흥정 여부 선택 -->
 		<div id="dealCheckboxContainer" class="form-check">
 		  <label class="form-check-label">
-		    <input type="checkbox" class="form-check-input" id="post_deal" name="post_deal" >흥정 받기
+		    <input type="checkbox" class="form-check-input" id="post_deal" name="post_deal" 
+		    	<c:if test="${post.post_deal == true }">checked</c:if>>흥정 받기
 		  </label>
 		</div><br>
 	
@@ -148,11 +168,13 @@
 		<div class="form-group">
 			<label>거래 방법</label><br>
 			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" id="delivery" name="transaction" value="택배거래" checked="on" onclick="setPostWayNum()">
+				<input class="form-check-input" type="checkbox" id="delivery" name="transaction" value="택배거래" 
+					<c:if test="${post.post_way_num == 1 || post.post_way_num == 3 }">checked</c:if> onclick="setPostWayNum()">
 				<label class="form-check-label" for="delivery">택배거래</label>
 			</div>
 			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" id="direct" name="transaction" value="직거래" checked="on" onclick="toggleMapVisibility(); setPostWayNum()">
+				<input class="form-check-input" type="checkbox" id="direct" name="transaction" value="직거래" 
+					<c:if test="${post.post_way_num == 2 || post.post_way_num == 3 }">checked</c:if> onclick="toggleMapVisibility(); setPostWayNum()">
 				<label class="form-check-label" for="direct">직거래</label>
 			</div>
 		</div>
@@ -166,15 +188,20 @@
 		            <span id="centerAddr"></span>
 		        </div>
 		    </div>
-		    <input type="text" id="post_address" name="post_address" placeholder="여기에 클릭한 주소가 표시됩니다" style="width:100%; margin-top:10px; padding:5px;" readonly>
+		    <input type="text" id="post_address" name="post_address" placeholder="여기에 클릭한 주소가 표시됩니다" 
+		    	value="${post.post_address}" style="width:100%; margin-top:10px; padding:5px;" readonly>
 		</div>
 		<hr>
 		
+		<!-- 숨겨진 필드: post_num -->
+		<input type="hidden" id="post_num" name="post_num" value="${post.post_num}">
+		<!-- 숨겨진 필드: post_state_num -->
+		<input type="hidden" id="post_state_num" name="post_state_num" value="${post.post_state_num}">
 		<!-- 숨겨진 필드: post_way_num -->
-		<input type="hidden" id="post_way_num" name="post_way_num" value="1">
+		<input type="hidden" id="post_way_num" name="post_way_num" value="${post.post_way_num}">
 		
 		<!-- 숨겨진 필드: post_position_num -->
-		<input type="hidden" id="post_position_num" name="post_position_num" value="1">
+		<input type="hidden" id="post_position_num" name="post_position_num" value="${post.post_position_num}">
 
 		<!-- 등록 버튼 -->
 		<button type="submit" class="btn btn-primary btn-block" id="submitBtn" onclick="validateForm(event)">수정</button>
@@ -199,28 +226,60 @@ var marker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입
 // HTML5의 Geolocation으로 사용할 수 있는지 확인합니다 
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
-        var lat = position.coords.latitude, // 위도
-            lon = position.coords.longitude; // 경도
-
-        var locPosition = new kakao.maps.LatLng(lat, lon); // 접속 위치를 LatLng 객체로 변환
-
-        // Geocoder를 이용해 현재 위치 좌표에 대한 법정동 상세 주소 정보를 검색합니다
-        searchDetailAddrFromCoords(locPosition, function(result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-                var detailAddr = !!result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name;
-
-                var content = '<div class="bAddr">' +
-                                '<span class="title">현재 위치</span><br>' + 
-                                detailAddr + 
-                            '</div>';
-
-                // 마커와 인포윈도우를 표시합니다
-                displayMarker(locPosition, content, detailAddr);
-            } else {
-                var content = '<div class="bAddr">현재 위치 정보를 찾을 수 없습니다.</div>';
-                displayMarker(locPosition, content, "");
-            }
-        });
+    	const address = document.getElementById("post_address").value;
+    	if(address != ''){
+        	// 입력한 주소로 좌표 변환 요청
+       		geocoder.addressSearch(address, function(result, status) {
+            	if (status === kakao.maps.services.Status.OK) {
+	                const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+	                var content = '<div class="bAddr">' +
+				                    '<span class="title">직거래 위치</span><br>' + 
+				                    address + 
+				                '</div>';
+	
+	                // 지도에 마커 생성
+	                const marker = new kakao.maps.Marker({
+	                    map: map,
+	                    position: coords
+	                });
+	
+	                // 해당 좌표로 지도 중심 이동
+	                map.setCenter(coords);
+				    marker.setMap(map);
+				
+				    // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+				    infowindow.setContent(content);
+				    infowindow.open(map, marker);
+	            } else {
+	                alert("주소를 찾을 수 없습니다.");
+	            }
+	        }); 	
+    	} else {
+    		
+	    	var lat = position.coords.latitude, // 위도
+	            lon = position.coords.longitude; // 경도
+	
+	        var locPosition = new kakao.maps.LatLng(lat, lon); // 접속 위치를 LatLng 객체로 변환
+	
+	        // Geocoder를 이용해 현재 위치 좌표에 대한 법정동 상세 주소 정보를 검색합니다
+	        searchDetailAddrFromCoords(locPosition, function(result, status) {
+	            if (status === kakao.maps.services.Status.OK) {
+	                var detailAddr = !!result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name;
+	
+	                var content = '<div class="bAddr">' +
+	                                '<span class="title">현재 위치</span>' + 
+	                                detailAddr + 
+	                            '</div>';
+	
+	                // 마커와 인포윈도우를 표시합니다
+	                displayMarker(locPosition, content, detailAddr);
+	            } else {
+	                var content = '<div class="bAddr">현재 위치 정보를 찾을 수 없습니다.</div>';
+	                displayMarker(locPosition, content, "");
+	            }
+	        });
+    	}      
+    	
     });
 } else { 
     var locPosition = new kakao.maps.LatLng(37.566826, 126.9786567), // 기본 좌표 (서울)
@@ -280,9 +339,11 @@ function searchDetailAddrFromCoords(coords, callback) {
     // 좌표로 법정동 상세 주소 정보를 요청합니다
     geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
 }
+
 </script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+const uploadForm = $('#uploadForm');
 	// 숫자 이외의 문자를 입력하지 않도록 처리
     function checkNumberInput(input) {
         // 숫자가 아닌 값은 빈 문자열로 대체합니다.
@@ -308,7 +369,7 @@ function searchDetailAddrFromCoords(coords, callback) {
 	    } else if (deliveryChecked) {
 	        postWayInput.value = '1'; // 택배거래만 선택됨
 	    } else if (directChecked) {
-	        postWayInput.value = '2'; // 직거래만 선택됨
+	        postWayInput.value = '2'; // 직거래만 선택됨	       
 	    } else {
 	        postWayInput.value = '';  // 아무 것도 선택되지 않음
 	    }
@@ -333,62 +394,163 @@ function searchDetailAddrFromCoords(coords, callback) {
             addressInput.value = '';  // 주소 입력창 값 초기화
         }
     }
-    
+    // 기존 파일 정보를 저장할 전역 변수
+    var existFiles = ${fileList};
+	// 선택된 파일 정보를 저장할 전역 변수
+ 	var savedFiles = [];
 	// 이미지 파일 미리보기 처리
+	const previewContainer = document.getElementById('previewContainer');
+    const fileCount = document.getElementById('fileCount');
+    var selectedCount = ${fileList.size()};
 	function handleFiles(files) {
+	    const maxFiles = 10;
 		
 	    // 파일 선택 여부 확인
-/* 	    if (files.length === 0) {
+ 	    if (!files || files.length === 0) {
+ 	    	displayPreviews(savedFiles);
 	        return; // 선택된 파일이 없으면 기존 미리보기를 유지하고 함수 종료
-	    } */
+	    } 
 		
-	    const previewContainer = document.getElementById('previewContainer');
-	    const fileCount = document.getElementById('fileCount');
-	    const maxFiles = 10;
-	
 	    // 선택된 파일 개수를 제한
-	    let selectedCount = Math.min(files.length, maxFiles);
+	    selectedCount = Math.min((selectedCount + files.length), maxFiles);
 	    
 	    // 파일 개수가 10개를 초과할 경우 경고
-	    if (files.length > maxFiles) {
+	    if (selectedCount > maxFiles) {
 	        alert("최대 10장까지 이미지를 업로드할 수 있습니다.");
 	        document.getElementById('fileInput').value = ''; // 파일 입력 초기화
 	        return;
 	    }
-	
-	    // 미리보기 컨테이너 초기화
-	    previewContainer.innerHTML = '';
-	
-	    // 파일 미리보기 생성
-	    for (let i = 0; i < selectedCount; i++) {
-	        const file = files[i];
-	        const reader = new FileReader();
-	        reader.onload = function (e) {
-	            const previewDiv = document.createElement('div');
-	            previewDiv.classList.add('image-preview');
-	
-	            const imgElement = document.createElement('img');
-	            imgElement.src = e.target.result;
-	
-	            previewDiv.appendChild(imgElement);
-	            previewContainer.appendChild(previewDiv);
-	        };
-	        reader.readAsDataURL(file);
-	    }
-	
+	 	// 새로 선택된 파일 정보 저장
+	 	const newFiles = Array.from(files);
+ 	   	savedFiles = savedFiles.concat(newFiles);
+		
+ 	    displayPreviews2(savedFiles);
+ 		// 새로운 파일들로 미리보기 생성
+ 	    displayPreviews(savedFiles);
+	 		
+ 	   alert(selectedCount);
 	    // 파일 개수 업데이트
 	    fileCount.innerText = selectedCount + "/10 사진 선택됨";
 	}
-	
+	// 미리보기 생성 함수
+	function displayPreviews(files) {
+		// 미리보기 컨테이너 초기화
+	    previewContainer.innerHTML = '';
+		
+		// 각 파일을 Promise로 처리하여 onload 이벤트 순서를 보장
+	    const readFilePromises = files.map((file, index) => {
+	        return new Promise((resolve) => {
+	            const reader = new FileReader();
+	            reader.onload = function (e) {
+	                resolve({ src: e.target.result, index: index });
+	            };
+	            reader.readAsDataURL(file);
+	        });
+	    });
+		// 모든 파일이 읽힌 후 순서대로 미리보기 생성
+	    Promise.all(readFilePromises).then((results) => {
+	        results.forEach(({ src, index }) => {
+	            const previewDiv = document.createElement('div');
+	            previewDiv.classList.add('image-preview');
+	            const closeButton = document.createElement('button');
+	            closeButton.innerHTML = index;//'&times;'; // × 표시
+	            closeButton.dataset.index = index;
+	            closeButton.classList.add('close-button'); // CSS 클래스 추가
+	            const imgElement = document.createElement('img');
+	            imgElement.src = src;
+	            imgElement.dataset.index = index; // 파일 순서를 유지할 데이터 속성 추가
+	            previewDiv.appendChild(imgElement);
+	            previewDiv.appendChild(closeButton);
+	            previewContainer.appendChild(previewDiv);
+	        });
+	    });	       
+	}
+	// 미리보기 생성 함수
+	function displayPreviews2(fileList) {
+		// 미리보기 컨테이너 초기화
+	    previewContainer.innerHTML = '';
+		
+		// 각 파일을 Promise로 처리하여 onload 이벤트 순서를 보장
+	    const readFilePromises = files.map((file, index) => {
+	        return new Promise((resolve) => {
+	            const reader = new FileReader();
+	            reader.onload = function (e) {
+	                resolve({ src: e.target.result, index: index });
+	            };
+	            reader.readAsDataURL(file);
+	        });
+	    });
+		// 모든 파일이 읽힌 후 순서대로 미리보기 생성
+	    Promise.all(readFilePromises).then((results) => {
+	        results.forEach(({ src, index }) => {
+	            const previewDiv = document.createElement('div');
+	            previewDiv.classList.add('image-preview');
+	            const closeButton = document.createElement('button');
+	            closeButton.innerHTML = index;//'&times;'; // × 표시
+	            closeButton.dataset.index = index;
+	            closeButton.classList.add('close-button'); // CSS 클래스 추가
+	            const imgElement = document.createElement('img');
+	            imgElement.src = src;
+	            imgElement.dataset.index = index; // 파일 순서를 유지할 데이터 속성 추가
+	            previewDiv.appendChild(imgElement);
+	            previewDiv.appendChild(closeButton);
+	            previewContainer.appendChild(previewDiv);
+	        });
+	    });	       
+	}
+	//추가된 미리보기 x삭제버튼 클릭시
+	$(document).on('click', '.close-button', function(){
+		let index = $(this).data('index');
+		let file_num = $(this).data('file_num');
+		if(index){
+			savedFiles.splice(index, 1);
+			$(this).parent().remove();
+			console.log(savedFiles);
+		}
+		if(file_num){
+			var input = `<input type="text" name="fileNums" value="\${file_num}">`
+			$(this).parent().remove();
+			$('.image-upload').append(input);
+		}
+	});
+	// form submit
+	$('#uploadForm').submit(function(e){
+		e.preventDefault();
+	 	const formData = new FormData(this);
+		// savedFiles 배열에 있는 파일들을 formData에 추가
+		savedFiles.forEach(file => {
+			console.log(file.name);
+		  formData.append("files", file); // "files"는 컨트롤러에서 받을 파라미터 이름
+		}); 
+       $.ajax({
+   		async : true, //비동기 : true(비동기), false(동기)
+   		url : '<c:url value="/post/update"/>', 
+   		type : 'post',
+   		data : formData,
+   		contentType: false,  // 서버로 전송 시 `multipart/form-data`가 자동 설정되도록
+   	    processData: false,  // jQuery가 데이터를 자동으로 처리하지 않도록 설정 
+   		success : function (data){
+   			console.log("Upload success:", data);
+   		}, 
+   		error : function(jqXHR, textStatus, errorThrown){
+   			console.error("Upload failed:", error);
+   		}
+   	});
+		
+	});
  	// 페이지 로드 시 기본 옵션 선택
     window.onload = function() {
         setDefaultOption(); // "판매한다" 버튼 선택
     };
 	
-    // 페이지 로드 시 기본 옵션 선택
+   // 페이지 로드 시 기본 옵션 선택
     function setDefaultOption() {
-        selectOption(1); // "판매한다" 버튼 선택
-    }
+	  	let post_position_num = ${post.post_position_num};
+      	let post_category_num = ${post.post_category_num};
+        selectOption(post_position_num); // 가져온 거래상태 버튼 선택
+      	$('#post_category_num').val(post_category_num); //가져온 카테고리 선택
+        toggleMapVisibility();
+    } 
 	
     // 옵션 선택 함수
 	function selectOption(option) {
@@ -450,13 +612,14 @@ function searchDetailAddrFromCoords(coords, callback) {
     function setPostPosition() {
         const directChecked = document.getElementById('direct').checked;
         const addressInput = document.getElementById('post_address');
+     	// 기존 form 데이터를 가져와 FormData 생성
+       
 
         // 직거래 체크박스가 해제된 경우
         if (!directChecked) {
             addressInput.value = null;  // 주소 입력창 값을 null로 설정
         }
     }
-	
 	
 	// 필수 필드 검증 함수
 	function validateForm(event) {
@@ -470,7 +633,7 @@ function searchDetailAddrFromCoords(coords, callback) {
         
         // 파일 첨부 확인
         const fileInput = document.getElementById("fileInput");
-        const filesAttached = fileInput.files.length > 0;
+        const filesAttached = savedFiles.length > 0;
         
 		if (!title && !price && !content) {
 			alert("상품명, 금액, 상품 설명을 모두 입력해주세요.");
@@ -489,7 +652,7 @@ function searchDetailAddrFromCoords(coords, callback) {
 	            event.preventDefault(); // 폼 제출 중단
 	            return;
 	    } else {
-	        if (!filesAttached) {
+	       if (!filesAttached) {
 	            alert("최소한 하나의 사진을 첨부해주세요.");
 	            event.preventDefault(); // 폼 제출 중단
 	            return;
