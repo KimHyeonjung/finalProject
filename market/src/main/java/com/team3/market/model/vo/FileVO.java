@@ -19,5 +19,10 @@ public class FileVO {
         this.file_target_table = file_target_table;
         this.file_target_num = file_target_num;
     }
+
+	public FileVO(String target, int file_num) {
+		this.file_target_table = target;
+		this.file_target_num = file_num;
+	}
 	
 }

@@ -81,8 +81,12 @@ public interface PostDAO {
 	void deleteFile(int file_num);
 
 	List<FileVO> selectFileList(@Param("target_num")int target_num, @Param("target")String target);
+	
+	FileVO selectFile(int file_num);
 
-	FileVO selectFile(@Param("target_num")int target_num, @Param("target")String target);
+	FileVO selectFileThumbnail(FileVO file);
+	
+	FileVO selectFileProfileImg(FileVO file);
 
 	ChatRoomVO selectChatRoom(@Param("member_num")int member_num, @Param("member_num2")int member_num2, @Param("post_num")int post_num);
 
@@ -110,5 +114,10 @@ public interface PostDAO {
 
 	List<Map<String, Object>> selectReportListByPost(int post_num);
 
+	boolean updatePost(PostVO post);
+
+	boolean updatePostHide(int post_num);
+
+	boolean updatePostUse(int post_num);
 
 }

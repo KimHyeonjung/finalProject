@@ -60,37 +60,30 @@ public class PostController {
     }
 	
     // 게시글 생성 처리
+    @ResponseBody
     @PostMapping("/insert")
-    public String insertPost(Model model, PostVO post, HttpSession session, MultipartFile[] fileList) {
-    	System.out.println("Request received"); // 디버깅 메시지 추가
-    	System.out.println("파일 길이 : " + fileList.length);
+    public String insertPost(Model model, PostVO post, HttpSession session, MultipartFile[] files) {
+//    	System.out.println("Request received"); // 디버깅 메시지 추가
+//    	System.out.println("파일 길이 : " + files.length);
+//    	System.out.println(post);
 	    // 파일 선택 체크
-	    if (fileList == null || fileList.length == 0) {
-	        model.addAttribute("message", new MessageDTO("/post/insert", "파일을 선택하지 않았습니다."));
-	        return "/main/message";
+	    if (files == null || files.length == 0) {
+	        return "FILE_NOT_EXIST";
 	    }
-    	
     	MemberVO user = (MemberVO)session.getAttribute("user");
     	
-    	System.out.println(post);
 		
-    	boolean res = postService.insertPost(post, user, fileList);
-
-		MessageDTO message;
+    	int post_num = postService.insertPost(post, user, files);
 		
-		for(MultipartFile file : fileList) {
+		for(MultipartFile file : files) {
 			System.out.println(file.getOriginalFilename());
 		}
 		
-		if(res) {	
-			message = new MessageDTO("/", "게시글을 등록했습니다.");
+		if(post_num > 0 ) {	
+			return "REGISTRATION_POST::" + post_num;
 		}else {
-			message = new MessageDTO("/post/insert", "게시글을 등록하지 못했습니다.");
+			return "FAIL_REGISTRATION";
 		}
-		
-		model.addAttribute("message",message);
-		
-		return "/main/message";
     }
     
     @GetMapping("/list/{category_num}")
@@ -110,7 +103,7 @@ public class PostController {
 		List<FileVO> fileList = postService.selectFileList(post_num, "post");
 		WishVO wish = postService.getWish(post_num, user);
 		ReportVO report = postService.getReportPost(post_num, user);
-		FileVO profileImg = postService.getProfileImg((Integer)post.get("post_member_num"), "member");
+		FileVO profileImg = postService.getProfileImg("member", (Integer)post.get("post_member_num"));
 		model.addAttribute("report", report);		
 		model.addAttribute("wish", wish);
 		model.addAttribute("post", post);
@@ -130,38 +123,21 @@ public class PostController {
 	}	
 	@ResponseBody
 	@PostMapping("/update")
-    public String updatePost(Model model, PostVO post, HttpSession session, List<MultipartFile> files, int[] existingFileNums) {
-    	System.out.println("Request received"); // 디버깅 메시지 추가
-    	System.out.println("post : " + post);
-    	System.out.println("파일 길이 : " + files.size());
-    	 Arrays.stream(existingFileNums).forEach(System.out::println);
-	    // 파일 선택 체크
-//	    if (fileList == null || fileList.length == 0) {
-//	        model.addAttribute("message", new MessageDTO("/post/insert", "파일을 선택하지 않았습니다."));
-//	        return "/main/message";
-//	    }
-//    	
-//    	MemberVO user = (MemberVO)session.getAttribute("user");
-//    	
-//    	System.out.println(post);
-//		
-//    	boolean res = postService.insertPost(post, user, fileList);
-//
-//		MessageDTO message;
-//		
-//		for(MultipartFile file : fileList) {
-//			System.out.println(file.getOriginalFilename());
-//		}
-//		
-//		if(res) {	
-//			message = new MessageDTO("/", "게시글을 등록했습니다.");
-//		}else {
-//			message = new MessageDTO("/post/insert", "게시글을 등록하지 못했습니다.");
-//		}
-//		
-//		model.addAttribute("message",message);
-		
-		return "success";
+    public String updatePost(Model model, PostVO post, HttpSession session, MultipartFile[] files, int[] existingFileNums) {
+//    	System.out.println("Request received"); // 디버깅 메시지 추가
+//    	System.out.println("post : " + post);
+//    	System.out.println("파일 길이 : " + files.length);
+//    	Arrays.stream(existingFileNums).forEach(System.out::println);
+    	
+    	MemberVO user = (MemberVO)session.getAttribute("user");
+    	
+    	boolean res = postService.updatePost(post, user, files, existingFileNums);
+    	
+    	if(res) {
+    		return "UPDATE_POST";
+    	}else {
+    		return "FAIL_UPDATE";
+    	}
     }
 	
 	@ResponseBody

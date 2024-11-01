@@ -102,7 +102,7 @@
 			    	<c:forEach items="${fileList}" var="file">
 			    		<div class="image-preview">
 			    			<img src="<c:url value="/uploads/${file.file_name}"/>">
-			    			<button class="close-button" data-file_num="${file.file_num }">${file.file_num }</button>
+			    			<button class="close-button" data-file_num="${file.file_num }">&times;</button>
 			    		</div>
 			    	</c:forEach>
 		    </div>		    	
@@ -393,12 +393,13 @@ const uploadForm = $('#uploadForm');
     }
 	// 선택된 파일 정보를 저장할 전역 변수
  	var savedFiles = [];
-	// 이미지 파일 미리보기 처리
 	const previewContainer = document.getElementById('previewContainer');
 	var previewContainerTmp = previewContainer.innerHTML;
     const fileCount = document.getElementById('fileCount');
     var existingFileCount = ${fileList.size()};
     var selectedCount = 0;
+    var totalCount = selectedCount + existingFileCount;
+	// 이미지 파일 미리보기 처리
 	function handleFiles(files) {
 	    const maxFiles = 10;
 		
@@ -419,7 +420,7 @@ const uploadForm = $('#uploadForm');
  	   	selectedCount = savedFiles.length;
  	   	
  		// 파일 개수가 10개를 초과할 경우 경고
-	    if (selectedCount > maxFiles) {
+	    if ((selectedCount + existingFileCount) > maxFiles) {
 	        alert("최대 10장까지 이미지를 업로드할 수 있습니다.");
 	        document.getElementById('fileInput').value = ''; // 파일 입력 초기화
 	        savedFiles = savedFiles.filter(item => !newFiles.includes(item));
@@ -430,7 +431,8 @@ const uploadForm = $('#uploadForm');
  	    displayPreviews(savedFiles);
 	 		
 	    // 파일 개수 업데이트
-	    fileCount.innerText = (selectedCount + existingFileCount) + "/10 사진 선택됨";
+	    totalCount = selectedCount + existingFileCount;
+	    fileCount.innerText = totalCount + "/10 사진 선택됨";
 	}
 	// 미리보기 생성 함수
 	function displayPreviews(files) {
@@ -454,7 +456,8 @@ const uploadForm = $('#uploadForm');
 	            const previewDiv = document.createElement('div');
 	            previewDiv.classList.add('image-preview');
 	            const closeButton = document.createElement('button');
-	            closeButton.innerHTML = index;//'&times;'; // × 표시
+	            closeButton.innerHTML = '&times;'; // × 표시
+	            closeButton.type = 'button';
 	            closeButton.dataset.index = index;
 	            closeButton.classList.add('close-button'); // CSS 클래스 추가
 	            const imgElement = document.createElement('img');
@@ -471,23 +474,27 @@ const uploadForm = $('#uploadForm');
 	$(document).on('click', '.close-button', function(){
 		let index = $(this).data('index');
 		let file_num = $(this).data('file_num');
-		if(index){ // 새로 추가된거
+		if(index >= 0){ // 새로 추가된거
 			savedFiles.splice(index, 1);
 			$(this).parent().remove();
-			console.log(savedFiles);
+			selectedCount = savedFiles.length;
+			totalCount = selectedCount + existingFileCount;
+		    fileCount.innerText = totalCount + "/10 사진 선택됨";
 		}
 		if(file_num){ // 기존거
 			existingFileNums.push(file_num);
 			$(this).parent().remove();
 			existingFileCount = existingFileCount - 1;			
-			fileCount.innerText = (selectedCount + existingFileCount) + "/10 사진 선택됨";
+			totalCount = selectedCount + existingFileCount;
+		    fileCount.innerText = totalCount + "/10 사진 선택됨";
 			previewContainerTmp = previewContainer.innerHTML;
 		}
 	});
-	// form submit
+	// 수정버튼 클릭
 	$('#uploadForm').submit(function(e){
 		e.preventDefault();
 	 	const formData = new FormData(this);
+	 	let post_num = document.getElementById('post_num').value;
 		// savedFiles 배열에 있는 파일들을 formData에 추가
 		savedFiles.forEach(file => {
 			console.log(file.name);
@@ -496,19 +503,24 @@ const uploadForm = $('#uploadForm');
 		// 삭제할 기존 이미지 num을 서버에 전송할 수 있도록 FormData에 추가
 	    formData.append('existingFileNums', existingFileNums);
        $.ajax({
-   		async : true, //비동기 : true(비동기), false(동기)
-   		url : '<c:url value="/post/update"/>', 
-   		type : 'post',
-   		data : formData,
-   		contentType: false,  // 서버로 전송 시 `multipart/form-data`가 자동 설정되도록
-   	    processData: false,  // jQuery가 데이터를 자동으로 처리하지 않도록 설정 
-   		success : function (data){
-   			console.log("Upload success:", data);
-   		}, 
-   		error : function(jqXHR, textStatus, errorThrown){
-   			console.error("Upload failed:", error);
-   		}
-   	});
+	   		async : true, //비동기 : true(비동기), false(동기)
+	   		url : '<c:url value="/post/update"/>', 
+	   		type : 'post',
+	   		data : formData,
+	   		contentType: false,  // 서버로 전송 시 `multipart/form-data`가 자동 설정되도록
+	   	    processData: false,  // jQuery가 데이터를 자동으로 처리하지 않도록 설정 
+	   		success : function (data){
+	   			console.log("Upload success:", data);
+	   			if(data == 'UPDATE_POST'){
+	   				location.href = `<c:url value="/post/detail/\${post_num}"/>`;
+	   			}else {
+	   				alert('게시물 수정에 실패했습니다.');
+	   			}
+	   		}, 
+	   		error : function(jqXHR, textStatus, errorThrown){
+	   			console.error("Upload failed:", error);
+	   		}
+	   	});
 		
 	});
  	// 페이지 로드 시 기본 옵션 선택
@@ -625,7 +637,7 @@ const uploadForm = $('#uploadForm');
 	            event.preventDefault(); // 폼 제출 중단
 	            return;
 	    } else {
-	       if (!filesAttached) {
+	       if (!totalCount) {
 	            alert("최소한 하나의 사진을 첨부해주세요.");
 	            event.preventDefault(); // 폼 제출 중단
 	            return;

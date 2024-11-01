@@ -85,5 +85,10 @@
 	        end
 	    WHERE member_id = #{member_id}
 	</update>
-	
+	<update id="updateMemberSuspend">
+		update member set member_state = '정지' where member_num = #{member_num}
+	</update>
+	<update id="updateMemberUse">
+		update member set member_state = '사용' where member_num = #{member_num}
+	</update>
 </mapper>

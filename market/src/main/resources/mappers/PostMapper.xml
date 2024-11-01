@@ -119,7 +119,23 @@
 		insert into file(file_name, file_ori_name, file_target_table, file_target_num)
 		values(#{file_name},#{file_ori_name},#{file_target_table},#{file_target_num})
 	</insert>
-    
+	<!-- 게시물 수정 -->
+    <update id="updatePost">
+    	update 
+    		post 
+   		set 
+			post_position_num = #{post_position_num},
+			post_way_num = #{post_way_num}, 
+			post_category_num = #{post_category_num},
+			post_title = #{post_title},
+			post_content = #{post_content}, 
+			post_price = #{post_price}, 
+			post_deal = #{post_deal}, 
+			post_refresh = CURRENT_TIMESTAMP, 
+			post_address = #{post_address}
+		where post_num = #{post_num} 
+    		
+    </update>
     <!-- 카테고리 목록을 가져오는 쿼리 -->
 	<select id="selectCategoryList" resultType="com.team3.market.model.vo.CategoryVO">
 	    SELECT category_num, category_name FROM category
@@ -202,14 +218,22 @@
 	<delete id="deletePostAllWish">
 		delete from wish where wish_post_num = #{post_num}
 	</delete>
+	<select id="selectFile" resultType="FileVO">
+		select * from file where file_num = #{file_num}
+	</select>
 	<delete id="deleteFile">
 		delete from file where file_num = #{file_num}
 	</delete>
 	<select id="selectFileList" resultType="FileVO">
 		select * from file where file_target_table = #{target} and file_target_num = #{target_num}
 	</select>
-	<select id="selectFile" resultType="FileVO">
-		select * from file where file_target_table = #{target} and file_target_num = #{target_num}
+	<select id="selectFileThumbnail" resultType="FileVO">
+		select * from file where file_target_table = #{file_target_table} and file_target_num = #{file_target_num}
+		order by file_num
+		limit 0, 1
+	</select>
+	<select id="selectFileProfileImg" resultType="FileVO">
+		select * from file where file_target_table = #{file_target_table} and file_target_num = #{file_target_num}
 		order by file_num
 		limit 0, 1
 	</select>
@@ -316,4 +340,10 @@
 	<select id="selectCategoryName" resultType="String">
 		select category_name from category where category_num = #{category_num}
 	</select>	
+	<update id="updatePostHide">
+		update post set post_state_num = 2 where post_num = #{post_num}
+	</update>
+	<update id="updatePostUse">
+		update post set post_state_num = 1 where post_num = #{post_num}
+	</update>
 </mapper>

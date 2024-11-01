@@ -29,7 +29,19 @@
 		     <td>${post.member_id}(${post.member_nick})</td>
 		     <td>${post.mostCategory}(${post.categoryCount})</td>
 		     <td>${post.reportCount}</td>
-		     <td><button>삭제</button></td>
+		     <td>
+		     	<c:if test="${post.post_state_num == 1 }">
+			     	<button class="hide-button" type="button" data-post_num="${post.post_num }">숨김</button>
+			     	<button class="use-button" type="button" data-post_num="${post.post_num }" disabled>사용</button>
+		     	</c:if>
+		     	<c:if test="${post.post_state_num == 2 }">
+			     	<button class="hide-button" type="button" data-post_num="${post.post_num }" disabled>숨김</button>
+			     	<button class="use-button" type="button" data-post_num="${post.post_num }" >사용</button>
+		     	</c:if>
+		     	<c:if test="${post.post_state_num == 3 }">
+		     		<span style="color: red;">삭제된 게시물</span>
+		     	</c:if>
+		     </td>
 		   </tr>
 		</c:forEach>
   </tbody>
@@ -50,8 +62,49 @@ $(document).on('change', '#postReportList', function(){
 		}
 	});	
 });
-$(document).on('click','.post-link', function(){
+$('.post-link').click(function(event){
 	let post_num = $(this).data('post_num');
 	location.href = `<c:url value="/report/detail/post/\${post_num}"/>`
+	event.stopPropagation();
+});
+$('.hide-button').click(function(event){
+	let post_num = $(this).data('post_num');	
+	$.ajax({
+		async : true, //비동기 : true(비동기), false(동기)
+		url : '<c:url value="/report/post/hide"/>', 
+		type : 'post', 
+		data : {post_num : post_num}, 
+		success : function (data){	
+			console.log(data);
+			if(data){
+				alert('게시물을 숨김 상태로 전환함');
+				$('#btn-post').click();
+			}
+		}, 
+		error : function(jqXHR, textStatus, errorThrown){
+			console.log(jqXHR);
+		}
+	});
+	event.stopPropagation();
+});
+$('.use-button').click(function(event){
+	let post_num = $(this).data('post_num');	
+	$.ajax({
+		async : true, //비동기 : true(비동기), false(동기)
+		url : '<c:url value="/report/post/use"/>', 
+		type : 'post', 
+		data : {post_num : post_num}, 
+		success : function (data){	
+			console.log(data);
+			if(data){
+				alert('게시물을 사용 상태로 전환함');
+				$('#btn-post').click();
+			}
+		}, 
+		error : function(jqXHR, textStatus, errorThrown){
+			console.log(jqXHR);
+		}
+	});
+	event.stopPropagation();
 });
 </script>

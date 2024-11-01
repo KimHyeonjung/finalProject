@@ -278,6 +278,14 @@ public class MemberService {
         memberDao.updatepw(user);
     }
 
+	public boolean updateMemberSuspend(int member_num) {
+		return memberDao.updateMemberSuspend(member_num);
+	}
+
+	public boolean updateMemberUse(int member_num) {
+		return memberDao.updateMemberUse(member_num);
+	}
+
 
 	
 	

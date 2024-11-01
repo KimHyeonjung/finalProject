@@ -121,7 +121,7 @@
                     </select>
                 </td>
                 <td><a href="<c:url value="/post/detail/${post.post_num}"/>">${post.post_title}</a></td>
-                <td>${post.post_price}</td>
+                <td><fmt:formatNumber value="${post.post_price }" type="number"/>원</td>
                 <td>${post.post_view}</td>
                 <td>
                 	<fmt:formatDate value="${post.post_refresh}" pattern="yyy-MM-dd hh:mm"/>

@@ -49,7 +49,6 @@ public class UploadFileUtils {
     public static void delteFile(String uploadPath, String fi_name) {
 		fi_name = fi_name.replace('/', File.separatorChar);
 		File file = new File(uploadPath + fi_name);
-		//파일이 존재하면 파일을 삭제
 		if(file.exists()) {
 			file.delete();
 		}

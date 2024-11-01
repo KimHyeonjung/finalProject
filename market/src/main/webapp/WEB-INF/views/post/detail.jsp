@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=55f22ec08aea99a6511585b99e78d0d6&libraries=services"></script>
 <style>
 .carousel-item img {
 	height: 500px;
@@ -89,6 +90,11 @@
 	resize: none;
 }
 .report-content {text-align: right;}
+.map_wrap {position:relative;width:100%;height:350px;}
+.title {font-weight:bold;display:block;}
+.hAddr {position:absolute;left:10px;top:10px;border-radius: 2px;background:#fff;background:rgba(255,255,255,0.8);z-index:1;padding:5px;}
+#centerAddr {display:block;margin-top:2px;font-weight: normal;}
+.bAddr {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
 </style>
 </head>
 <body>
@@ -165,25 +171,27 @@
 										<div class="btn btn-outline-danger <c:if test="${report.report_member_num == user.member_num}">active</c:if>" 
 											id="report" data-post_num="${post.post_num}">신고하기</div>
 										<div class="btn btn-warning" id="chat" data-post_num="${post.post_num}">채팅방</div>
-										<div class="dropdown dropright">
-										    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-												흥정하기
-										    </button>
-										    <div class="dropdown-menu" style="padding: 4px;">
-										      <span class="dropdown-item discount" data-price="1000">
-										      	<fmt:formatNumber value="-1000" type="number"/><span>원</span></span>
-										      <span class="dropdown-item discount" data-price="5000">
-										      	<fmt:formatNumber value="-5000" type="number"/><span>원</span></span>
-										      <span class="dropdown-item discount" data-price="10000">
-										     	 <fmt:formatNumber value="-10000" type="number"/><span>원</span></span>
-										      <div class="dropdown-divider"></div>
-										      <span class="dropdown-item" style="padding: 4px 5px;">										      	
-										      	<input type="text" value="${post.post_price }"
-										      		id="input-discount" style="width: 120px; margin-right: 5px;">
-										      	<button type="button" class="btn btn-outline-dark" id="propose">제안</button>
-										      </span>
-										    </div>
-										</div>
+										<c:if test="${post.post_deal eq true }">
+											<div class="dropdown dropright">
+											    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+													흥정하기
+											    </button>
+											    <div class="dropdown-menu" style="padding: 4px;">
+											      <span class="dropdown-item discount" data-price="1000">
+											      	<fmt:formatNumber value="-1000" type="number"/><span>원</span></span>
+											      <span class="dropdown-item discount" data-price="5000">
+											      	<fmt:formatNumber value="-5000" type="number"/><span>원</span></span>
+											      <span class="dropdown-item discount" data-price="10000">
+											     	 <fmt:formatNumber value="-10000" type="number"/><span>원</span></span>
+											      <div class="dropdown-divider"></div>
+											      <span class="dropdown-item" style="padding: 4px 5px;">										      	
+											      	<input type="text" value="${post.post_price }"
+											      		id="input-discount" style="width: 120px; margin-right: 5px;">
+											      	<button type="button" class="btn btn-outline-dark" id="propose">제안</button>
+											      </span>
+											    </div>
+											</div>
+										</c:if>
 									</c:if>
 									<c:if test="${user.member_num eq post.post_member_num }">
 										<div>
@@ -265,11 +273,26 @@
 				${post.post_content }</div>
 			<p id="article-counts">
 				관심 ${post.post_wishcount} ∙ 채팅 85 ∙ 조회 ${post.post_view}</p>
+			<!-- 지도 및 주소 입력 -->
+			<input type="hidden" value="${post.post_way_num }" id="post_way_num">
+			<div id="mapContainer">
+			    <div class="map_wrap">
+			        <div id="map" style="display:block;width:100%;height:100%;position:relative;overflow:hidden;"></div>
+			        <div class="hAddr">
+			            <span class="title">지도중심기준 행정동 주소정보</span>
+			            <span id="centerAddr"></span>
+			        </div>
+			    </div>
+			    <input type="text" id="post_address" name="post_address" value="${post.post_address }"
+			    	placeholder="여기에 주소가 표시됩니다" style="width:100%; margin-top:10px; padding:5px;" readonly>
+			</div>
 		</section>
+		<!-- 블라인드 처리 -->
 		<div class="blind" id="blind">
 			<div class="blind-text">신고 누적으로 블라인드 처리된 게시물입니다.</div>
 		</div>
 	</div>
+	<!-- modal -->
 	<div class="overlay" id="overlay"></div>
 	<div class="report-modal" id="report-modal">
 		<span class="btn-close" id="closeBtn">&times;</span>
@@ -277,6 +300,81 @@
 		<div class="list-group">		
 		</div>
 	</div>
+<script>
+var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+mapOption = {
+    center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 기본 중심좌표 (서울)
+    level: 1 // 지도의 확대 레벨
+};  
+
+//지도를 생성합니다    
+var map = new kakao.maps.Map(mapContainer, mapOption); 
+
+//주소-좌표 변환 객체를 생성합니다
+var geocoder = new kakao.maps.services.Geocoder();
+
+var marker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입니다
+infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
+
+//HTML5의 Geolocation으로 사용할 수 있는지 확인합니다 
+if (navigator.geolocation) {
+	navigator.geolocation.getCurrentPosition(function(position) {
+		const address = document.getElementById("post_address").value;
+		const mapContainerDiv = document.getElementById('mapContainer');
+		let post_way_num = document.getElementById('post_way_num').value;
+		if(post_way_num == 1){
+			mapContainerDiv.style.display = 'none';
+		}else {
+			if(address != ''){
+		    	// 입력한 주소로 좌표 변환 요청
+		   		geocoder.addressSearch(address, function(result, status) {
+		        	if (status === kakao.maps.services.Status.OK) {
+		                const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+		                var content = '<div class="bAddr">' +
+					                    '<span class="title">직거래 위치</span><br>' + 
+					                    address + 
+					                '</div>';
+		
+		                // 지도에 마커 생성
+		                marker.setPosition(coords);
+					    marker.setMap(map);
+		
+		                // 해당 좌표로 지도 중심 이동
+		                map.setCenter(coords);
+					
+					    // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+					    infowindow.setContent(content);
+					    infowindow.open(map, marker);
+		            } else {
+		                alert("주소를 찾을 수 없습니다.");
+		            }
+		        }); 	
+			}       
+		}
+	});
+} else { 
+var locPosition = new kakao.maps.LatLng(37.566826, 126.9786567), // 기본 좌표 (서울)
+    message = '<div class="bAddr">Geolocation을 사용할 수 없습니다.</div>'; 
+displayMarker(locPosition, message, "");
+}
+
+//지도 타입 전환 버튼 생성
+var mapTypeControl = new kakao.maps.MapTypeControl();
+map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+//지도 확대/축소 버튼 생성
+var zoomControl = new kakao.maps.ZoomControl();
+map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+//주소 검색 함수
+function searchDetailAddrFromCoords(coords, callback) {
+// 좌표로 법정동 상세 주소 정보를 요청합니다
+geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+}
+$(document).ready(function(){
+	
+});
+</script>		
 <script>
 $(document).ready(function () {
 	const $overlay = $("#overlay");

@@ -85,10 +85,10 @@ public class MyPageController {
 		int res = postService.refreshCheck(post_num);
 		return res;
 	}
-	@PostMapping("/post/thumbnail") // 끌올 가능 체크
+	@PostMapping("/post/thumbnail") // 썸네일
 	@ResponseBody
 	public FileVO postThumbnail(@RequestParam("post_num") int post_num) {
-		FileVO file = postService.getFile(post_num, "post");
+		FileVO file = postService.getFileThumbnail("post", post_num);
 		return file;
 	}
 	
