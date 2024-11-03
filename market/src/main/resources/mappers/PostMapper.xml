@@ -233,32 +233,7 @@
 		insert into chat(chat_member_num, chat_chatRoom_num, chat_content) values 
 			(#{chat_member_num}, #{chat_chatRoom_num}, #{chat_content})
 	</insert>
-	
-	<!-- 리뷰 생성 -->
-	<insert id="insertAfter" parameterType="AfterVO" useGeneratedKeys="true" keyProperty="after_num">
-	    insert into after (
-	        after_member_num, after_post_num, after_review_sum, after_review1, after_review2, after_review3, after_message
-	    ) 
-	    values (
-	        #{after_member_num}, #{after_post_num}, #{after_review_sum}, #{after_review1}, #{after_review2}, #{after_review3}, #{after_message}
-	    )
-	</insert>
-	
-	<!-- post_num을 통해 post_member_num 조회 -->
-    <select id="findPostMemberNum" parameterType="int" resultType="int">
-        SELECT post_member_num 
-        FROM post 
-        WHERE post_num = #{post_num}
-    </select>
 
-    <!-- member_score 업데이트 -->
-    <update id="updateMemberScore">
-        UPDATE member 
-        SET member_score = member_score + #{after_review_sum} 
-        WHERE member_num = #{member_num}
-    </update>
-	
-	
 	<select id="selectNotification" resultType="NotificationVO">
 		select * from notification
 		join notification_type

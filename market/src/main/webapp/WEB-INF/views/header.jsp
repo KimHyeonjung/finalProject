@@ -110,7 +110,10 @@
 			<a href="#">주소록</a>
 			<a href="#">거래 내역</a>
 		</div>
-		<a href="<c:url value="/logout"/>">로그아웃</a>
+		<div>
+			<a href="<c:url value="/after/board"/>">내 리뷰</a>
+			<a href="<c:url value="/logout"/>">로그아웃</a>
+		</div>
 	</div>
 	
 	

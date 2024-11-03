@@ -42,7 +42,7 @@
 <div class="container mt-4">
 	<h1>거래 리뷰</h1>
 	<hr>
-	<form action="<c:url value='/post/review'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
+	<form action="<c:url value='/after/review'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
 		<!-- 거래 형태 입력 -->
 		<div class="form-group">
 		    <div class="btn-group" role="group" aria-label="옵션 선택">

@@ -218,7 +218,8 @@ CREATE TABLE `after` (
     `after_review_sum`	float NOT NULL,
     `after_review1`		float NOT NULL,
     `after_review2`		float NOT NULL,
-    `after_review3`		float NOT NULL
+    `after_review3`		float NOT NULL,
+    `after_date`		datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `grade`;

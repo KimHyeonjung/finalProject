@@ -91,9 +91,6 @@ public interface PostDAO {
 	boolean insertChatRoom(ChatRoomVO chatRoom);
 
 	boolean insertChat(ChatVO chat);
-	
-	boolean insertAfter(AfterVO after);
-	//boolean updateMemberScore(MemberVO member); // 회원 평점을 업데이트하는 메서드
 
 	List<NotificationVO> selectNotification(int member_num);
 
@@ -108,13 +105,6 @@ public interface PostDAO {
 	List<CombinePostWithFileDTO> selectPostListWithFileByCategory(int category_num);
 
 	String selectCategoryName(int category_num);
-	
-	
-    // post_num을 통해 post_member_num을 조회하는 메서드
-    int findPostMemberNum(int post_num);
-
-    // member_score를 업데이트하는 메서드
-    boolean updateMemberScore(@Param("member_num") int member_num, @Param("after_review_sum") float afterReviewSum);
 	
 	void updateMemberReport(int member_num);
 

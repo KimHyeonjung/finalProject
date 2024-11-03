@@ -116,63 +116,6 @@ public class PostService {
 		return true;
 	}
 	
-	/*
-	public boolean insertReview(AfterVO review, MemberVO user) {
-		
-		review.setAfter_member_num(user.getMember_num());
-		
-		
-		return postDao.insertAfter(review);
-	}
-	*/
-	
-	public boolean insertReview(AfterVO review, MemberVO user, float afterReviewSum) {
-	    // 리뷰 작성자 ID 설정
-	    review.setAfter_member_num(user.getMember_num());
-
-	    // review에서 after_post_num을 가져와서 post_member_num 조회
-	    int postMemberNum = postDao.findPostMemberNum(review.getAfter_post_num());
-
-	    // post_member_num을 통해 member 테이블에서 member_score 업데이트
-	    postDao.updateMemberScore(postMemberNum, afterReviewSum);
-
-	    // 리뷰 데이터 삽입
-	    return postDao.insertAfter(review);
-	}
-
-	
-	
-	/*
-    public boolean insertReview(AfterVO review, MemberVO user) {
-        // 1. after_post_num 값으로 게시글 찾기
-        PostVO post = postDao.selectPost(review.getAfter_post_num());
-        if (post == null) {
-            return false; // 게시글이 존재하지 않는 경우 실패 반환
-        }
-        
-        // 2. 게시글 작성자 정보 가져오기
-        int postMemberNum = post.getPost_member_num();
-        MemberVO postMember = postDao.selectMember(postMemberNum);
-        if (postMember == null) {
-            return false; // 게시글 작성자가 존재하지 않는 경우 실패 반환
-        }
-
-        // 3. 리뷰 등록
-        review.setAfter_member_num(user.getMember_num());
-        boolean reviewInserted = postDao.insertAfter(review);
-        
-        if (reviewInserted) {
-            // 4. 리뷰 점수를 작성자의 member_score에 반영
-            double newScore = postMember.getMember_score() + review.getAfter_review_sum();
-            postMember.setMember_score(newScore);
-            return postDao.updateMemberScore(postMember); // 평점 업데이트 성공 여부 반환
-        }
-
-        return false;
-    }
-	*/
-	
-	
 	public Map<String, Object> getPostMap(int post_num) {
 		Map<String, Object> post = postDao.selectPostMap(post_num);
 		//지난 시간 구해서 map에 추가
