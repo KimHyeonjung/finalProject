@@ -7,10 +7,6 @@
 <head>
 	<meta charset="UTF-8">
 	<title>상품 등록</title>
-	<!-- Bootstrap CDN -->
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 	<style>
 		.textarea {
 			height: 400px;
@@ -46,6 +42,16 @@
             height: 100px;
             object-fit: cover;
         }
+        .close-button {
+		    position: absolute;
+		    top: 0px;
+		    right: 0px;
+		    border: none;
+		    background: none;
+		    cursor: pointer;
+		    font-size: 18px;
+		    color: white;
+		}
         .image-preview .remove-btn {
             position: absolute;
             top: 0;
@@ -83,7 +89,7 @@
 <body>
 <div class="container mt-4">
 	<h1>상품 등록</h1>
-	<form action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
+	<form id="uploadForm" action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
 		
 		<!-- 사진 첨부 -->
 		<div class="form-group">
@@ -152,11 +158,13 @@
 		<div class="form-group">
 			<label>거래 방법</label><br>
 			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" id="delivery" name="transaction" value="택배거래" checked="on" onclick="setPostWayNum()">
+				<input class="form-check-input" type="checkbox" id="delivery" name="transaction" value="택배거래" 
+					checked="on" onclick="setPostWayNum()">
 				<label class="form-check-label" for="delivery">택배거래</label>
 			</div>
 			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" id="direct" name="transaction" value="직거래" checked="on" onclick="toggleMapVisibility(); setPostWayNum()">
+				<input class="form-check-input" type="checkbox" id="direct" name="transaction" value="직거래" 
+					checked="on" onclick="toggleMapVisibility(); setPostWayNum()">
 				<label class="form-check-label" for="direct">직거래</label>
 			</div>
 		</div>
@@ -317,7 +325,7 @@ function searchDetailAddrFromCoords(coords, callback) {
 	        postWayInput.value = '';  // 아무 것도 선택되지 않음
 	    }
 	    
-	    checkFormCompletion(); // 거래 방식 선택 시 폼 완료 상태 확인
+	    //checkFormCompletion(); // 거래 방식 선택 시 폼 완료 상태 확인
 	}
 	
     // 직거래 체크박스 선택 시 지도 및 주소 입력창 보이게
@@ -337,52 +345,116 @@ function searchDetailAddrFromCoords(coords, callback) {
             addressInput.value = '';  // 주소 입력창 값 초기화
         }
     }
-    
+	// 선택된 파일 정보를 저장할 전역 변수
+	var savedFiles = [];
+	const previewContainer = document.getElementById('previewContainer');
+    const fileCount = document.getElementById('fileCount');
+    var selectedCount
 	// 이미지 파일 미리보기 처리
 	function handleFiles(files) {
-		
-	    // 파일 선택 여부 확인
-/* 	    if (files.length === 0) {
-	        return; // 선택된 파일이 없으면 기존 미리보기를 유지하고 함수 종료
-	    } */
-		
-	    const previewContainer = document.getElementById('previewContainer');
-	    const fileCount = document.getElementById('fileCount');
 	    const maxFiles = 10;
-	
-	    // 선택된 파일 개수를 제한
-	    let selectedCount = Math.min(files.length, maxFiles);
+		
+	 	// 파일 선택 여부 확인
+ 	    if (!files || files.length === 0) {
+ 	    	displayPreviews(savedFiles);
+	        return; // 선택된 파일이 없으면 기존 미리보기를 유지하고 함수 종료
+	    } 
+ 		// 새로 선택된 파일 정보 저장
+	 	const newFiles = Array.from(files);
+ 	   	savedFiles = savedFiles.concat(newFiles);
+ 	   	
+ 	   	selectedCount = savedFiles.length;
 	    
-	    // 파일 개수가 10개를 초과할 경우 경고
-	    if (files.length > maxFiles) {
+ 		// 파일 개수가 10개를 초과할 경우 경고
+	    if (selectedCount > maxFiles) {
 	        alert("최대 10장까지 이미지를 업로드할 수 있습니다.");
 	        document.getElementById('fileInput').value = ''; // 파일 입력 초기화
+	        savedFiles = savedFiles.filter(item => !newFiles.includes(item)); //초과 선택했던 파일들 제거
 	        return;
 	    }
-	
-	    // 미리보기 컨테이너 초기화
-	    previewContainer.innerHTML = '';
-	
-	    // 파일 미리보기 생성
-	    for (let i = 0; i < selectedCount; i++) {
-	        const file = files[i];
-	        const reader = new FileReader();
-	        reader.onload = function (e) {
-	            const previewDiv = document.createElement('div');
-	            previewDiv.classList.add('image-preview');
-	
-	            const imgElement = document.createElement('img');
-	            imgElement.src = e.target.result;
-	
-	            previewDiv.appendChild(imgElement);
-	            previewContainer.appendChild(previewDiv);
-	        };
-	        reader.readAsDataURL(file);
-	    }
+	    
+		 // 새로운 파일들로 미리보기 생성
+ 	    displayPreviews(savedFiles);
 	
 	    // 파일 개수 업데이트
 	    fileCount.innerText = selectedCount + "/10 사진 선택됨";
 	}
+ 	// 미리보기 생성 함수
+	function displayPreviews(files) {
+		// 미리보기 컨테이너 초기화
+	    previewContainer.innerHTML = '';
+		// 각 파일을 Promise로 처리하여 onload 이벤트 순서를 보장
+	    const readFilePromises = files.map((file, index) => {
+	        return new Promise((resolve) => {
+	            const reader = new FileReader();
+	            reader.onload = function (e) {
+	                resolve({ src: e.target.result, index: index });
+	            };
+	            reader.readAsDataURL(file);
+	        });
+	    });
+		// 모든 파일이 읽힌 후 순서대로 미리보기 생성
+	    Promise.all(readFilePromises).then((results) => {
+	        results.forEach(({ src, index }) => {
+	            const previewDiv = document.createElement('div');
+	            previewDiv.classList.add('image-preview');
+	            const closeButton = document.createElement('button');
+	            closeButton.innerHTML = '&times;'; // × 표시
+	            closeButton.type = 'button';
+	            closeButton.dataset.index = index;
+	            closeButton.classList.add('close-button'); // CSS 클래스 추가
+	            const imgElement = document.createElement('img');
+	            imgElement.src = src;
+	            imgElement.dataset.index = index; // 파일 순서를 유지할 데이터 속성 추가
+	            previewDiv.appendChild(imgElement);
+	            previewDiv.appendChild(closeButton);
+	            previewContainer.appendChild(previewDiv);
+	        });
+	    });	       
+	}
+	//미리보기 x삭제버튼 클릭시
+	$(document).on('click', '.close-button', function(){
+		let index = $(this).data('index');
+		if(index >= 0){ // 새로 추가된거
+			savedFiles.splice(index, 1);
+			$(this).parent().remove();
+			selectedCount = savedFiles.length;
+		    fileCount.innerText = selectedCount + "/10 사진 선택됨";
+		}		
+	});
+	// 등록버튼 클릭
+	$('#uploadForm').submit(function(e){
+		e.preventDefault();
+	 	const formData = new FormData(this);
+		// savedFiles 배열에 있는 파일들을 formData에 추가
+		savedFiles.forEach(file => {
+			console.log(file.name);
+		  formData.append("files", file); // "files"는 컨트롤러에서 받을 파라미터 이름
+		}); 
+       $.ajax({
+	   		async : true, //비동기 : true(비동기), false(동기)
+	   		url : '<c:url value="/post/insert"/>', 
+	   		type : 'post',
+	   		data : formData,
+	   		contentType: false,  // 서버로 전송 시 `multipart/form-data`가 자동 설정되도록
+	   	    processData: false,  // jQuery가 데이터를 자동으로 처리하지 않도록 설정 
+	   		success : function (data){
+	   			console.log("Upload success:", data);
+	   			let str = data;
+	   			let result = str.split("::")[0];
+	   			let post_num = str.split("::")[1];
+	   			if(result == 'REGISTRATION_POST'){
+	   				location.href = `<c:url value="/post/detail/\${post_num}"/>`;
+	   			}else {
+	   				alert('상품 등록에 실패하였습니다.');
+	   			}
+	   		}, 
+	   		error : function(jqXHR, textStatus, errorThrown){
+	   			console.error("Upload failed:", error);
+	   		}
+	   	});
+		
+	});
 	
  	// 페이지 로드 시 기본 옵션 선택
     window.onload = function() {
@@ -476,8 +548,8 @@ function searchDetailAddrFromCoords(coords, callback) {
         
         // 파일 첨부 확인
         const fileInput = document.getElementById("fileInput");
-        const filesAttached = fileInput.files.length > 0;
-        
+        const filesAttached = selectedCount > 0;
+        setPostWayNum();
 		if (!title && !price && !content) {
 			alert("상품명, 금액, 상품 설명을 모두 입력해주세요.");
 			event.preventDefault(); // 폼 제출 중단

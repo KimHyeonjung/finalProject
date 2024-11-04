@@ -31,8 +31,8 @@
             padding: 0 0;
         }
         .product-item img {
-            width: 100%;
-            height: auto;
+            width: 200px;
+            height: 200px;
             object-fit: cover;
         }
         .product-item .name {

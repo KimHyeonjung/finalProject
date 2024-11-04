@@ -93,14 +93,27 @@
         WHERE cr.chatRoom_num = #{chatRoom_num}
     </select>
     
-    <select id="selectChatRoomBySender" parameterType="map" resultType="MemberVO">
+     <select id="selectChatRoomBySender" parameterType="map" resultType="MemberVO">
         SELECT m.*
         FROM chat_room cr
-        WHERE cr.chatRoom_num = #{chatRoom_num}
+        JOIN member m ON (m.member_num = CASE
             WHEN cr.chatRoom_member_num != #{senderMemberNum} THEN cr.chatRoom_member_num
             WHEN cr.chatRoom_member_num2 != #{senderMemberNum} THEN cr.chatRoom_member_num2
         END)
         WHERE cr.chatRoom_num = #{chatRoomNum}
+    </select>
+    
+    <select id="selectChatRoomById" resultType="com.team3.market.model.vo.ChatRoomVO">
+        SELECT * FROM chat_room
+        WHERE chatRoom_num = #{chatRoomNum}
+    </select>
+    
+    <select id="selectChatRoomNumByMembers" parameterType="map" resultType="int">
+        SELECT chatRoom_num
+        FROM chat_room
+        WHERE (chatRoom_member_num = #{senderMemberNum} AND chatRoom_member_num2 = #{targetMemberNum}) OR
+              (chatRoom_member_num = #{targetMemberNum} AND chatRoom_member_num2 = #{senderMemberNum})
+        LIMIT 1
     </select>
     
 </mapper>

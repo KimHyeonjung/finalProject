@@ -21,6 +21,7 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportCategoryVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.service.AdminService;
+import com.team3.market.service.MemberService;
 import com.team3.market.service.PostService;
 
 @Controller
@@ -30,6 +31,8 @@ public class AdminController {
 	PostService postService;
 	@Autowired
 	AdminService adminService;
+	@Autowired
+	MemberService memberService;
 	
 	@ResponseBody
 	@PostMapping("/report/category/{type}")	
@@ -134,4 +137,60 @@ public class AdminController {
 		model.addAttribute("user", user);
 		return "/admin/detailPost";
 	}
+	@ResponseBody
+	@PostMapping("/report/post/hide") // 게시물 숨김 처리
+	public boolean reportPostHide(@RequestParam("post_num")int post_num, HttpSession session){
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(user == null) {
+			return false;
+		}
+		boolean res = user.getMember_auth().equals("ADMIN");
+		if(res) {
+			res = postService.updatePostHide(post_num);
+			return res;
+		}
+		return false;
+	}	
+	@ResponseBody
+	@PostMapping("/report/post/use") // 게시물 사용 처리
+	public boolean reportPostUse(@RequestParam("post_num")int post_num, HttpSession session){
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(user == null) {
+			return false;
+		}
+		boolean res = user.getMember_auth().equals("ADMIN");
+		if(res) {
+			res = postService.updatePostUse(post_num);
+			return res;
+		}
+		return false;
+	}	
+	@ResponseBody
+	@PostMapping("/report/member/suspend") // 유저 정지 처리
+	public boolean reportMemberSuspend(@RequestParam("member_num")int member_num, HttpSession session){
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(user == null) {
+			return false;
+		}
+		boolean res = user.getMember_auth().equals("ADMIN");
+		if(res) {
+			res = memberService.updateMemberSuspend(member_num);
+			return res;
+		}
+		return false;
+	}	
+	@ResponseBody
+	@PostMapping("/report/member/use") // 유저 사용 처리
+	public boolean reportMemberUse(@RequestParam("member_num")int member_num, HttpSession session){
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(user == null) {
+			return false;
+		}
+		boolean res = user.getMember_auth().equals("ADMIN");
+		if(res) {
+			res = memberService.updateMemberUse(member_num);
+			return res;
+		}
+		return false;
+	}	
 }

@@ -27,7 +27,19 @@
         <td>${user.member_score}</td>
         <td>${user.mostCategory}</td>
         <td>${user.categoryCount}</td>
-        <td><button>정지</button></td>
+        <td>
+        	<c:if test="${user.member_state eq '사용'}">
+		     	<button class="suspend-button" type="button" data-member_num="${user.report_member_num2 }">정지</button>
+		     	<button class="use-button" type="button" data-member_num="${user.report_member_num2 }" disabled>사용</button>
+	     	</c:if>
+	     	<c:if test="${user.member_state eq '정지'}">
+		     	<button class="suspend-button" type="button" data-member_num="${user.report_member_num2 }" disabled>정지</button>
+		     	<button class="use-button" type="button" data-member_num="${user.report_member_num2 }" >사용</button>
+	     	</c:if>
+	     	<c:if test="${user.member_state eq '휴면' }">
+	     		<span style="color: red;">휴면 계정</span>
+	     	</c:if>
+        </td>
       </tr>
    	</c:forEach>
    </tbody>
@@ -52,9 +64,48 @@ $(document).on('change', '#memberReportList', function(){
 		}
 	});	
 });
-$(document).on('click','.member-link',function(){
+$('.member-link').click(function(event){
 	let member_num = $(this).data('member_num');
 	location.href = `<c:url value="/report/detail/member/\${member_num}"/>`
 });
-
+$('.suspend-button').click(function(event){
+	let member_num = $(this).data('member_num');	
+	$.ajax({
+		async : true, //비동기 : true(비동기), false(동기)
+		url : '<c:url value="/report/member/suspend"/>', 
+		type : 'post', 
+		data : {member_num : member_num}, 
+		success : function (data){	
+			console.log(data);
+			if(data){
+				alert('계정을 정지 상태로 전환함');
+				$('#btn-user').click();
+			}
+		}, 
+		error : function(jqXHR, textStatus, errorThrown){
+			console.log(jqXHR);
+		}
+	});
+	event.stopPropagation();
+});
+$('.use-button').click(function(event){
+	let member_num = $(this).data('member_num');	
+	$.ajax({
+		async : true, //비동기 : true(비동기), false(동기)
+		url : '<c:url value="/report/member/use"/>', 
+		type : 'post', 
+		data : {member_num : member_num}, 
+		success : function (data){	
+			console.log(data);
+			if(data){
+				alert('계정을 사용 상태로 전환함');
+				$('#btn-user').click();
+			}
+		}, 
+		error : function(jqXHR, textStatus, errorThrown){
+			console.log(jqXHR);
+		}
+	});
+	event.stopPropagation();
+});
 </script>

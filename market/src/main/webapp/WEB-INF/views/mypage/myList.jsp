@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
-<title>찜목록</title>
+<title>내 게시물</title>
 <head>
  <style>
     table {
@@ -16,9 +16,10 @@
         text-align: center;
         border: 1px solid #ddd;
     }
-    img {
+    .thumbnail {
         width: 100px;
-        height: auto;
+        height: 100px;
+        object-fit: cover;
     }
     .up-button, .edit-button, .hide-button {
         padding: 5px 10px;
@@ -120,7 +121,7 @@
                     </select>
                 </td>
                 <td><a href="<c:url value="/post/detail/${post.post_num}"/>">${post.post_title}</a></td>
-                <td>${post.post_price}</td>
+                <td><fmt:formatNumber value="${post.post_price }" type="number"/>원</td>
                 <td>${post.post_view}</td>
                 <td>
                 	<fmt:formatDate value="${post.post_refresh}" pattern="yyy-MM-dd hh:mm"/>
@@ -282,6 +283,11 @@ $(document).ready(function() {
 				});
 			}		
 		}
+	});
+	//수정
+	$('.btn-func.edit').click(function(){
+		let post_num = $(this).data('post_num');
+		location.href = `<c:url value="/post/update/\${post_num}"/>`;
 	});
 	//삭제
 	$('.btn-func.delete').click(function(){

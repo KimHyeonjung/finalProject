@@ -94,7 +94,7 @@ public class ChatService {
 	    params.put("chatRoomNum", chatRoomNum);
 	    params.put("senderMemberNum", senderMemberNum);
 
-	    List<MemberVO> members = chatDAO.selectChatRoomByMember(params);
+	    List<MemberVO> members = chatDAO.selectChatRoomBySender(params);
 	    
 	    if (!members.isEmpty()) {
 	        return members.get(0).getMember_num(); // 상대방을 반환
@@ -102,4 +102,18 @@ public class ChatService {
 
 	    return null; // 상대방을 찾지 못한 경우
 	}
+
+	public ChatRoomVO getChatRoomByNum(int chatRoomNum) {
+	    return chatDAO.selectChatRoomById(chatRoomNum);
+	}
+
+	public Object getChatRoomNumByMembers(Integer senderMemberNum, Integer targetMemberNum) {
+	    Map<String, Integer> params = new HashMap<>();
+	    params.put("senderMemberNum", senderMemberNum);
+	    params.put("targetMemberNum", targetMemberNum);
+	    return chatDAO.selectChatRoomNumByMembers(params);
+	}
+
+
+
 }

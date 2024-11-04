@@ -16,7 +16,7 @@
 	<div class="container">
 		<h2 class="report-title mt-3">게시물 신고 내역</h2>
 		<button type="button" class="btn btn-outline-dark" id="btn-post">게시물</button>
-		<button type="button" class="btn btn-outline-dark" id="btn-user">유저</button>
+		<button type="button" class="btn btn-outline-dark active" id="btn-user">유저</button>
 		<div id="table-report">
 			
 		</div>
@@ -36,6 +36,8 @@ $(document).ready(function(){
 				console.log(jqXHR);
 			}
 		});	
+		$('.btn').removeClass('active');
+		$(this).addClass('active');
 	});
 	$('#btn-post').click();
 	$('#btn-user').click(function(){
@@ -51,6 +53,8 @@ $(document).ready(function(){
 				console.log(jqXHR);
 			}
 		});	
+		$('.btn').removeClass('active');
+		$(this).addClass('active');
 	});
 });
 </script>

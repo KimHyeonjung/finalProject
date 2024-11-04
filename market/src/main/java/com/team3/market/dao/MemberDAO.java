@@ -42,4 +42,11 @@ public interface MemberDAO {
 	void updateMemberFail(MemberVO user);
 	
 
+	boolean updateMemberSuspend(int member_num);
+
+	boolean updateMemberUse(int member_num);
+
+
+
+
 }
