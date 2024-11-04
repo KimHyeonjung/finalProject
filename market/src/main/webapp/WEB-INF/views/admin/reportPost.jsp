@@ -12,10 +12,30 @@
    	<thead>
       <tr>
         <th>제목</th>
-        <th>작성일</th>
+        <th><span> 작성일 </span>
+        	<c:if test="${order eq 'date_asc' }">
+        		<i id="sortRPDate" class="fas fa-sort-up"></i>
+        	</c:if>
+        	<c:if test="${order eq 'date_desc' }">
+        		<i id="sortRPDate" class="fas fa-sort-down"></i>
+        	</c:if>
+        	<c:if test="${order ne 'date_asc' && order ne 'date_desc'}">
+        		<i id="sortRPDate" class="fas fa-sort"></i>
+        	</c:if>
+        </th>
         <th>작성자</th>
         <th>가장 많이 받은 신고 항목</th>
-        <th>신고 받은 횟수</th>  
+        <th><span> 신고 받은 횟수 </span>
+        	<c:if test="${order eq 'count_asc' }">
+        		<i id="sortRPCount" class="fas fa-sort-up"></i>
+        	</c:if>
+        	<c:if test="${order eq 'count_desc' }">
+        		<i id="sortRPCount" class="fas fa-sort-down"></i>
+        	</c:if>
+        	<c:if test="${order ne 'count_asc' && order ne 'count_desc'}">
+        		<i id="sortRPCount" class="fas fa-sort"></i>
+        	</c:if>
+        </th>  
         <th>기능</th>      
       </tr>
     </thead>
@@ -47,6 +67,26 @@
   </tbody>
 </table>
 <script>
+$('#sortRPCount').click(function(){
+	if(sortOrder != 'count_asc' && sortOrder != 'count_desc'){
+		sortOrder = 'count_asc';
+	}else if(sortOrder == 'count_asc'){
+		sortOrder = 'count_desc';
+	}else if(sortOrder == 'count_desc')	{
+		sortOrder = 'count_asc';
+	}
+	$('#btn-post').click();
+});
+$('#sortRPDate').click(function(){
+	if(sortOrder != 'date_asc' && sortOrder != 'date_desc'){
+		sortOrder = 'date_asc';
+	}else if(sortOrder == 'date_asc'){
+		sortOrder = 'date_desc';
+	}else if(sortOrder == 'date_desc')	{
+		sortOrder = 'date_asc';
+	}
+	$('#btn-post').click();
+});
 $(document).on('change', '#postReportList', function(){
 	let category_num = $(this).val();
 	$.ajax({

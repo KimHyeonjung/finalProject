@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.service.ChatService;
 import com.team3.market.service.WalletService;
-import com.team3.market.utils.NotificationWebSocketHandler;
 
 
 @Controller

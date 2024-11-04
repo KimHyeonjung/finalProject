@@ -70,7 +70,7 @@ public class HomeController {
     @GetMapping("/login")
     public String showLoginForm(HttpServletRequest request) {
     	String prevUrl = request.getHeader("Referer");
-		if(prevUrl != null && !prevUrl.contains("/login")) {
+		if(prevUrl != null && !prevUrl.contains("/login") && !prevUrl.contains("/signup")) {
 			request.getSession().setAttribute("prevUrl", prevUrl);
 		}
         return "/member/login";

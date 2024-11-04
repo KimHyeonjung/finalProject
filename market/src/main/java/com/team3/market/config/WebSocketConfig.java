@@ -9,7 +9,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import com.team3.market.interceptor.HttpSessionHandshakeInterceptor;
-import com.team3.market.utils.NotificationWebSocketHandler;
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.handler.SocketHandler;
 import com.team3.market.service.ChatService;
 
@@ -27,8 +27,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
 				.setAllowedOrigins("*").addInterceptors(new HttpSessionHandshakeInterceptor());
 //		registry.addHandler(new SocketHandler(chatService), "/chat/echo.do")
 //				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
-		registry.addHandler(new SocketHandler(chatService), "/ws/notify")
-				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
+//		registry.addHandler(new SocketHandler(chatService), "/ws/notify")
+//				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
 																										// 허용 가능
 	}
 

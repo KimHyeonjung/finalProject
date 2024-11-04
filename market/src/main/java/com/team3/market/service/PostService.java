@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.PostDAO;
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.model.dto.CombineNotificationWithFileDTO;
 import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.vo.AfterVO;
@@ -38,6 +39,8 @@ public class PostService {
 
 	@Autowired
 	PostDAO postDao;
+	@Autowired
+    private NotificationWebSocketHandler notificationHandler;
 	
     @Autowired
     private String uploadPath; // WebMvcConfig에서 설정된 경로 주입
@@ -93,6 +96,38 @@ public class PostService {
 			return false;
 		}
 		boolean res = false;
+		PostVO beforePost = postDao.selectPost(post.getPost_num()); //금액 비교를 위해 기존 게시물 정보 가져옴
+		DecimalFormat price = new DecimalFormat("###,###");
+		int type = 3; // 알림 타입
+		int post_num = post.getPost_num();
+		int beforePrice = beforePost.getPost_price();
+		int newPrice = post.getPost_price();
+		String message;
+		List<WishVO> wishList = postDao.selectWishMemberListByPostNum(post.getPost_num());
+		if(post.getPost_price() < beforePost.getPost_price()) {
+			message = "<div>" + beforePost.getPost_title() + "(" + user.getMember_nick() 
+			+ ")상품 가격 하락.</div>("+ price.format(beforePrice) + "원 >> " + price.format(newPrice) + "원)";
+			for(WishVO wish : wishList) {
+				postDao.insertNotification(wish.getWish_member_num(), type, post_num, message);
+				try {
+					notificationHandler.sendNotificationToUser(wish.getMember_id(), "notification");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		if(post.getPost_price() > beforePost.getPost_price()) {
+			message = "<div>" + beforePost.getPost_title() + "(" + user.getMember_nick() 
+			+ ")상품 가격 상승.</div>("+ price.format(beforePrice) + "원 >> " + price.format(newPrice) + "원)";
+			for(WishVO wish : wishList) {
+				postDao.insertNotification(wish.getWish_member_num(), type, post_num, message);
+				try {
+					notificationHandler.sendNotificationToUser(wish.getMember_id(), "notification");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
     	try {
     		res = postDao.updatePost(post);
 		} catch (Exception e) {
@@ -396,7 +431,7 @@ public class PostService {
 		return postDao.selectChatRoom(member_num, user.getMember_num(), post_num);
 	}
 
-	public boolean notify(Map<String, Object> post, MemberVO user) {
+	public boolean notifyPropose(Map<String, Object> post, MemberVO user) {
 		DecimalFormat price = new DecimalFormat("###,###");
 		int type = 1;
 		int newPrice = (Integer) post.get("proposePrice");

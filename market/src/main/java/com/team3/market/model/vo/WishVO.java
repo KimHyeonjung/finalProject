@@ -12,4 +12,5 @@ public class WishVO {
 	private int wish_post_num; 
 	private int wish_member_num; 
 	private Date wish_date;
+	private String member_id;
 }

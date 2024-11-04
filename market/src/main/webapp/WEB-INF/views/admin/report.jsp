@@ -22,6 +22,7 @@
 		</div>
 	</div>
 <script>
+var sortOrder = '';
 $(document).ready(function(){
 	$('#btn-post').click(function(){
 		$('.report-title').text('게시물 신고 내역');
@@ -29,7 +30,8 @@ $(document).ready(function(){
 			async : false, //비동기 : true(비동기), false(동기)
 			url : '<c:url value="/report/postList"/>', 
 			type : 'post', 
-			success : function (data){	
+			data : {order : sortOrder},
+			success : function (data){
 				$('#table-report').html(data);
 			}, 
 			error : function(jqXHR, textStatus, errorThrown){
@@ -46,6 +48,7 @@ $(document).ready(function(){
 			async : false, //비동기 : true(비동기), false(동기)
 			url : '<c:url value="/report/memberList"/>', 
 			type : 'post', 
+			data : {order : sortOrder},
 			success : function (data){	
 				$('#table-report').html(data);
 			}, 

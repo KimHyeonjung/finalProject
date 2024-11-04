@@ -55,7 +55,7 @@ public class AdminController {
 			//게시물 신고 횟수 추가
 			postService.updatePostReport(report.getReport_post_num());
 			PostVO post = postService.getPost(report.getReport_post_num());
-			if(post.getPost_report() > 10) {
+			if(post.getPost_report() > 3) {
 				//유저 신고 횟수 추가
 				postService.updateMemberReport(report.getReport_member_num2());
 			}
@@ -76,33 +76,27 @@ public class AdminController {
 	
 	@GetMapping("/report/list") // 신고 현황 페이지
 	public String reportList(Model model) {
-//		List<Map<String, Object>> postList = adminService.getReportPostList();
-//		List<Map<String, Object>> userList = adminService.getReportUserList();
-//		List<ReportCategoryVO> reportCategoryPostList = adminService.getReportCategoryPostList("post");
-//		List<ReportCategoryVO> reportCategoryMemberList = adminService.getReportCategoryMemberList("member");
-//		
-//		model.addAttribute("rcp", reportCategoryPostList);
-//		model.addAttribute("rcm", reportCategoryMemberList);
-//		model.addAttribute("postList", postList);
-//		model.addAttribute("userList", userList);
+
 		return "/admin/report";
 	}
 	@PostMapping("/report/postList") // 게시물 신고 현황 페이지
-	public String reportPostList(Model model) {
-		List<Map<String, Object>> postList = adminService.getReportPostList();
+	public String reportPostList(Model model, @RequestParam("order")String order) {
+		List<Map<String, Object>> postList = adminService.getReportPostList(order);
 		List<ReportCategoryVO> reportCategoryPostList = adminService.getReportCategoryPostList("post");
 		
 		model.addAttribute("rcList", reportCategoryPostList);
 		model.addAttribute("list", postList);
+		model.addAttribute("order", order);
 		return "admin/reportPost";
 	}
 	@PostMapping("/report/memberList") // 유저 신고 현황 페이지
-	public String reportMemberList(Model model) {
-		List<Map<String, Object>> userList = adminService.getReportUserList();
+	public String reportMemberList(Model model, @RequestParam("order")String order) {
+		List<Map<String, Object>> userList = adminService.getReportUserList(order);
 		List<ReportCategoryVO> reportCategoryMemberList = adminService.getReportCategoryMemberList("member");
 		
 		model.addAttribute("rcList", reportCategoryMemberList);
 		model.addAttribute("list", userList);
+		model.addAttribute("order", order);
 		return "admin/reportMember";
 	}
 	// 게시물 카테고리별
