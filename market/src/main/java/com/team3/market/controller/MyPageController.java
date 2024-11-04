@@ -32,6 +32,12 @@ public class MyPageController {
 	@Autowired
 	PostService postService;
 	
+	  
+    @GetMapping("/edit")
+	public String mypage() {
+		return "/member/mypage";
+	}
+	
 	@GetMapping({"/wish/list/{sort_type}","/wish/list"})
 	public String wishList(Model model, @PathVariable(name = "sort_type", required = false)String sort_type, HttpSession session) {
 		MemberVO user = (MemberVO)session.getAttribute("user");

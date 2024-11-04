@@ -114,7 +114,7 @@
 
 		<div>
 			<p>${user.member_nick}</p>
-			<a href="<c:url value="/mypage"/>">개인정보 변경</a>
+			<a href="<c:url value="/mypage/edit"/>">개인정보 변경</a>
 			<p>온도</p>
 		</div>
 		<div>

@@ -158,11 +158,6 @@ public class HomeController {
         
         return member != null;  
     }
-    
-    @GetMapping("/mypage")
-	public String mypage() {
-		return "/member/mypage";
-	}
 	
 	@PostMapping("/delete")
 	public String deleteAccount(Model model, HttpSession session, MemberVO member) {

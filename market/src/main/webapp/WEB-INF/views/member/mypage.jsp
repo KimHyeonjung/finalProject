@@ -56,7 +56,7 @@
 	            <!-- Modal Header -->
 	            <div class="modal-header">
 	                <h5 class="modal-title" id="passwordModalLabel">비밀번호 변경</h5>
-	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage'">&times;</button>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage/edit'">&times;</button>
 	            </div>
 	
 	            <!-- Modal body -->
@@ -81,7 +81,7 @@
 	            <!-- Modal footer -->
 	            <div class="modal-footer">
 	                <button type="button" id="submitBtn" class="btn btn-primary">확인</button>
-	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
+	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage/edit'">취소</button>
 	            </div>
 	        </div>
 	    </div>
@@ -95,7 +95,7 @@
 	            <!-- Modal Header -->
 	            <div class="modal-header">
 	                <h5 class="modal-title" id="emailModalLabel">이메일 변경</h5>
-	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage'">&times;</button>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage/edit'">&times;</button>
 	            </div>
 	
 	            <!-- Modal body -->
@@ -112,7 +112,7 @@
 	            <!-- Modal footer -->
 	            <div class="modal-footer">
 	                <button type="button" id="submitEmailBtn" class="btn btn-primary">확인</button>
-	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
+	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage/edit'">취소</button>
 	            </div>
 	        </div>
 	    </div>
@@ -126,7 +126,7 @@
 	            <!-- Modal Header -->
 	            <div class="modal-header">
 	                <h5 class="modal-title" id="phoneModalLabel">연락처 변경</h5>
-	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage'">&times;</button>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage/edit'">&times;</button>
                 </div>
 	
 	            <!-- Modal body -->
@@ -150,7 +150,7 @@
 	            <!-- Modal footer -->
 	            <div class="modal-footer">
 	                <button type="button" id="submitPhoneBtn" class="btn btn-primary" disabled>확인</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage/edit'">취소</button>
 	            </div>
 	        </div>
 	    </div>
@@ -275,7 +275,7 @@
 	            // 서버에서 문자열을 반환한다고 가정
 	            if (data === '/market/mypage') {
 	                alert("이메일이 성공적으로 변경되었습니다.");
-	                window.location.href = '/market/mypage'; // 페이지 이동
+	                window.location.href = '/market/mypage/edit'; // 페이지 이동
 	            } else {
 	                errorMessageElement.textContent = "이메일 변경 실패: " + data;
 	                errorMessageElement.classList.remove("d-none");
