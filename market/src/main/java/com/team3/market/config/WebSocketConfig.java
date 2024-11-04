@@ -23,17 +23,17 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(new NotificationWebSocketHandler(), "/ws/notify") // 클라이언트에서 접속할 수 있는 URL
+		registry.addHandler(new NotificationWebSocketHandler(chatService), "/ws/notify") // 클라이언트에서 접속할 수 있는 URL
 				.setAllowedOrigins("*").addInterceptors(new HttpSessionHandshakeInterceptor());
 //		registry.addHandler(new SocketHandler(chatService), "/chat/echo.do")
 //				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
-		registry.addHandler(new SocketHandler(chatService), "/ws/notify")
-				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
+//		registry.addHandler(new SocketHandler(chatService), "/ws/notify")
+//				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
 																										// 허용 가능
 	}
 
 	@Bean
 	public NotificationWebSocketHandler notificationWebSocketHandler() {
-		return new NotificationWebSocketHandler();
+		return new NotificationWebSocketHandler(chatService);
 	}
 }

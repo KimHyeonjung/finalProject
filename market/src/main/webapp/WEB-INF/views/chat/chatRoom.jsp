@@ -13,16 +13,16 @@
 		window.location.href = "/market/chat?chatRoomNum=" + chatRoomNum;
 	}
 	var socket;
-
-	window.onload = function() {
+	
+	<%-- window.onload = function() {
 	    var isUserLoggedIn = <%= (session.getAttribute("user") != null) ? "true" : "false" %>;
 
 	    if (isUserLoggedIn) {
 	        // 웹소켓 연결
 	        connectWebSocket();
 	    }
-	}
-
+	} --%>
+	
 	function connectWebSocket() {
 	    if (!socket || socket.readyState !== WebSocket.OPEN) {
 	        socket = new WebSocket("ws://localhost:8080/market/chat");

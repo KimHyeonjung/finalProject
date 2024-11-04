@@ -571,7 +571,6 @@ $(document).on('click', '#propose', function () {
 			console.log(jqXHR);
 		}
 	});	
-	alert(1);
 });
 	//채팅신청
 	$(document).on('click', '#chat', function() {
