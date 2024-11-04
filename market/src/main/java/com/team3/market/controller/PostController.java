@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.handler.SocketHandler;
 import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.dto.MessageDTO;
@@ -29,7 +30,6 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.WishVO;
 import com.team3.market.service.PostService;
-import com.team3.market.utils.NotificationWebSocketHandler;
 
 @Controller
 @RequestMapping("/post")
@@ -128,7 +128,6 @@ public class PostController {
 //    	System.out.println("post : " + post);
 //    	System.out.println("파일 길이 : " + files.length);
 //    	Arrays.stream(existingFileNums).forEach(System.out::println);
-    	
     	MemberVO user = (MemberVO)session.getAttribute("user");
     	
     	boolean res = postService.updatePost(post, user, files, existingFileNums);
@@ -169,7 +168,7 @@ public class PostController {
 		}else {
 			res = postService.addChat(post, chatRoom);
 		}
-		res = postService.notify(post, user);
+		res = postService.notifyPropose(post, user);
 		if(res) {
 			MemberVO postUser = postService.getMember((Integer)post.get("member_num"));
 			try {

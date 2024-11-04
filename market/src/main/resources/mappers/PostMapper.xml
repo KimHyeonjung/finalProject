@@ -305,6 +305,7 @@
 		where row_num = 1) b 
 			on a.notification_post_num = b.file_target_num
 		where notification_member_num = #{member_num} and notification_read = false
+		order by notification_date desc
 	</select>
 	<resultMap id="CombinePostWithFileResultMap" type="com.team3.market.model.dto.CombinePostWithFileDTO">
 		<association property="post" javaType="PostVO">
@@ -346,4 +347,10 @@
 	<update id="updatePostUse">
 		update post set post_state_num = 1 where post_num = #{post_num}
 	</update>
+	<select id="selectWishMemberListByPostNum" resultType="WishVO">
+		select wish.*, member_id from wish 
+		join member 
+			on wish_member_num = member_num
+		where wish_post_num = #{post_num}
+	</select>
 </mapper>

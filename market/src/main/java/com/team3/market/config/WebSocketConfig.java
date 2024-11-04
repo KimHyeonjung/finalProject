@@ -9,7 +9,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import com.team3.market.interceptor.HttpSessionHandshakeInterceptor;
-import com.team3.market.utils.NotificationWebSocketHandler;
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.handler.SocketHandler;
 import com.team3.market.service.ChatService;
 

@@ -14,8 +14,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 
-import com.team3.market.interceptor.AdminInterceptor;
 import com.team3.market.interceptor.PrevUrlInterceptor;
+import com.team3.market.interceptor.SignupLoginInterceptor;
 
 @Configuration
 @EnableWebMvc
@@ -55,6 +55,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	
 	  @Override 
 	  public void addInterceptors(InterceptorRegistry registry) { 
+		  registry.addInterceptor(new SignupLoginInterceptor()).addPathPatterns("/login", "/signup");
 		  registry.addInterceptor(new PrevUrlInterceptor()).addPathPatterns("/login");
 //		  registry.addInterceptor(new AdminInterceptor()).addPathPatterns("/report/list"); // 관리자만 접근
 	  }

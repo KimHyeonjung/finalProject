@@ -120,4 +120,6 @@ public interface PostDAO {
 
 	boolean updatePostUse(int post_num);
 
+	List<WishVO> selectWishMemberListByPostNum(int post_num);
+
 }

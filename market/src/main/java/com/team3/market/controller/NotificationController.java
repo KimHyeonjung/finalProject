@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.model.dto.CombineNotificationWithFileDTO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.service.PostService;
-import com.team3.market.utils.NotificationWebSocketHandler;
 
 @RestController
 @RequestMapping("/notification")

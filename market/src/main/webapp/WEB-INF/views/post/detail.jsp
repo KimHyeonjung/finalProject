@@ -102,7 +102,7 @@
 		<h1 class="hide">상세</h1>
 		<section id="article-images">
 			<h3 class="hide">이미지</h3>
-			<div id="carousel-indicators" class="carousel slide" data-ride="false">
+			<div id="carousel-indicators" class="carousel slide" data-interval="false">
 				<!-- Indicators -->
 				<ul class="carousel-indicators"> 
 					<c:if test="${fileList.size() != 0 }">
@@ -173,7 +173,7 @@
 										<div class="btn btn-warning" id="chat" data-post_num="${post.post_num}">채팅방</div>
 										<c:if test="${post.post_deal eq true }">
 											<div class="dropdown dropright">
-											    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+											    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown">
 													흥정하기
 											    </button>
 											    <div class="dropdown-menu" style="padding: 4px;">
