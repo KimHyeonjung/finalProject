@@ -116,7 +116,8 @@ CREATE TABLE `chat_room` (
 	`chatRoom_member_num`	int	NOT NULL,
 	`chatRoom_member_num2`	int	NOT NULL,
 	`chatRoom_post_num`	int	NOT NULL,
-	`chatRoom_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP
+	`chatRoom_date`	datetime	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
+    `chatRoom_haggle`	boolean	NOT NULL	DEFAULT false
 );
 
 DROP TABLE IF EXISTS `chat`;

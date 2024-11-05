@@ -250,9 +250,12 @@
 			(#{member_num}, #{type}, #{post_num}, #{propStr})
 	</insert>
 	<insert id="insertChatRoom" parameterType="ChatRoomVO" useGeneratedKeys="true" keyProperty="chatRoom_num">
-		insert into chat_room(chatRoom_member_num, chatRoom_member_num2, chatRoom_post_num) values
-			(#{chatRoom_member_num}, #{chatRoom_member_num2}, #{chatRoom_post_num})
+		insert into chat_room(chatRoom_member_num, chatRoom_member_num2, chatRoom_post_num, chatRoom_haggle) values
+			(#{chatRoom_member_num}, #{chatRoom_member_num2}, #{chatRoom_post_num}, #{chatRoom_haggle})
 	</insert>
+	<update id="updateChatRoom">
+		update chat_room set chatRoom_haggle = true where chatRoom_num = #{chatRoom_num}
+	</update>
 	<insert id="insertChat">
 		insert into chat(chat_member_num, chat_chatRoom_num, chat_content) values 
 			(#{chat_member_num}, #{chat_chatRoom_num}, #{chat_content})
@@ -352,5 +355,10 @@
 		join member 
 			on wish_member_num = member_num
 		where wish_post_num = #{post_num}
+	</select>
+	<select id="selectHaggleOrNot" resultType="boolean">
+		select chatRoom_haggle from chat_room 
+		where 
+			chatRoom_member_num2 = #{chatRoom_member_num2} and chatRoom_post_num = #{chatRoom_post_num}
 	</select>
 </mapper>

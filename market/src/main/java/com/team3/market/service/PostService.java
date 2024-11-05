@@ -447,11 +447,12 @@ public class PostService {
 
 	public boolean makeChatRoom(Map<String, Object> post, MemberVO user) {
 		DecimalFormat price = new DecimalFormat("###,###");
+		boolean haggle = true;
 		int newPrice = (Integer) post.get("proposePrice");
 		int post_num = (Integer) post.get("post_num");
 		int member_num = (Integer) post.get("member_num");
 		String propStr = "가격제안 : 이 가격에 사고 싶어요.\n(" + price.format(newPrice) + "원)";
-		ChatRoomVO chatRoom = new ChatRoomVO(member_num, user.getMember_num(), post_num);
+		ChatRoomVO chatRoom = new ChatRoomVO(member_num, user.getMember_num(), post_num, haggle);
 		postDao.insertChatRoom(chatRoom);
 		ChatVO chat = new ChatVO(chatRoom.getChatRoom_member_num2(), chatRoom.getChatRoom_num(), propStr);
 		return postDao.insertChat(chat);
@@ -459,6 +460,13 @@ public class PostService {
 	}
 
 	public boolean addChat(Map<String, Object> post, ChatRoomVO chatRoom) {
+		chatRoom.setChatRoom_haggle(true);
+		try {
+			postDao.updateChatRoom(chatRoom);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 		DecimalFormat price = new DecimalFormat("###,###");
 		int newPrice = (Integer) post.get("proposePrice");
 		String propStr = "가격제안 : 이 가격에 사고 싶어요. (" + price.format(newPrice) + "원)";
@@ -529,6 +537,14 @@ public class PostService {
 
 	public boolean updatePostUse(int post_num) {
 		return postDao.updatePostUse(post_num);
+	}
+
+	public boolean getHaggleOrNot(int post_num, MemberVO user) {
+		if(user == null) {
+			return false;
+		}
+		ChatRoomVO chatRoom = new ChatRoomVO(post_num, user.getMember_num());
+		return postDao.selectHaggleOrNot(chatRoom);
 	}
 
 	

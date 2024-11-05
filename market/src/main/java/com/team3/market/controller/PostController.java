@@ -104,6 +104,8 @@ public class PostController {
 		WishVO wish = postService.getWish(post_num, user);
 		ReportVO report = postService.getReportPost(post_num, user);
 		FileVO profileImg = postService.getProfileImg("member", (Integer)post.get("post_member_num"));
+		boolean haggle = postService.getHaggleOrNot(post_num, user);
+		model.addAttribute("haggle", haggle);
 		model.addAttribute("report", report);		
 		model.addAttribute("wish", wish);
 		model.addAttribute("post", post);
@@ -161,19 +163,30 @@ public class PostController {
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		if(post == null || user == null) {
 			return false;
-		}
+		}		
 		ChatRoomVO chatRoom = postService.getChatRoom(post, user); 
+		if(chatRoom != null) {
+			if(chatRoom.isChatRoom_haggle()) {
+				return false;
+			}
+		}
 		if(chatRoom == null) {
 			res = postService.makeChatRoom(post, user);
-		}else {
+			if(!res) {
+				return false;
+			}
+		} else {
 			res = postService.addChat(post, chatRoom);
+			if(!res) {
+				return false;
+			}
 		}
 		res = postService.notifyPropose(post, user);
 		if(res) {
 			MemberVO postUser = postService.getMember((Integer)post.get("member_num"));
 			try {
 				notificationHandler.sendNotificationToUser(postUser.getMember_id(), "notification");
-				socketHandler.sendMessage2("null", chatRoom.getChatRoom_num());
+//				notificationHandler.sendMessage2("null", chatRoom.getChatRoom_num());
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
