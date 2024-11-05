@@ -52,9 +52,33 @@
                         <tr>
                             <td>${review.post_title}</td>
                             <td>${review.after_message}</td>
-                            <td>${review.after_review1}</td>
-                            <td>${review.after_review2}</td>
-                            <td>${review.after_review3}</td>
+					        <td>
+					            <c:choose>
+					                <c:when test="${review.after_review1 == -1}">별로에요</c:when>
+					                <c:when test="${review.after_review1 == 0.5}">보통이에요</c:when>
+					                <c:when test="${review.after_review1 == 1}">좋아요</c:when>
+					                <c:when test="${review.after_review1 == 2}">매우 좋아요</c:when>
+					                <c:otherwise>평가 없음</c:otherwise>
+					            </c:choose>
+					        </td>
+					        <td>
+					            <c:choose>
+					                <c:when test="${review.after_review2 == -1}">별로에요</c:when>
+					                <c:when test="${review.after_review2 == 0.5}">보통이에요</c:when>
+					                <c:when test="${review.after_review2 == 1}">좋아요</c:when>
+					                <c:when test="${review.after_review2 == 2}">매우 좋아요</c:when>
+					                <c:otherwise>평가 없음</c:otherwise>
+					            </c:choose>
+					        </td>
+					        <td>
+					            <c:choose>
+					                <c:when test="${review.after_review3 == -1}">별로에요</c:when>
+					                <c:when test="${review.after_review3 == 0.5}">보통이에요</c:when>
+					                <c:when test="${review.after_review3 == 1}">좋아요</c:when>
+					                <c:when test="${review.after_review3 == 2}">매우 좋아요</c:when>
+					                <c:otherwise>평가 없음</c:otherwise>
+					            </c:choose>
+					        </td>
                             <td>${review.after_date}</td>
                         </tr>
                     </c:forEach>

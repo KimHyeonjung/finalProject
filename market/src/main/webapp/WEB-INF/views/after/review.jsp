@@ -197,8 +197,8 @@
 	
 	// 상품 설명 글자 수 업데이트
 	function updateCharCount() {
-		var content = document.getElementById('post_content').value;
-		document.querySelector('.char-count').innerText = content.length + " / 200";
+	    var content = document.getElementById('after_message').value;
+	    document.querySelector('.char-count').innerText = content.length + " / 200";
 	}
 	
 	// after_review1, after_review2, after_review3의 합계를 계산하여 after_review_sum에 설정
