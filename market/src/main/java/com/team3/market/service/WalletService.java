@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import com.team3.market.dao.WalletDAO;
 import com.team3.market.model.dto.ApproveResponse;
 import com.team3.market.model.dto.ReadyResponse;
+import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PointVO;
 
@@ -173,6 +174,18 @@ public class WalletService {
 	        throw new IllegalArgumentException("해당 멤버를 찾을 수 없습니다.");
 	    }
 	    return member;
+	}
+	
+	@Transactional
+	public void updateChatRoomStayMoney(int chatRoomNum, int amount) {
+	    ChatRoomVO chatRoom = walletDao.selectChatRoomById(chatRoomNum);
+	    if (chatRoom != null) {
+	        int updatedStayMoney = chatRoom.getChatRoom_stay_money() + amount;
+	        chatRoom.setChatRoom_stay_money(updatedStayMoney);
+	        walletDao.updateChatRoomStayMoney(chatRoom);
+	    } else {
+	        throw new IllegalArgumentException("해당 채팅방을 찾을 수 없습니다.");
+	    }
 	}
 
 }

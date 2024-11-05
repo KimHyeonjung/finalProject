@@ -7,19 +7,28 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.team3.market.dao.ChatDAO;
+import com.team3.market.dao.WalletDAO;
 import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.ChatVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
+import com.team3.market.model.vo.WalletVO;
 
 @Service
 public class ChatService {
 
     @Autowired
     private ChatDAO chatDAO;
+    
+    @Autowired
+    private MemberService memberService;
+    
+    @Autowired
+    WalletDAO walletDao;
 
 	public List<ChatRoomDTO> getChatRoomsWithMembers(int member_num) {
         List<ChatRoomVO> chatRooms = chatDAO.selectChatRoomsByMember(member_num);
@@ -114,6 +123,82 @@ public class ChatService {
 	    return chatDAO.selectChatRoomNumByMembers(params);
 	}
 
+	public List<MemberVO> getMembersInChatRoom(int chatRoomId) {
+	    return chatDAO.selectMembersByChatRoomId(chatRoomId);
+	}
 
+	@Transactional
+	public void completeTransactionForChatRoom(Integer chatRoomId) {
+	    // 선택한 채팅방에 있는 멤버들 가져오기
+	    List<MemberVO> membersInSelectedRoom = getMembersInChatRoom(chatRoomId);
+
+	    // Step 1: 선택한 채팅방에 있는 멤버들의 money 업데이트 및 fake_money 초기화
+	    for (MemberVO member : membersInSelectedRoom) {
+	        int updatedMoney = member.getMember_money() + member.getMember_fake_money();
+	        member.setMember_money(updatedMoney);
+	        member.setMember_fake_money(0);
+	        memberService.updateMember(member); // 데이터베이스에 변경 사항 저장
+	    }
+
+	    List<MemberVO> membersWithFakeMoneyInOtherRooms = chatDAO.selectMembersWithFakeMoneyExcludingChatRoom(chatRoomId);
+	    for (MemberVO member : membersWithFakeMoneyInOtherRooms) {
+	        member.setMember_fake_money(0);
+	        memberService.updateMember(member); // fake_money를 0으로 설정
+	    }
+	}
+
+	@Transactional
+	public void completeTransaction(int chatRoom_num) {
+	    // 선택한 채팅방 정보 가져오기
+	    ChatRoomVO selectedChatRoom = walletDao.selectChatRoomById(chatRoom_num);
+	    if (selectedChatRoom == null) {
+	        throw new IllegalArgumentException("선택한 채팅방을 찾을 수 없습니다.");
+	    }
+
+	    int stayMoney = selectedChatRoom.getChatRoom_stay_money();
+
+	    // 선택한 채팅방의 멤버들 fake_money에서 stayMoney를 member_money로 이동
+	    List<MemberVO> selectedRoomMembers = walletDao.getChatRoomMembers(chatRoom_num);
+	    for (MemberVO member : selectedRoomMembers) {
+	        member.setMember_fake_money(member.getMember_fake_money() - stayMoney);
+	        member.setMember_money(member.getMember_money() + stayMoney);
+	        
+	        WalletVO walletEntry = new WalletVO();
+	        walletEntry.setWallet_member_num(member.getMember_num());
+	        walletEntry.setWallet_post_num(selectedChatRoom.getChatRoom_post_num()); 
+	        walletEntry.setWallet_money(stayMoney);
+	        walletDao.insertWalletEntry(walletEntry);  
+	    }
+
+	    // 다른 채팅방의 chatRoom_stay_money를 사용하여 fake_money 조정
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("chatRoom_num", chatRoom_num);
+	    params.put("members", selectedRoomMembers);
+
+	    List<ChatRoomVO> otherChatRooms = walletDao.getOtherChatRooms(params); // 매개변수를 Map으로 전달
+
+	    for (ChatRoomVO chatRoom : otherChatRooms) {
+	        int otherStayMoney = chatRoom.getChatRoom_stay_money();
+	        List<MemberVO> otherRoomMembers = walletDao.getChatRoomMembers(chatRoom.getChatRoom_num());
+	        for (MemberVO member : otherRoomMembers) {
+	            if (member.getMember_fake_money() < 0) {
+	                member.setMember_fake_money(member.getMember_fake_money() + otherStayMoney);
+	            } else {
+	                member.setMember_fake_money(member.getMember_fake_money() - otherStayMoney);
+	            }
+	            walletDao.updateFakeMoney(member);  
+
+	            WalletVO walletEntry = new WalletVO();
+	            walletEntry.setWallet_member_num(member.getMember_num());
+	            walletEntry.setWallet_post_num(chatRoom.getChatRoom_post_num()); 
+	            walletEntry.setWallet_money(otherStayMoney);
+	            walletDao.insertWalletEntry(walletEntry);  
+	        }
+	    }
+
+	    // 거래 완료된 채팅방의 stay_money를 0으로 초기화
+	    selectedChatRoom.setChatRoom_stay_money(0);
+	    walletDao.updateChatRoomStayMoney(selectedChatRoom);
+	}
 
 }

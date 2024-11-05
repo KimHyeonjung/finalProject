@@ -116,4 +116,36 @@
         LIMIT 1
     </select>
     
+    <insert id="insertChatRoom" parameterType="ChatRoomVO" useGeneratedKeys="true" keyProperty="chatRoomNum">
+	    INSERT INTO chat_room (chatRoom_member_num, chatRoom_member_num2)
+	    VALUES (#{senderMemberNum}, #{targetMemberNum})
+	</insert>
+    
+    <select id="selectMembersByChatRoomId" parameterType="int" resultType="MemberVO">
+	    SELECT * 
+	    FROM member
+	    WHERE member_id IN (
+	        SELECT chatRoom_member_num 
+	        FROM chat_room
+	        WHERE chatRoom_num = #{chatRoomId}
+	        
+	        UNION
+	        
+	        SELECT chatRoom_member_num2 
+	        FROM chat_room
+	        WHERE chatRoom_num = #{chatRoomId}
+	    );
+	</select>
+    
+    <select id="selectMembersWithFakeMoneyExcludingChatRoom" parameterType="int" resultType="MemberVO">
+	    SELECT * 
+	    FROM member 
+	    WHERE member_fake_money > 0
+	    AND member_id NOT IN (
+	        SELECT chatRoom_member_num FROM chat_room WHERE chatRoom_num = #{chatRoomId}
+	        UNION
+	        SELECT chatRoom_member_num2 FROM chat_room WHERE chatRoom_num = #{chatRoomId}
+    );
+</select>
+    
 </mapper>

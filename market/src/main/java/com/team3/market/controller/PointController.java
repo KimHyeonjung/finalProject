@@ -146,6 +146,8 @@ public class PointController {
 	        // 송금 서비스 호출
 	        walletService.transferMoney(senderMemberNum, targetMemberNum, amount);
 	        walletService.updateSessionMoney(senderMemberNum, session);
+	        
+	        walletService.updateChatRoomStayMoney(chatRoomNum, amount);
 
 	        // chatRoom 정보를 가져오기
 	        ChatRoomVO chatRoom = chatService.getChatRoomByNum(chatRoomNum);

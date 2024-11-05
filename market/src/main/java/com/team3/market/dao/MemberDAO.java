@@ -41,6 +41,8 @@ public interface MemberDAO {
 
 	void updateMemberFail(MemberVO user);
 
+	void updateMember(MemberVO member);
+
 
 
 

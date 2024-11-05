@@ -40,4 +40,8 @@ public interface ChatDAO {
 
 	Object selectChatRoomNumByMembers(Map<String, Integer> params);
 
+	List<MemberVO> selectMembersByChatRoomId(int chatRoomId);
+
+	List<MemberVO> selectMembersWithFakeMoneyExcludingChatRoom(Integer chatRoomId);
+
 }

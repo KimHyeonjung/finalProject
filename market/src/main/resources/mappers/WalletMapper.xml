@@ -43,5 +43,41 @@
 	    INSERT INTO point (point_member_num, point_money, point_date, point_type) 
 	    VALUES (#{point_member_num}, #{point_money}, #{point_date}, '거래 : 충전');
 	</insert>
+	
+	<select id="selectChatRoomById" parameterType="int" resultType="com.team3.market.model.vo.ChatRoomVO">
+        SELECT * 
+        FROM chat_room 
+        WHERE chatRoom_num = #{chatRoomNum}
+    </select>
+
+    <update id="updateChatRoomStayMoney" parameterType="com.team3.market.model.vo.ChatRoomVO">
+        UPDATE chat_room
+        SET chatRoom_stay_money = #{chatRoom_stay_money}
+        WHERE chatRoom_num = #{chatRoom_num}
+    </update>
+    
+    <select id="getChatRoomMembers" parameterType="int" resultType="com.team3.market.model.vo.MemberVO">
+	    SELECT member.*
+	    FROM member
+	    JOIN chat_room ON (member.member_num = chat_room.chatRoom_member_num OR member.member_num = chat_room.chatRoom_member_num2)
+	    WHERE chatRoom_num = #{chatRoomNum}
+	</select>
+	
+	<select id="getOtherChatRooms" parameterType="map" resultType="ChatRoomVO">
+	    SELECT * FROM chat_room 
+	    WHERE chat_room_num != #{chatRoom_num}
+	    AND chat_room_member_num IN 
+	    <foreach collection="members" item="member" open="(" separator="," close=")">
+	        #{member.member_num}
+	    </foreach>
+	</select>
+
+	
+	<insert id="insertWalletEntry" parameterType="com.team3.market.model.vo.WalletVO">
+	    INSERT INTO wallet (wallet_member_num, wallet_post_num, wallet_money, wallet_date)
+	    VALUES (#{wallet_member_num}, #{wallet_post_num}, #{wallet_money}, NOW())
+	</insert>
+		
+		    
     
 </mapper>

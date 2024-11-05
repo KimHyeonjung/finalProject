@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,14 +18,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
-import com.team3.market.model.vo.NotificationVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.pagination.MyPostCriteria;
 import com.team3.market.pagination.PageMaker;
+import com.team3.market.service.ChatService;
 import com.team3.market.service.PostService;
+import com.team3.market.service.WalletService;
 
 @Controller
 @RequestMapping("/mypage")
@@ -31,6 +36,10 @@ public class MyPageController {
 	
 	@Autowired
 	PostService postService;
+	@Autowired
+	ChatService chatService;
+	@Autowired
+	WalletService walletService;
 	
 	@GetMapping({"/wish/list/{sort_type}","/wish/list"})
 	public String wishList(Model model, @PathVariable(name = "sort_type", required = false)String sort_type, HttpSession session) {
@@ -92,4 +101,26 @@ public class MyPageController {
 		return file;
 	}
 	
+	// 채팅방 리스트 반환 메서드
+    @ResponseBody
+    @GetMapping("/chatRooms")
+    public List<ChatRoomDTO> getChatRoomsForUser(@SessionAttribute("memberNum") Integer memberNum) {
+        return chatService.getChatRoomsWithMembers(memberNum);
+    }
+
+    @PostMapping("/completeTransaction")
+    public ResponseEntity<Map<String, String>> completeTransaction(@RequestBody Map<String, Object> requestData) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            int chatRoomNum = (int) requestData.get("chatRoomNum"); // JSON 데이터에서 chatRoomNum 추출
+            chatService.completeTransaction(chatRoomNum);
+            response.put("message", "거래가 완료되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("message", "거래 완료 중 오류가 발생했습니다.");
+            e.printStackTrace(); // 서버 로그에서 구체적인 오류를 확인할 수 있습니다.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
 }

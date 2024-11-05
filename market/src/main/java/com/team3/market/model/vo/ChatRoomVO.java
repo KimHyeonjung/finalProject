@@ -13,6 +13,7 @@ public class ChatRoomVO {
     private int chatRoom_member_num2;  // 채팅방에 참여하는 회원 번호 2
     private int chatRoom_post_num;     // 연관된 게시물 번호
     private Date chatRoom_date;        // 채팅방 생성 날짜
+    private int chatRoom_stay_money;   // 채팅방 거래 대기 금액
     
     public ChatRoomVO(int member_num, int member_num2, int post_num) {
     	this.chatRoom_member_num = member_num;

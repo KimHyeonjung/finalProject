@@ -278,8 +278,11 @@ public class MemberService {
         memberDao.updatepw(user);
     }
 
-
-	
-	
+    public void updateMember(MemberVO member) {
+        System.out.println("Updating member: " + member.getMember_id() + 
+                           ", new money: " + member.getMember_money() + 
+                           ", new fake_money: " + member.getMember_fake_money());
+        memberDao.updateMember(member);
+    }
 
 }

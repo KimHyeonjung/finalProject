@@ -135,6 +135,18 @@
 		</c:forEach>
         </tbody>
     </table>
+    
+    <!-- 모달 창 -->
+    <div id="chatRoomModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border: 1px solid black; z-index: 1000;">
+        <h2>채팅방 선택</h2>
+        <ul id="chatRoomList" style="list-style: none; padding: 0; margin: 10px 0; max-height: 200px; overflow-y: auto; border: 1px solid #ccc;"></ul>
+        <button onclick="completeTransaction()">거래 완료</button>
+        <button onclick="closeChatRoomModal()">닫기</button>
+    </div>
+
+    <!-- 배경 오버레이 -->
+    <div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+    
     <div class="page-number">
         <ul class="pagination justify-content-center">
         	<c:if test="${pm.prev}">
@@ -157,7 +169,9 @@
 		    </c:if>
 		  </ul>
     </div>
+    
 </div>	
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {	
 	
@@ -305,12 +319,13 @@ $(document).ready(function() {
 			});
 		}		
 	});
-
+	
 });
 // 거래 상태 변경
 $(document).on('change','.state', function(){
 	var state = $(this).val();
 	var post_num = $(this).data('post_num');
+	var memberNum = ${sessionScope.memberNum};
 	$(this).find('option').show();
 	console.log(state);
 	if(state == '1'){
@@ -325,23 +340,117 @@ $(document).on('change','.state', function(){
 		$(this).find('option[value="1"]').hide();
 		$(this).find('option[value="2"]').hide();
 	}
+	if(state == '5'){
+		openChatRoomModal();
+	}
 	$(this).find('option[value="' + state + '"]').hide();
 	let obj = {
 			post_num : post_num,
 			post_position_num : state
 	}
+	// 거래 상태 업데이트 요청
 	$.ajax({
-		async : true, //비동기 : true(비동기), false(동기)
-		url : '<c:url value="/mypage/post/state"/>', 
-		type : 'post', 
-		data : JSON.stringify(obj), 
-		contentType : "application/json; charset=utf-8",
-		success : function (data){
-		}, 
-		error : function(jqXHR, textStatus, errorThrown){
-		}
+	    async: true,
+	    url: '<c:url value="/mypage/post/state"/>', 
+	    type: 'post', 
+	    data: JSON.stringify(obj), 
+	    contentType: "application/json; charset=utf-8",
+	    success: function(data) {
+	        alert("거래 상태가 업데이트되었습니다.");
+	    },
+	    error: function(jqXHR, textStatus, errorThrown) {
+	        alert("거래 상태 업데이트 실패:", textStatus, errorThrown);
+	    }
 	});
+    
+	// 모달 열기 함수
+    function openChatRoomModal() {
+        document.getElementById('chatRoomModal').style.display = 'block';
+        document.getElementById('modalOverlay').style.display = 'block';
+        loadChatRooms();
+    }
+
+    // 채팅방 목록 불러오기
+    function loadChatRooms() {
+        fetch('/market/mypage/chatRooms')
+            .then(response => response.json())
+            .then(data => {
+                console.log("서버에서 받은 데이터:", data);  // 데이터를 콘솔에 출력하여 확인
+                const chatRoomList = document.getElementById('chatRoomList');
+                chatRoomList.innerHTML = '';  // 기존 목록 초기화
+
+                if (data.length === 0) {
+                    chatRoomList.innerHTML = '<li>채팅방이 없습니다.</li>';
+                    return;
+                }
+
+                data.forEach(room => {
+                    console.log("각 room 데이터:", room);  // 각 room 객체를 확인
+                    const listItem = document.createElement('li');
+                    
+                    // 데이터 접근 수정
+                    const chatRoomId = room.chatRoom ? room.chatRoom.chatRoom_num : "No Chat Room ID";
+                    const targetMemberId = room.targetMember ? room.targetMember.member_id : "No ID";
+                    
+                    listItem.textContent = targetMemberId;
+                    listItem.setAttribute('data-room-id', chatRoomId);
+                    listItem.style.cursor = 'pointer';
+                    listItem.style.padding = '8px';
+                    listItem.style.borderBottom = '1px solid #ddd';
+                    listItem.onclick = () => selectChatRoom(chatRoomId);
+                    chatRoomList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('채팅방 리스트 불러오기 오류:', error));
+	}
 });
+
+// 선택된 채팅방 ID 저장
+let selectedChatRoomId = null;
+
+function selectChatRoom(chatRoomId) {
+    selectedChatRoomId = chatRoomId;
+    console.log("선택된 채팅방 ID:", chatRoomId);  // chatRoomId가 올바른지 확인
+    alert('선택된 채팅방 ID: ' + chatRoomId);
+}
+
+function completeTransaction() {
+    if (selectedChatRoomId) {
+        fetch('/market/mypage/completeTransaction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ chatRoomNum: selectedChatRoomId }) // JSON 형식으로 데이터 전송
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("거래 완료 요청이 실패했습니다.");
+            }
+        })
+        .then(result => {
+            alert('거래 완료: ' + result.message);
+            closeChatRoomModal();
+            location.reload(); // 새로고침으로 UI 업데이트
+        })
+        .catch(error => {
+            console.error('거래 완료 오류:', error);
+            alert('거래 완료 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        });
+    } else {
+        alert('채팅방을 선택해주세요.');
+    }
+}
+
+
+function closeChatRoomModal() {
+    document.getElementById('chatRoomModal').style.display = 'none';
+    document.getElementById('modalOverlay').style.display = 'none';
+}
+    
+
 	
 </script>
 </body>

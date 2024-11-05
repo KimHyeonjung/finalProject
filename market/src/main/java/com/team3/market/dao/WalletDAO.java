@@ -1,9 +1,13 @@
 package com.team3.market.dao;
 
+import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PointVO;
+import com.team3.market.model.vo.WalletVO;
+
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface WalletDAO {
@@ -23,6 +27,16 @@ public interface WalletDAO {
 	void insertPayment(PointVO receiverPointLog);
 
 	void updateFakeMoney(MemberVO sender);
+
+	ChatRoomVO selectChatRoomById(int chatRoomNum);
+
+	void updateChatRoomStayMoney(ChatRoomVO chatRoom);
+
+	List<MemberVO> getChatRoomMembers(int chatRoomNum);
+
+	void insertWalletEntry(WalletVO walletEntry);
+
+	List<ChatRoomVO> getOtherChatRooms(Map<String, Object> params);
 
 
 }
