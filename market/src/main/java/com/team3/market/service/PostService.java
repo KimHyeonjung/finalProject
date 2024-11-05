@@ -98,13 +98,14 @@ public class PostService {
 		boolean res = false;
 		PostVO beforePost = postDao.selectPost(post.getPost_num()); //금액 비교를 위해 기존 게시물 정보 가져옴
 		DecimalFormat price = new DecimalFormat("###,###");
-		int type = 3; // 알림 타입
+		int type = 0; // 알림 타입
 		int post_num = post.getPost_num();
 		int beforePrice = beforePost.getPost_price();
 		int newPrice = post.getPost_price();
 		String message;
 		List<WishVO> wishList = postDao.selectWishMemberListByPostNum(post.getPost_num());
 		if(post.getPost_price() < beforePost.getPost_price()) {
+			type = 2;
 			message = "<div>" + beforePost.getPost_title() + "(" + user.getMember_nick() 
 			+ ")상품 가격 하락.</div>("+ price.format(beforePrice) + "원 >> " + price.format(newPrice) + "원)";
 			for(WishVO wish : wishList) {
@@ -117,6 +118,7 @@ public class PostService {
 			}
 		}
 		if(post.getPost_price() > beforePost.getPost_price()) {
+			type = 3;
 			message = "<div>" + beforePost.getPost_title() + "(" + user.getMember_nick() 
 			+ ")상품 가격 상승.</div>("+ price.format(beforePrice) + "원 >> " + price.format(newPrice) + "원)";
 			for(WishVO wish : wishList) {
@@ -168,7 +170,7 @@ public class PostService {
 				// 파일을 저장하는 부분
 				file.transferTo(saveFile);
 				// FileVO 객체 생성 및 데이터 설정
-				FileVO fileVo = new FileVO(file_name, originalFileName, "post", target_num);
+				FileVO fileVo = new FileVO(file_name, originalFileName, target, target_num);
 				// 파일 정보를 DB에 저장
 				postDao.insertFile(fileVo);
 				return true;

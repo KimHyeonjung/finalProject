@@ -94,4 +94,21 @@
 	<update id="updateMemberUse">
 		update member set member_state = '사용' where member_num = #{member_num}
 	</update>
+	<select id="selectFile" resultType="FileVO">
+		select * from file where file_target_table = #{file_target_table} and file_target_num = #{file_target_num}
+	</select>
+	<update id="updateFile">
+		update file 
+		set
+			file_name = #{file_name},
+			file_ori_name = #{file_ori_name}
+		where file_num = #{file_num}
+	</update>
+	<insert id="insertFile">
+		insert into file(file_name, file_ori_name, file_target_table, file_target_num) values
+		(#{file_name}, #{file_ori_name}, #{file_target_table}, #{file_target_num})
+	</insert>
+	<select id="selectFileProfile" resultType="FileVO">
+		select * from file where file_target_table = 'member' and file_target_num = #{member_num}
+	</select>
 </mapper>

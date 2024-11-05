@@ -177,6 +177,11 @@ public class HomeController {
 	    return "/main/message";
 	}
 	
+    @GetMapping("/mypage")
+	public String mypage() {
+		return "/member/mypage";
+	}
+	
 	@GetMapping("/updatepw")
 	public String updatepw() {
 		return "/updatepw";

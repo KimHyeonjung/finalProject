@@ -8,21 +8,35 @@
 	<meta charset="UTF-8">
 	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+<style type="text/css">
+.profile img {
+	width: 200px;
+	height: 200px;
+	border-radius: 100px;
+}
+</style>
 </head>
 <body>
+<div class="container">
 	<form action="<c:url value="/mypage"/>" method="post" id="form">
-		<div class="form-group">
-			<img src="member image" alt="member image" style="width:200px;">
-				<div class="form-group">
-					<input type="file" class="form-control" id="member_file" name="member_file">
-				</div>
+		<div class="form-group profile">
+			<c:if test="${user.file_name ne null }">
+				<img id="mypage-preview" src="<c:url value="/uploads/${user.file_name }"/>" alt="${user.file_ori_name }" style="width:200px;">
+			</c:if>
+			<c:if test="${user.file_name eq null }">
+				<img id="mypage-preview" src="<c:url value="/resources/img/none_profile_image.png"/>" alt="none" style="width:200px;">
+			</c:if>
+			<div class="form-group">
+				<input type="file" class="form-control" id="member_file" name="member_file" accept="image/*">
+			</div>
+			<div class="d-flex justify-content-left">
+				<div class="btn btn-dark m-auto" id="profile-change">프로필 사진 변경</div>
+			</div>	
 			<label class="label-form" for="member_id">${user.member_id}</label>
 			<label class="label-form" for="member_nick">${user.member_nick}</label>
 		</div>
-		
 		<div class="d-flex justify-content-left">
 			<div class="btn btn-dark m-auto" data-toggle="modal" data-target="#modal">비밀번호 변경</div>
 		</div>
@@ -47,6 +61,7 @@
 		<button type="button" class="btn btn-outline-error col-12" id="delete">회원 탈퇴</button>
 		
 	</form>
+</div>
 	
 	<!-- The Modal -->
 	<div class="modal" id="modal">
@@ -56,7 +71,7 @@
 	            <!-- Modal Header -->
 	            <div class="modal-header">
 	                <h5 class="modal-title" id="passwordModalLabel">비밀번호 변경</h5>
-	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage/edit'">&times;</button>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage'">&times;</button>
 	            </div>
 	
 	            <!-- Modal body -->
@@ -81,7 +96,7 @@
 	            <!-- Modal footer -->
 	            <div class="modal-footer">
 	                <button type="button" id="submitBtn" class="btn btn-primary">확인</button>
-	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage/edit'">취소</button>
+	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
 	            </div>
 	        </div>
 	    </div>
@@ -95,7 +110,7 @@
 	            <!-- Modal Header -->
 	            <div class="modal-header">
 	                <h5 class="modal-title" id="emailModalLabel">이메일 변경</h5>
-	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage/edit'">&times;</button>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage'">&times;</button>
 	            </div>
 	
 	            <!-- Modal body -->
@@ -112,7 +127,7 @@
 	            <!-- Modal footer -->
 	            <div class="modal-footer">
 	                <button type="button" id="submitEmailBtn" class="btn btn-primary">확인</button>
-	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage/edit'">취소</button>
+	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
 	            </div>
 	        </div>
 	    </div>
@@ -126,7 +141,7 @@
 	            <!-- Modal Header -->
 	            <div class="modal-header">
 	                <h5 class="modal-title" id="phoneModalLabel">연락처 변경</h5>
-	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage/edit'">&times;</button>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='/market/mypage'">&times;</button>
                 </div>
 	
 	            <!-- Modal body -->
@@ -150,13 +165,64 @@
 	            <!-- Modal footer -->
 	            <div class="modal-footer">
 	                <button type="button" id="submitPhoneBtn" class="btn btn-primary" disabled>확인</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage/edit'">취소</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.href='/market/mypage'">취소</button>
 	            </div>
 	        </div>
 	    </div>
 	</div>
 
 	<script>
+	const preview = document.getElementById("mypage-preview");
+	const previewImage = preview.src;
+	let file = null;
+	$(document).ready(function(){
+		$('#profile-change').click(function(){
+			if(file == null){
+				alert('선택된 파일이 없습니다.');
+				return;
+			}
+			const formData = new FormData();
+			formData.append('file', file);
+			$.ajax({
+				async : true,
+		        url: '<c:url value="/mypage/updateprofile"/>',
+		        method: 'post',
+		        data: formData,
+		        contentType: false,  // 서버로 전송 시 `multipart/form-data`가 자동 설정되도록
+		   	    processData: false,  // jQuery가 데이터를 자동으로 처리하지 않도록 설정 
+		        success: function(data) {
+		            console.log(data);
+		            // 서버에서 문자열을 반환한다고 가정
+		            if (data === 'UPDATE_PROFILE') {
+		                alert("프로필 사진이 성공적으로 변경되었습니다.");
+		                window.location.href = '/market/mypage'; // 페이지 이동
+		            } else {
+		                errorMessageElement.textContent = "프로필 변경 실패: " + data;
+		                errorMessageElement.classList.remove("d-none");
+		            }
+		        },
+		        error: function(xhr, status, error) {
+		            console.log('Eroor : ' + error);
+		        }
+		    });
+		});
+		$('#member_file').change(function(e){
+			file = e.target.files[0];
+			// 파일 선택 취소시 
+	 	 	if (!file || file.length === 0) {
+	 	 		preview.src = previewImage;
+		        return; 
+		    } 	    
+		    
+			 // 미리보기 생성
+	 	 	const reader = new FileReader();
+		    reader.onload = () => {
+		        preview.src = reader.result;
+		    }
+		    reader.readAsDataURL(file);
+		}); 
+
+	});
 	
 	document.getElementById("submitBtn").addEventListener("click", function() {
 	    // 입력값 가져오기
@@ -275,7 +341,7 @@
 	            // 서버에서 문자열을 반환한다고 가정
 	            if (data === '/market/mypage') {
 	                alert("이메일이 성공적으로 변경되었습니다.");
-	                window.location.href = '/market/mypage/edit'; // 페이지 이동
+	                window.location.href = '/market/mypage'; // 페이지 이동
 	            } else {
 	                errorMessageElement.textContent = "이메일 변경 실패: " + data;
 	                errorMessageElement.classList.remove("d-none");
