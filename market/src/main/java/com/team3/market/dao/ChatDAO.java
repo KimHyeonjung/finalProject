@@ -16,7 +16,7 @@ public interface ChatDAO {
 
     List<ChatRoomVO> selectChatRoomsByMember(int member_num);
 
-    MemberVO selectSenderByChatRoom(int chatRoom_num);
+    MemberVO selectSenderByChatRoom(@Param("chatRoom_num") int chatRoom_num, @Param("member_num") int member_num);
 
     ChatVO selectLatestChatByRoom(int chatRoom_num);
     

@@ -17,15 +17,13 @@
     
     <!-- 채팅방의 최근 메시지 송신자 정보 조회 -->
     <select id="selectSenderByChatRoom" resultType="MemberVO">
-		SELECT m.*
-		FROM 
-			member m
-				JOIN 
-			chat_room cr 
-					ON 
-				m.member_num = cr.chatRoom_member_num2
-		WHERE 
-			cr.chatRoom_num = #{chatRoom_num};
+	SELECT m.*
+	FROM member m
+	JOIN chat_room cr
+	ON (m.member_num = cr.chatRoom_member_num OR m.member_num =
+	cr.chatRoom_member_num2)
+	WHERE cr.chatRoom_num = #{chatRoom_num}
+	AND m.member_num != #{member_num};
     </select>
     
     <!-- 채팅방의 최근 메시지 조회 -->
