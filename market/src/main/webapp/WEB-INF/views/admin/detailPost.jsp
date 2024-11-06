@@ -18,12 +18,6 @@
 	<hr>
 	<div id="table-post">
 		<table class="table table-hover">
-	    	<colgroup>
-		        <col style="width: 180px;">
-		        <col style="width: 100px;">
-		        <col style="width: 100px;">
-		        <col style="width: 400px;">
-		    </colgroup>
 	    	<thead>
 		      <tr>
 		        <th>분류</th>

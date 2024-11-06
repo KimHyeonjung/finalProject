@@ -9,6 +9,7 @@
     <script src="<c:url value="/resources/summernote/"/>summernote.min.js"></script>
 </head>
 <body>
+<div class="container">
 	<h1>게시글 수정</h1>
 	<form action="<c:url value="/post/update/${post.po_num}"/>" method="post" enctype="multipart/form-data">
 		<div class="form-group">
@@ -33,6 +34,7 @@
 		</div>
 		<button type="submit" class="btn btn-outline-info col-12">글 수정</button>
 	</form>
+	</div>
 	<script>
 		$('#po_content').summernote({
 			placeholder: '내용을 작성하세요.',

@@ -8,11 +8,12 @@
 <meta charset="UTF-8">
 </head>
 <body>
+<div class="container">
    <h1>결제가 완료되었습니다.</h1>
    <p>주문해 주셔서 감사합니다!</p>
    <a href="/market">홈으로 돌아가기</a>
-   
-   <script>
+   </div>
+<script>
     $(document).ready(function() {
         updateHeader();
     });

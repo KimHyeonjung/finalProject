@@ -8,6 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<div class="container">
 	<div class="wrapper">
         <h2>비밀번호 찾기</h2>
         <form action="<c:url value='/findPassword'/>" method="post">
@@ -23,5 +24,6 @@
             <button type="submit" class="button-submit">비밀번호 찾기</button>
         </form>
     </div>
+</div>
 </body>
 </html>

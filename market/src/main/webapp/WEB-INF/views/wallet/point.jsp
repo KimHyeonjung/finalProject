@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,12 +10,14 @@
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+<div class="container">
    <h1>카카오페이 결제 페이지</h1>
    <form id="paymentForm">
        <label for="totalPrice">충전 금액:</label>
        <input type="number" min="1000" id="totalPrice" name="totalPrice" required><br><br>
        <button type="button" id="btn-pay-ready">결제하기</button>
    </form>
+</div>
    <script type="text/javascript">
        $(function() {
            $("#btn-pay-ready").click(function(e) {

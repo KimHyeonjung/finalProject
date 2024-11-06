@@ -5,93 +5,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-.carousel-item img {
-	height: 500px;
-	object-fit: contain; /* 이미지 비율 유지하면서 컨테이너에 맞춤 */
-}
-.container-detail {
-	position: relative;
-	width: 900px;
-	margin: 0 auto;
-}
-.carousel-item {
-	text-align: center;
-}
-.article{
- 	width: 700px;
-	margin: 0 auto;
-}
-#article-profile-image img {
-	width: 80px; height: 80px;
-	border-radius: 40px;
-}
-/* 화면 전체를 덮는 흐림 효과 */
-.blind {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* 어두운 흐림 효과 */
-    backdrop-filter: blur(5px); /* 흐리게 처리 */
-    display: none; /* 기본적으로 숨김 처리 */
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-}
-/* 중앙 텍스트 스타일 */
-.blind-text {
-    color: white;
-    font-size: 2em;
-    text-align: center;
-}
-/* 전체 화면을 덮는 반투명 배경 */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 10;
-    display: none;
-}
-/* 신고 모달 스타일 */
-.report-modal {
-	margin: 10px auto;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 350px;
-    padding: 20px;
-    background: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 20;
-    text-align: center;
-    display: none;
-}
-.list-group {margin-top: 20px;}
-.click {
-	cursor: pointer;
-}
-.btn-close {
-	position: absolute; right: 10px; top: 5px;
-	background: none;
-    border: none;
-    font-size: 35px;
-    cursor: pointer;
-}
-.report-content-text {
-	width: 100%;
-	height: 160px;
-	resize: none;
-}
-.report-content {text-align: right;}
-</style>
+    <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/style.css'/>">
 </head>
 <body>
+<div class="container">
 	<div class="container-detail">
 		<h1 class="hide">상세</h1>
 		<section id="article-images">
@@ -277,6 +194,7 @@
 		<div class="list-group">		
 		</div>
 	</div>
+</div>
 <script>
 	$(document).ready(function () {
 	const $overlay = $("#overlay");

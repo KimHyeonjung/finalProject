@@ -6,6 +6,7 @@
 <html>
 <head>
 <title>Chat Rooms</title>
+<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/style.css'/>">
 <script>
 	// 채팅방 클릭 시 해당 채팅방으로 이동하는 함수
 	function openChatRoom(chatRoomNum) {
@@ -65,8 +66,7 @@
 </script>
 </head>
 <body>
-	<!-- 로그인한 사용자 ID 표시 -->
-	<h2>${member.member_nick}</h2>
+<div class="container">
 	<div id="chatRoomList">
 		<!-- 채팅방 목록을 반복하여 표시 -->
 		<c:forEach var="chatRoom" items="${chatRooms}">
@@ -88,5 +88,6 @@
 			<button onclick="leaveChatRoom('${chatRoom.getChatRoom().chatRoom_num}')">채팅방 나가기</button>
 		</c:forEach>
 	</div>
+</div>
 </body>
 </html>

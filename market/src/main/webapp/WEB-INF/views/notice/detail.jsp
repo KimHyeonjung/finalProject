@@ -9,79 +9,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <title>공지사항 상세보기</title>
-    <style>
-    	button {
-		  margin: 5px;
-		  outline: none;
-		}
-		.frame {
-		  width: 90%;
-		  margin: 40px auto;
-		  text-align: center;
-		  display: flex;
-		  gap: 10px; /* 버튼 간격 조정 */
-		  justify-content: center;
-		}
-    	.custom-btn {
-		  width: 130px;
-		  height: 40px;
-		  padding: 10px 25px;
-		  border: 2px solid #000;
-		  font-family: 'Lato', sans-serif;
-		  font-weight: 500;
-		  background: transparent;
-		  cursor: pointer;
-		  transition: all 0.3s ease;
-		  display: flex;
-		  align-items: center;
-		  justify-content: center;
-		  text-align: center;
-		}
-		.btn-10 {
-		  transition: all 0.3s ease;
-		  overflow: hidden;
-		  position: relative;
-		}
-		.btn-10:after {
-		  position: absolute;
-		  content: " ";
-		  top: 0;
-		  left: 0;
-		  z-index: -1;
-		  width: 100%;
-		  height: 100%;
-		  transition: all 0.3s ease;
-		  -webkit-transform: scale(.1);
-		  transform: scale(.1);
-		}
-		.btn-10:hover {
-		  color: #fff;
-		}
-		.btn-10:hover:after {
-		  background: #9395F0;
-		  -webkit-transform: scale(1);
-		  transform: scale(1);
-		}
-        .container {
-            width: 80%;
-            margin: 20px auto;
-            font-family: Arial, sans-serif;
-        }
-        .title {
-            font-size: 1.8em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .info {
-            color: #777;
-            font-size: 0.9em;
-            margin-bottom: 20px;
-        }
-        .content {
-            font-size: 1.2em;
-            line-height: 1.6;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/style.css'/>">
+</head>
 </head>
 <body>
 <div class="container">

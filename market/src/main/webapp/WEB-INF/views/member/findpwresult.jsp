@@ -8,6 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<div class="container">
 	 <div class="wrapper">
         <p class="message">
             <c:choose>
@@ -21,5 +22,6 @@
         </p>
         <a href="<c:url value='/login'/>" class="back-button">로그인 페이지로 이동</a>
     </div>
+</div>
 </body>
 </html>

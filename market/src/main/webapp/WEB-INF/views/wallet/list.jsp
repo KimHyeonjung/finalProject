@@ -7,7 +7,6 @@
 <head>
     <meta charset="UTF-8">
     <title>충전 내역</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
@@ -33,8 +32,5 @@
         <a href="<c:url value='/wallet/point'/>" class="btn btn-primary">충전하기</a>
     </div>
 
-    <!-- Bootstrap scripts -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

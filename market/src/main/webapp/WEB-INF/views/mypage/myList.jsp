@@ -6,45 +6,6 @@
 <html>
 <title>찜목록</title>
 <head>
- <style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    th, td {
-        padding: 10px;
-        text-align: center;
-        border: 1px solid #ddd;
-    }
-    img {
-        width: 100px;
-        height: auto;
-    }
-    .up-button, .edit-button, .hide-button {
-        padding: 5px 10px;
-        background-color: #f0f0f0;
-        border: 1px solid #ccc;
-        cursor: pointer;
-    }
-    .page-number {
-        text-align: center;
-        margin-top: 10px;
-    }
-    .page-number span {
-        padding: 5px 10px;
-        background-color: #ff5252;
-        color: white;
-        border-radius: 3px;
-    }
-    .type-selected {
-    	color: red;
-    }
-    .btn-func {
-    	margin-top: 5px; 
-    	border: 1px solid black; border-radius: 2px;
-    	cursor: pointer;
-    }
-</style>
 </head>
 <body>
 <div class="container">

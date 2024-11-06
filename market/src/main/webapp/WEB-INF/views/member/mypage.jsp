@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
-  
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,6 +12,7 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+<div class="container">
 	<form action="<c:url value="/mypage"/>" method="post" id="form">
 		<div class="form-group">
 			<img src="member image" alt="member image" style="width:200px;">
@@ -154,6 +154,8 @@
 	            </div>
 	        </div>
 	    </div>
+	</div>
+	
 	</div>
 
 	<script>

@@ -2,60 +2,14 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
 <!DOCTYPE html>
 <html>
 <head>
 <title>Chat Window</title>
-<style>
-/* 메시지 레이아웃 스타일 정의 */
-.message-container {
-	display: flex; /* Flexbox 사용 */
-	margin-bottom: 10px; /* 메시지 간 간격 */
-	align-items: center; /* 수직 정렬 */
-}
-
-.my-message {
-	justify-content: flex-end; /* 내 메시지는 오른쪽 정렬 */
-}
-
-.their-message {
-	justify-content: flex-start; /* 상대 메시지는 왼쪽 정렬 */
-}
-
-.message-content {
-	padding: 10px; /* 메시지 내용 여백 */
-	border-radius: 10px; /* 메시지 모서리 둥글게 */
-	max-width: 60%; /* 메시지 최대 너비 */
-}
-
-.my-message .message-content {
-	background-color: #dcf8c6; /* 내 메시지 배경색 */
-}
-
-.their-message .message-content {
-	background-color: #ececec; /* 상대방 메시지 배경색 */
-}
-
-.message-time {
-	font-size: 12px; /* 시간 글자 크기 */
-	margin-left: 10px; /* 시간과 메시지 간격 */
-	color: #888; /* 시간 글자 색상 */
-}
-
-.nickname {
-	font-weight: bold; /* 닉네임 볼드체 */
-}
-
-.profile-img {
-	width: 40px; /* 프로필 이미지 너비 */
-	height: 40px; /* 프로필 이미지 높이 */
-	border-radius: 50%; /* 프로필 이미지 원형 */
-	margin-right: 10px; /* 이미지와 메시지 간격 */
-}
-</style>
+<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/style.css'/>">
 </head>
 <body>
+<div class="container">
 	<!-- 게시물 정보 표시 영역 -->
 	<div class="post-info" 
 	     style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; cursor: pointer;" 
@@ -101,6 +55,8 @@
 	
 	<!-- 모달 배경 -->
 	<div id="modalBackground" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+	
+	</div>	
 	
 	<script>
 		//let websocket = new WebSocket("http://localhost:8080/market/chat/echo.do?chatRoomNum=${chatRoomNum}&member_nick=${member.member_nick}");

@@ -11,74 +11,8 @@
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-	<style>
-		.textarea {
-			height: 400px;
-		}
-		.image-upload {
-			width: 100px;
-			height: 100px;
-			border: 2px dashed #ccc;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			cursor: pointer;
-		}
-		.image-upload input {
-			display: none;
-		}
-		.char-count {
-			font-size: 0.9rem;
-			color: #999;
-		}
-		.btn-selected {
-			background-color: #007bff;
-			color: white;
-		}
-		.image-preview {
-            display: inline-block;
-            position: relative;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        .image-preview img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-        }
-        .image-preview .remove-btn {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background-color: rgba(255, 255, 255, 0.7);
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        /* 증감버튼 숨기기 */
-   		input[type="number"]::-webkit-inner-spin-button, 
-    	input[type="number"]::-webkit-outer-spin-button { 
-        	-webkit-appearance: none; 
-        	margin: 0; 
-    	}
-
-    	input[type="number"] {
-        	-moz-appearance: textfield;
-    	}
-    	
-    	.btn-option {
-	        border: 1px solid #007bff; /* 기본 파란색 테두리 */
-	        background-color: white; /* 기본 흰색 배경 */
-	        color: black; /* 기본 검은색 글자 */
-	    }
-	  	
-		.map_wrap {position:relative;width:100%;height:350px;}
-	    .title {font-weight:bold;display:block;}
-	    .hAddr {position:absolute;left:10px;top:10px;border-radius: 2px;background:#fff;background:rgba(255,255,255,0.8);z-index:1;padding:5px;}
-	    #centerAddr {display:block;margin-top:2px;font-weight: normal;}
-	    .bAddr {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
-	</style>
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=55f22ec08aea99a6511585b99e78d0d6&libraries=services"></script>
+	<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/style.css'/>">
 </head>
 <body>
 <div class="container mt-4">
@@ -181,7 +115,7 @@
 		<input type="hidden" id="post_position_num" name="post_position_num" value="1">
 
 		<!-- 등록 버튼 -->
-		<button type="submit" class="btn btn-primary btn-block" id="submitBtn" onclick="validateForm(event)">등록</button>
+		<button type="submit" class="btn btn-block" id="submitBtn" onclick="validateForm(event)">등록</button>
 	</form>
 </div>
 <script>
@@ -406,7 +340,7 @@ function searchDetailAddrFromCoords(coords, callback) {
 	
 	    // 선택된 버튼의 스타일 변경
 	    const selectedBtn = document.getElementById('option' + option);
-	    selectedBtn.style.backgroundColor = '#007bff'; // 파란색 배경
+	    selectedBtn.style.backgroundColor = '#7590bd'; // 파란색 배경
 	    selectedBtn.style.color = 'white'; // 하얀색 글자
 	
 	    // 숨겨진 필드에 선택된 값 저장

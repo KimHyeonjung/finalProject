@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 </head>
 <body>
+<div class="container">
 	<h1>공지사항 등록</h1>
 	<form action="<c:url value="/notice/insert"/>" method="post" enctype="multipart/form-data">
 		<div class="form-group">
@@ -26,6 +27,7 @@
 		</div>
 		<button type=submit class="btn btn-outline-info col-12 mb-3">게시글 등록</button>
 	</form>
+</div>
 	<script>
 		$(document).ready(function() {
 	        $('#content').summernote({

@@ -9,6 +9,7 @@
     </style>
 </head>
 <body>
+<div class="container">
     <div class="wrapper">
         <h2>아이디 찾기</h2>
         <form action="<c:url value='/findId'/>" method="post">
@@ -21,5 +22,6 @@
             <button type="submit" class="button-submit">아이디 찾기</button>
         </form>
     </div>
+</div>
 </body>
 </html>
