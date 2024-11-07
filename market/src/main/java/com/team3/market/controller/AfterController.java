@@ -38,10 +38,10 @@ public class AfterController {
         // 로그인 여부 확인
         MemberVO user = (MemberVO) session.getAttribute("user");
         
-		/*
-		 * if (user == null) { // 로그인이 되어 있지 않으면 메인 페이지로 리다이렉트 return "redirect:/login";
-		 * // 로그인 페이지로 변경 가능 }
-		 */
+        // 로그인이 되어 있지 않으면 로그인 페이지로 리다이렉트
+		if (user == null) {
+			return "redirect:/login";
+		}
         
         // 추가적으로 post_num을 사용하여 필요한 정보를 모델에 추가할 수 있습니다.
         
