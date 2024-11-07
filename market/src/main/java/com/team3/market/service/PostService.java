@@ -547,8 +547,15 @@ public class PostService {
 		if(user == null) {
 			return false;
 		}
+		boolean res = false;
 		ChatRoomVO chatRoom = new ChatRoomVO(post_num, user.getMember_num());
-		return postDao.selectHaggleOrNot(chatRoom);
+		ChatRoomVO haggleOrNot = postDao.selectHaggleOrNot(chatRoom);	
+		if(haggleOrNot == null) {
+			res = false;
+			return res;
+		} else {
+			return haggleOrNot.isChatRoom_haggle();
+		}
 	}
 
 	
