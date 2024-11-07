@@ -124,6 +124,6 @@ public interface PostDAO {
 
 	void updateChatRoom(ChatRoomVO chatRoom);
 
-	boolean selectHaggleOrNot(ChatRoomVO chatRoom);
+	ChatRoomVO selectHaggleOrNot(ChatRoomVO chatRoom);
 
 }
