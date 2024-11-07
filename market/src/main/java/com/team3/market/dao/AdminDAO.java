@@ -3,13 +3,15 @@ package com.team3.market.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.team3.market.model.vo.ReportCategoryVO;
 
 public interface AdminDAO {
 
-	List<Map<String, Object>> selectPostReportList();
+	List<Map<String, Object>> selectPostReportList(@Param("order")String order);
 
-	List<Map<String, Object>> selectUserReportList();
+	List<Map<String, Object>> selectUserReportList(@Param("order")String order);
 	
 	List<ReportCategoryVO> selectReportCategoryPostList(String post);
 

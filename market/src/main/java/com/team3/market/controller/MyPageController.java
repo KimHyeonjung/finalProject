@@ -1,6 +1,5 @@
 package com.team3.market.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,13 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
-import com.team3.market.model.vo.NotificationVO;
 import com.team3.market.model.vo.PostVO;
 import com.team3.market.pagination.MyPostCriteria;
 import com.team3.market.pagination.PageMaker;
+import com.team3.market.service.MemberService;
 import com.team3.market.service.PostService;
 
 @Controller
@@ -31,6 +31,9 @@ public class MyPageController {
 	
 	@Autowired
 	PostService postService;
+	@Autowired
+	MemberService memberService;
+	
 	
 	@GetMapping({"/wish/list/{sort_type}","/wish/list"})
 	public String wishList(Model model, @PathVariable(name = "sort_type", required = false)String sort_type, HttpSession session) {
@@ -91,5 +94,19 @@ public class MyPageController {
 		FileVO file = postService.getFileThumbnail("post", post_num);
 		return file;
 	}
-	
+	@ResponseBody
+	@PostMapping("/updateprofile")
+    public String updateProfile(Model model, HttpSession session, MultipartFile file) {
+    	System.out.println("Request received"); // 디버깅 메시지 추가
+    	System.out.println("파일 길이 : " + file.getOriginalFilename());
+    	MemberVO user = (MemberVO)session.getAttribute("user");
+    	
+    	boolean res = memberService.updateProfile(user, file, session);
+    	
+    	if(res) {
+    		return "UPDATE_PROFILE";
+    	}else {
+    		return "FAIL_UPDATE";
+    	}
+    }
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.handler.SocketHandler;
 import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.dto.MessageDTO;
@@ -30,7 +31,6 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.WishVO;
 import com.team3.market.service.PostService;
-import com.team3.market.utils.NotificationWebSocketHandler;
 
 @Controller
 @RequestMapping("/post")
@@ -105,6 +105,8 @@ public class PostController {
 		WishVO wish = postService.getWish(post_num, user);
 		ReportVO report = postService.getReportPost(post_num, user);
 		FileVO profileImg = postService.getProfileImg("member", (Integer)post.get("post_member_num"));
+		boolean haggle = postService.getHaggleOrNot(post_num, user);
+		model.addAttribute("haggle", haggle);
 		model.addAttribute("report", report);		
 		model.addAttribute("wish", wish);
 		model.addAttribute("post", post);
@@ -129,7 +131,6 @@ public class PostController {
 //    	System.out.println("post : " + post);
 //    	System.out.println("파일 길이 : " + files.length);
 //    	Arrays.stream(existingFileNums).forEach(System.out::println);
-    	
     	MemberVO user = (MemberVO)session.getAttribute("user");
     	
     	boolean res = postService.updatePost(post, user, files, existingFileNums);
@@ -163,19 +164,30 @@ public class PostController {
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		if(post == null || user == null) {
 			return false;
-		}
+		}		
 		ChatRoomVO chatRoom = postService.getChatRoom(post, user); 
+		if(chatRoom != null) {
+			if(chatRoom.isChatRoom_haggle()) {
+				return false;
+			}
+		}
 		if(chatRoom == null) {
 			res = postService.makeChatRoom(post, user);
-		}else {
+			if(!res) {
+				return false;
+			}
+		} else {
 			res = postService.addChat(post, chatRoom);
+			if(!res) {
+				return false;
+			}
 		}
-		res = postService.notify(post, user);
+		res = postService.notifyPropose(post, user);
 		if(res) {
 			MemberVO postUser = postService.getMember((Integer)post.get("member_num"));
 			try {
 				notificationHandler.sendNotificationToUser(postUser.getMember_id(), "notification");
-				socketHandler.sendMessage2("null", chatRoom.getChatRoom_num());
+//				notificationHandler.sendMessage2("null", chatRoom.getChatRoom_num());
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();

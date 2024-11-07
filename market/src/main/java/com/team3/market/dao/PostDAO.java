@@ -120,4 +120,10 @@ public interface PostDAO {
 
 	boolean updatePostUse(int post_num);
 
+	List<WishVO> selectWishMemberListByPostNum(int post_num);
+
+	void updateChatRoom(ChatRoomVO chatRoom);
+
+	boolean selectHaggleOrNot(ChatRoomVO chatRoom);
+
 }

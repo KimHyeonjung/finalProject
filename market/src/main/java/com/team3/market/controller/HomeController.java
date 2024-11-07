@@ -70,7 +70,7 @@ public class HomeController {
     @GetMapping("/login")
     public String showLoginForm(HttpServletRequest request) {
     	String prevUrl = request.getHeader("Referer");
-		if(prevUrl != null && !prevUrl.contains("/login")) {
+		if(prevUrl != null && !prevUrl.contains("/login") && !prevUrl.contains("/signup")) {
 			request.getSession().setAttribute("prevUrl", prevUrl);
 		}
         return "/member/login";
@@ -158,11 +158,6 @@ public class HomeController {
         
         return member != null;  
     }
-    
-    @GetMapping("/mypage")
-	public String mypage() {
-		return "/member/mypage";
-	}
 	
 	@PostMapping("/delete")
 	public String deleteAccount(Model model, HttpSession session, MemberVO member) {
@@ -180,6 +175,11 @@ public class HomeController {
 	    
 	    model.addAttribute("message", message);
 	    return "/main/message";
+	}
+	
+    @GetMapping("/mypage")
+	public String mypage() {
+		return "/member/mypage";
 	}
 	
 	@GetMapping("/updatepw")

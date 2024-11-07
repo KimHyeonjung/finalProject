@@ -20,12 +20,12 @@ public class AdminService {
 	@Autowired
 	PostDAO postDao;
 
-	public List<Map<String, Object>> getReportPostList() {
-		return adminDao.selectPostReportList();
+	public List<Map<String, Object>> getReportPostList(String order) {
+		return adminDao.selectPostReportList(order);
 	}
 
-	public List<Map<String, Object>> getReportUserList() {
-		return adminDao.selectUserReportList();
+	public List<Map<String, Object>> getReportUserList(String order) {
+		return adminDao.selectUserReportList(order);
 	}
 
 	public boolean reportPostcheck(int post_num, MemberVO user) {

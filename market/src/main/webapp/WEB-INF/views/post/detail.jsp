@@ -102,7 +102,7 @@
 		<h1 class="hide">상세</h1>
 		<section id="article-images">
 			<h3 class="hide">이미지</h3>
-			<div id="carousel-indicators" class="carousel slide" data-ride="false">
+			<div id="carousel-indicators" class="carousel slide" data-interval="false">
 				<!-- Indicators -->
 				<ul class="carousel-indicators"> 
 					<c:if test="${fileList.size() != 0 }">
@@ -173,7 +173,8 @@
 										<div class="btn btn-warning" id="chat" data-post_num="${post.post_num}">채팅방</div>
 										<c:if test="${post.post_deal eq true }">
 											<div class="dropdown dropright">
-											    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+											    <button type="button" data-toggle="dropdown" id="dropdown-btn"
+											    	class="btn btn-outline-primary dropdown-toggle <c:if test="${haggle}">active</c:if>" >
 													흥정하기
 											    </button>
 											    <div class="dropdown-menu" style="padding: 4px;">
@@ -532,6 +533,14 @@ $(document).on('click', '#wish', function(){
      e.stopPropagation(); // 클릭 이벤트 전파 막기
    });
 // 흥정하기
+//$(document).on('click', '#dropdown-btn', function (){
+$('#dropdown-btn').click(function(e){
+	let haggle = ${haggle};
+	if(haggle){
+		alert('이미 흥정한 상품입니다.');
+		e.stopPropagation();
+	}
+});
 $(document).on('click', '.discount', function (){
 	let discount = +$('#input-discount').val() - +$(this).data('price');
 	//var formattedDc = discount.toLocaleString();
@@ -564,14 +573,17 @@ $(document).on('click', '#propose', function () {
 		success : function (data){	
 			if(data){
 				$('.dropdown-toggle').click();
+				alert('판매자에게 가격제안을 보냈습니다.');
+				$('.dropdown-toggle').addClass('active');
 				/* location.href = `<c:url value="/채팅룸"/>`; */
+			} else {
+				alert('더 이상 흥정을 할 수 없습니다.');
 			}
 		}, 
 		error : function(jqXHR, textStatus, errorThrown){				
 			console.log(jqXHR);
 		}
 	});	
-	alert(1);
 });
 	//채팅신청
 	$(document).on('click', '#chat', function() {

@@ -24,11 +24,10 @@ import com.team3.market.service.ChatService;
 @Component
 public class SocketHandler extends TextWebSocketHandler implements InitializingBean {
 
+	private ChatService chatService; // ChatService 주입
+	
 	private final Logger logger = LoggerFactory.getLogger(SocketHandler.class);
 	private Set<WebSocketSession> sessionSet = new HashSet<WebSocketSession>();
-	
-    private ChatService chatService; // ChatService 주입
-
     private ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
 
 	@Autowired

@@ -15,7 +15,17 @@
         <th>회원 상태</th>
         <th>회원 점수</th>
         <th>가장 많이 받은 신고 항목</th>
-        <th>신고 받은 횟수</th> 
+        <th><span>신고 받은 횟수</span>
+        	<c:if test="${order eq 'count_asc' }">
+        		<i id="sortRMCount" class="fas fa-sort-up"></i>
+        	</c:if>
+        	<c:if test="${order eq 'count_desc' }">
+        		<i id="sortRMCount" class="fas fa-sort-down"></i>
+        	</c:if>
+        	<c:if test="${order ne 'count_desc' && order ne 'count_asc'}">
+        		<i id="sortRMCount" class="fas fa-sort"></i>
+        	</c:if>
+        </th> 
         <th>기능</th> 
       </tr>
     </thead>
@@ -45,6 +55,16 @@
    </tbody>
 </table>
 <script>
+$('#sortRMCount').click(function(){
+	if(sortOrder != 'count_asc' && sortOrder != 'count_desc'){
+		sortOrder = 'count_asc';
+	}else if(sortOrder == 'count_asc'){
+		sortOrder = 'count_desc';
+	}else if(sortOrder == 'count_desc')	{
+		sortOrder = 'count_asc';
+	}
+	$('#btn-user').click();
+});
 $(document).on('change', '#memberReportList', function(){
 	let category_num = $(this).val();
 	if(category_num == 0){

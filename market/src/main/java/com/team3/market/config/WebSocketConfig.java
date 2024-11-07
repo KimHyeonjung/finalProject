@@ -8,9 +8,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.interceptor.HttpSessionHandshakeInterceptor;
-import com.team3.market.utils.NotificationWebSocketHandler;
-import com.team3.market.handler.SocketHandler;
 import com.team3.market.service.ChatService;
 
 @Configuration
@@ -23,17 +22,17 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
 	//@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(new NotificationWebSocketHandler(), "/ws/notify") // 클라이언트에서 접속할 수 있는 URL
+		registry.addHandler(new NotificationWebSocketHandler(chatService), "/ws/notify") // 클라이언트에서 접속할 수 있는 URL
 				.setAllowedOrigins("*").addInterceptors(new HttpSessionHandshakeInterceptor());
 //		registry.addHandler(new SocketHandler(chatService), "/chat/echo.do")
 //				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
-		registry.addHandler(new SocketHandler(chatService), "/ws/notify")
-				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
+//		registry.addHandler(new SocketHandler(chatService), "/ws/notify")
+//				.setAllowedOrigins("*"); // 필요한 경우 특정 오리진만
 																										// 허용 가능
 	}
 
 	@Bean
 	public NotificationWebSocketHandler notificationWebSocketHandler() {
-		return new NotificationWebSocketHandler();
+		return new NotificationWebSocketHandler(chatService);
 	}
 }

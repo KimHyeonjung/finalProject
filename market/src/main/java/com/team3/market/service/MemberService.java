@@ -1,6 +1,9 @@
 package com.team3.market.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.MemberDAO;
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
+import com.team3.market.utils.UploadFileUtils;
 
 @Service
 public class MemberService {
@@ -23,6 +29,8 @@ public class MemberService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	String uploadPath;
 	
 	public boolean signup(MemberVO member, HttpSession session, String enteredCode) {
 		
@@ -286,7 +294,63 @@ public class MemberService {
 		return memberDao.updateMemberUse(member_num);
 	}
 
-
+	public boolean updateProfile(MemberVO user, MultipartFile file, HttpSession session) {
+		if(user == null || file == null) {
+			return false;
+		}
+		boolean res = false;
+		//기존 프로필 사진이 있는지 확인
+		FileVO profileImg = memberDao.selectFileProfile(user.getMember_num());
+		FileVO tmpFile = null;
+		if(profileImg == null) {
+			tmpFile = uploadsFile(file, "member", user.getMember_num());
+			res = memberDao.insertFile(tmpFile);
+		} else { // 있을 경우
+			res = deleteFile(profileImg);
+			tmpFile = uploadsFile(file, "member", user.getMember_num());
+			tmpFile.setFile_num(profileImg.getFile_num());
+			if(res) {
+				res = memberDao.updateFile(tmpFile);
+			}else {
+				return false;
+			}
+		}
+		user.setFile_name(tmpFile.getFile_name());
+		user.setFile_ori_name(tmpFile.getFile_ori_name());
+		session.setAttribute("user", user);
+		return res;
+	}
+	public FileVO uploadsFile(MultipartFile file, String target, int target_num) {
+		if (!file.isEmpty()) {
+			try {
+				// 원본 파일명 가져오기
+				String originalFileName = file.getOriginalFilename();
+				// 파일명을 UUID로 변환하여 고유하게 설정
+				String uuidFileName = File.separator + UUID.randomUUID().toString() + "_" + originalFileName;
+				String file_name = uuidFileName.replace(File.separatorChar, '/');
+				// 저장할 파일 객체 생성
+				File saveFile = new File(uploadPath, uuidFileName);
+				// 파일을 저장하는 부분
+				file.transferTo(saveFile);
+				// FileVO 객체 생성 및 데이터 설정
+				FileVO fileVo = new FileVO(file_name, originalFileName, target , target_num);
+				
+				return fileVo;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return null;
+	}
+	private boolean deleteFile(FileVO file) {
+		if(file == null) {
+			return false;
+		}
+		//첨부파일을 서버에서 삭제
+		UploadFileUtils.delteFile(uploadPath, file.getFile_name());
+		return true;
+	}
 	
 	
 
