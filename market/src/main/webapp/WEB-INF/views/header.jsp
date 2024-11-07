@@ -65,37 +65,35 @@
                 </c:if>
                 <li class="nav-item">
                     <div class="dropdown">
-                        <button id="profile-btn" type="button" class="profile-btn">
-                            <img src="<c:url value="/resources/img/none_profile_image.png"/>" alt="Profile" class="profile-img">
-                        </button>
-                        <div id="profile-dropdown" class="dropdown-content">
-						    <div class="account-section">
-						        <p>${user.member_nick}</p>
-						        <a href="<c:url value='/mypage'/>">개인정보 변경</a>
-						    </div>
-						    <div class="account-section">
-						        <p>${user.member_score}점</p>
-						    </div>
-						    <div class="account-section">
-						        <p><span id="balance">0</span>원</p>
-					        </div>
-						    <div class="account-section">
-						        <a href="<c:url value='/wallet/list'/>">내역</a>
-						        <a href="<c:url value='/wallet/point'/>">충전</a>
-						    </div>
-						    <div class="account-section">
-						        <a href="<c:url value='/mypage/post/list'/>">게시글 관리</a>
-						    </div>
-						    <div class="account-section">
-						        <a href="<c:url value='/mypage/wish/list'/>">찜목록</a>
-						    </div>
-						    <div class="account-section">
-						        <a href="#">거래 내역</a>
-						    </div>
-						    <div class="account-section">
-						        <a href="<c:url value='/logout'/>">로그아웃</a>
-						    </div>
-						</div>
+												<button id="profile-btn" type="button" class="profile-btn">
+													<img src="<c:url value="/resources/img/none_profile_image.png"/>" alt="Profile" class="profile-img">
+												</button>
+												<div id="profile-dropdown" class="dropdown-content">
+													<div class="account-section">
+															<p>${user.member_nick}</p>
+														</div>
+														<div class="account-section">
+															<p>${user.member_score}점</p>
+														</div>
+														<div class="account-section">
+															<p><span id="balance">0</span>원</p>
+														</div>
+														<div class="account-section">
+															<a href="<c:url value='/wallet/list'/>">내역</a>
+															<a href="<c:url value='/wallet/point'/>">충전</a>
+														</div>
+														<div class="account-section">
+															<a href="<c:url value='/mypage'/>">개인정보 변경</a>
+															<a href="<c:url value='/mypage/post/list'/>">게시글 관리</a>
+														</div>
+														<div class="account-section">
+														<a href="<c:url value='/mypage/wish/list'/>">찜목록</a>
+															<a href="<c:url value="/after/board"/>">내 리뷰</a>
+													</div>
+													<div class="account-section">
+															<a href="<c:url value='/logout'/>">로그아웃</a>
+													</div>
+												</div>
                     </div>
                 </li>
             </c:if>

@@ -16,7 +16,7 @@ import com.team3.market.model.vo.MemberVO;
 
 public class HttpSessionHandshakeInterceptor implements HandshakeInterceptor {
 
-    @Override
+    //@Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                    WebSocketHandler wsHandler, Map<String, Object> session) throws Exception {
         // ServerHttpRequest를 HttpServletRequest로 변환
@@ -30,7 +30,7 @@ public class HttpSessionHandshakeInterceptor implements HandshakeInterceptor {
         return true;
     }
 
-    @Override
+    //@Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                WebSocketHandler wsHandler, Exception exception) {
         // Handshake 이후 처리

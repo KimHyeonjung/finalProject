@@ -24,6 +24,9 @@
 		</div>
 	</div>
 	
+	<button type="button" onclick="window.location.href='<c:url value='/after/review/${post.post_num}' />'">후기 작성</button>
+	
+	
 	<!-- 채팅 내용 표시 영역 -->
 	<div id="chat-history">
 		<c:forEach var="chatDTO" items="${chatDTOs}">

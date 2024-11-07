@@ -215,8 +215,13 @@ DROP TABLE IF EXISTS `after`;
 CREATE TABLE `after` (
 	`after_num`	int primary key auto_increment	NOT NULL,
 	`after_member_num`	int	NOT NULL,
-	`after_post_num`	int	NOT NULL,
-	`after_message`	varchar(255)	NULL
+	`after_post_num`	int NOT	NULL,
+	`after_message`		varchar(255) NULL,
+    `after_review_sum`	float NOT NULL,
+    `after_review1`		float NOT NULL,
+    `after_review2`		float NOT NULL,
+    `after_review3`		float NOT NULL,
+    `after_date`		datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS `grade`;

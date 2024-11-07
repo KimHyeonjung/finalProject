@@ -23,6 +23,7 @@ import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.handler.SocketHandler;
 import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.dto.MessageDTO;
+import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;

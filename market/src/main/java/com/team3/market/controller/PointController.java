@@ -74,7 +74,7 @@ public class PointController {
 	public String payCompleted(@RequestParam("pg_token") String pgToken, HttpSession session, Model model) {
 		
 		String tid = (String) session.getAttribute("tid");
-		int totalPrice = (int) session.getAttribute("totalPrice");  // 세션에서 결제 금액 가져오기
+		int totalPrice = (Integer) session.getAttribute("totalPrice");  // 세션에서 결제 금액 가져오기
 		MemberVO user = (MemberVO) session.getAttribute("user");
 		
 		log.info("결제승인 요청을 인증하는 토큰: " + pgToken);

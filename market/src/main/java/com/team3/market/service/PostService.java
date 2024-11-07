@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.dao.MemberDAO;
 import com.team3.market.dao.PostDAO;
 import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.model.dto.CombineNotificationWithFileDTO;
@@ -41,6 +42,9 @@ public class PostService {
 	PostDAO postDao;
 	@Autowired
     private NotificationWebSocketHandler notificationHandler;
+	
+    @Autowired
+    private MemberDAO memberDao;
 	
     @Autowired
     private String uploadPath; // WebMvcConfig에서 설정된 경로 주입

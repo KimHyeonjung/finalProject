@@ -260,6 +260,7 @@
 		insert into chat(chat_member_num, chat_chatRoom_num, chat_content) values 
 			(#{chat_member_num}, #{chat_chatRoom_num}, #{chat_content})
 	</insert>
+
 	<select id="selectNotification" resultType="NotificationVO">
 		select * from notification
 		join notification_type
