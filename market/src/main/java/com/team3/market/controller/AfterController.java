@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.handler.SocketHandler;
 import com.team3.market.model.dto.MessageDTO;
 import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.service.AfterService;
-import com.team3.market.utils.NotificationWebSocketHandler;
 
 @Controller
 @RequestMapping("/after")
