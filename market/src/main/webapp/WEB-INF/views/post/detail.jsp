@@ -378,6 +378,9 @@ $(document).ready(function(){
 </script>		
 <script>
 $(document).ready(function () {
+	// 선택된 거래상태 항목 안보이게
+	var state = $('.state');
+	state.find('option[selected]').hide();
 	const $overlay = $("#overlay");
 	const $reportModal = $("#report-modal");
 	//신고 횟수 초과시 블라인드
