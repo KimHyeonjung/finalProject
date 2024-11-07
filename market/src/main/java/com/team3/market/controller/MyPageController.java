@@ -1,6 +1,5 @@
 package com.team3.market.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.FileVO;
@@ -27,6 +27,7 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.pagination.MyPostCriteria;
 import com.team3.market.pagination.PageMaker;
 import com.team3.market.service.ChatService;
+import com.team3.market.service.MemberService;
 import com.team3.market.service.PostService;
 import com.team3.market.service.WalletService;
 
@@ -40,6 +41,8 @@ public class MyPageController {
 	ChatService chatService;
 	@Autowired
 	WalletService walletService;
+	@Autowired
+	MemberService memberService;
 	
 	@GetMapping({"/wish/list/{sort_type}","/wish/list"})
 	public String wishList(Model model, @PathVariable(name = "sort_type", required = false)String sort_type, HttpSession session) {
@@ -94,10 +97,10 @@ public class MyPageController {
 		int res = postService.refreshCheck(post_num);
 		return res;
 	}
-	@PostMapping("/post/thumbnail") // 끌올 가능 체크
+	@PostMapping("/post/thumbnail") // 썸네일
 	@ResponseBody
 	public FileVO postThumbnail(@RequestParam("post_num") int post_num) {
-		FileVO file = postService.getFile(post_num, "post");
+		FileVO file = postService.getFileThumbnail("post", post_num);
 		return file;
 	}
 	
@@ -123,4 +126,19 @@ public class MyPageController {
         }
     }
 
+	@ResponseBody
+	@PostMapping("/updateprofile")
+    public String updateProfile(Model model, HttpSession session, MultipartFile file) {
+    	System.out.println("Request received"); // 디버깅 메시지 추가
+    	System.out.println("파일 길이 : " + file.getOriginalFilename());
+    	MemberVO user = (MemberVO)session.getAttribute("user");
+    	
+    	boolean res = memberService.updateProfile(user, file, session);
+    	
+    	if(res) {
+    		return "UPDATE_PROFILE";
+    	}else {
+    		return "FAIL_UPDATE";
+    	}
+    }
 }

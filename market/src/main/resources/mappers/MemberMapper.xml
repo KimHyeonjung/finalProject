@@ -10,7 +10,10 @@
 	</insert>
 	
 	<select id="getMemberById" parameterType="String" resultType="MemberVO">
-        SELECT * FROM member WHERE member_id = #{member_id}
+        select m.*, f.file_name, f.file_ori_name from member m
+		left join (select * from file where file_target_table = 'member') f
+			on m.member_num = f.file_target_num
+		WHERE member_id = #{member_id}
     </select>
     
     <select id="getMemberByNick" parameterType="String" resultType="MemberVO">
@@ -101,4 +104,27 @@
 	    WHERE member_id = #{member_id}
 	</update>
 	
+	<update id="updateMemberSuspend">
+		update member set member_state = '정지' where member_num = #{member_num}
+	</update>
+	<update id="updateMemberUse">
+		update member set member_state = '사용' where member_num = #{member_num}
+	</update>
+	<select id="selectFile" resultType="FileVO">
+		select * from file where file_target_table = #{file_target_table} and file_target_num = #{file_target_num}
+	</select>
+	<update id="updateFile">
+		update file 
+		set
+			file_name = #{file_name},
+			file_ori_name = #{file_ori_name}
+		where file_num = #{file_num}
+	</update>
+	<insert id="insertFile">
+		insert into file(file_name, file_ori_name, file_target_table, file_target_num) values
+		(#{file_name}, #{file_ori_name}, #{file_target_table}, #{file_target_num})
+	</insert>
+	<select id="selectFileProfile" resultType="FileVO">
+		select * from file where file_target_table = 'member' and file_target_num = #{member_num}
+	</select>
 </mapper>

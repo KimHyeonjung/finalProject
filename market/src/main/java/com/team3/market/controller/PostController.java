@@ -1,5 +1,6 @@
 package com.team3.market.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.handler.SocketHandler;
 import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.dto.MessageDTO;
@@ -28,7 +30,6 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.model.vo.WishVO;
 import com.team3.market.service.PostService;
-import com.team3.market.utils.NotificationWebSocketHandler;
 
 @Controller
 @RequestMapping("/post")
@@ -59,37 +60,30 @@ public class PostController {
     }
 	
     // 게시글 생성 처리
+    @ResponseBody
     @PostMapping("/insert")
-    public String insertPost(Model model, PostVO post, HttpSession session, MultipartFile[] fileList) {
-    	System.out.println("Request received"); // 디버깅 메시지 추가
-    	System.out.println("파일 길이 : " + fileList.length);
+    public String insertPost(Model model, PostVO post, HttpSession session, MultipartFile[] files) {
+//    	System.out.println("Request received"); // 디버깅 메시지 추가
+//    	System.out.println("파일 길이 : " + files.length);
+//    	System.out.println(post);
 	    // 파일 선택 체크
-	    if (fileList == null || fileList.length == 0) {
-	        model.addAttribute("message", new MessageDTO("/post/insert", "파일을 선택하지 않았습니다."));
-	        return "/main/message";
+	    if (files == null || files.length == 0) {
+	        return "FILE_NOT_EXIST";
 	    }
-    	
     	MemberVO user = (MemberVO)session.getAttribute("user");
     	
-    	System.out.println(post);
 		
-    	boolean res = postService.insertPost(post, user, fileList);
-
-		MessageDTO message;
+    	int post_num = postService.insertPost(post, user, files);
 		
-		for(MultipartFile file : fileList) {
+		for(MultipartFile file : files) {
 			System.out.println(file.getOriginalFilename());
 		}
 		
-		if(res) {	
-			message = new MessageDTO("/", "게시글을 등록했습니다.");
+		if(post_num > 0 ) {	
+			return "REGISTRATION_POST::" + post_num;
 		}else {
-			message = new MessageDTO("/post/insert", "게시글을 등록하지 못했습니다.");
+			return "FAIL_REGISTRATION";
 		}
-		
-		model.addAttribute("message",message);
-		
-		return "/main/message";
     }
     
     @GetMapping("/list/{category_num}")
@@ -109,7 +103,9 @@ public class PostController {
 		List<FileVO> fileList = postService.selectFileList(post_num, "post");
 		WishVO wish = postService.getWish(post_num, user);
 		ReportVO report = postService.getReportPost(post_num, user);
-		FileVO profileImg = postService.getProfileImg((Integer)post.get("post_member_num"), "member");
+		FileVO profileImg = postService.getProfileImg("member", (Integer)post.get("post_member_num"));
+		boolean haggle = postService.getHaggleOrNot(post_num, user);
+		model.addAttribute("haggle", haggle);
 		model.addAttribute("report", report);		
 		model.addAttribute("wish", wish);
 		model.addAttribute("post", post);
@@ -117,6 +113,33 @@ public class PostController {
 		model.addAttribute("profile", profileImg);
 		return "/post/detail";
 	}	
+	@GetMapping("/update/{post_num}")
+	public String postUpdate(Model model, @PathVariable("post_num")int post_num, HttpSession session) {
+		Map<String, Object> post = postService.getPostMap(post_num);
+		List<FileVO> fileList = postService.selectFileList(post_num, "post");
+		List<String> categoryList = postService.getCategoryList();
+        model.addAttribute("categoryList", categoryList);    
+		model.addAttribute("post", post);
+		model.addAttribute("fileList", fileList);
+		return "/post/update";
+	}	
+	@ResponseBody
+	@PostMapping("/update")
+    public String updatePost(Model model, PostVO post, HttpSession session, MultipartFile[] files, int[] existingFileNums) {
+//    	System.out.println("Request received"); // 디버깅 메시지 추가
+//    	System.out.println("post : " + post);
+//    	System.out.println("파일 길이 : " + files.length);
+//    	Arrays.stream(existingFileNums).forEach(System.out::println);
+    	MemberVO user = (MemberVO)session.getAttribute("user");
+    	
+    	boolean res = postService.updatePost(post, user, files, existingFileNums);
+    	
+    	if(res) {
+    		return "UPDATE_POST";
+    	}else {
+    		return "FAIL_UPDATE";
+    	}
+    }
 	
 	@ResponseBody
 	@PostMapping("/wish")
@@ -140,19 +163,30 @@ public class PostController {
 		MemberVO user = (MemberVO)session.getAttribute("user");
 		if(post == null || user == null) {
 			return false;
-		}
+		}		
 		ChatRoomVO chatRoom = postService.getChatRoom(post, user); 
+		if(chatRoom != null) {
+			if(chatRoom.isChatRoom_haggle()) {
+				return false;
+			}
+		}
 		if(chatRoom == null) {
 			res = postService.makeChatRoom(post, user);
-		}else {
+			if(!res) {
+				return false;
+			}
+		} else {
 			res = postService.addChat(post, chatRoom);
+			if(!res) {
+				return false;
+			}
 		}
-		res = postService.notify(post, user);
+		res = postService.notifyPropose(post, user);
 		if(res) {
 			MemberVO postUser = postService.getMember((Integer)post.get("member_num"));
 			try {
 				notificationHandler.sendNotificationToUser(postUser.getMember_id(), "notification");
-				socketHandler.sendMessage2("null", chatRoom.getChatRoom_num());
+//				notificationHandler.sendMessage2("null", chatRoom.getChatRoom_num());
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();

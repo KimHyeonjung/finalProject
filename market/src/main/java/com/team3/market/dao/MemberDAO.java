@@ -3,6 +3,7 @@ package com.team3.market.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
 
 @Mapper
@@ -43,7 +44,17 @@ public interface MemberDAO {
 
 	void updateMember(MemberVO member);
 
+	boolean updateMemberSuspend(int member_num);
 
+	boolean updateMemberUse(int member_num);
+
+	FileVO selectFile(FileVO fileVo);
+
+	boolean updateFile(FileVO fileVo);
+
+	boolean insertFile(FileVO fileVo);
+
+	FileVO selectFileProfile(int member_num);
 
 
 }

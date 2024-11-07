@@ -5,7 +5,7 @@
 <mapper namespace="com.team3.market.dao.AdminDAO">
 	<select id="selectPostReportList" resultType="map">
 		SELECT 
-		    p.post_num, p.post_title, p.post_date, m2.member_id, m2.member_nick,
+		    p.post_num, p.post_title, p.post_date, p.post_state_num, m2.member_id, m2.member_nick,
 		    (select rc.report_category_name FROM marketplace.report re
 						join report_category rc on rc.report_category_num = re.report_category_num
 						where report_post_num = r.report_post_num
@@ -27,11 +27,27 @@
 		        JOIN
 		    member m2 ON p.post_member_num = m2.member_num
 		group by r.report_post_num
-		ORDER BY reportCount desc	
+		<choose>
+			<when test="order == 'date_asc'">
+				ORDER BY p.post_date asc
+			</when>
+			<when test="order == 'date_desc'">
+				ORDER BY p.post_date desc
+			</when>
+			<when test="order == 'count_asc'">
+				ORDER BY reportCount asc
+			</when>
+			<when test="order == 'count_desc'">
+				ORDER BY reportCount desc
+			</when>
+			<otherwise>
+				ORDER BY reportCount desc	
+			</otherwise>
+		</choose>
 	</select>
 	<select id="selectUserReportList" resultType="map">
 		SELECT 
-		    m2.member_id, m2.member_nick, m2.member_state, m2.member_score,
+		    r.report_member_num2, m2.member_id, m2.member_nick, m2.member_state, m2.member_score,
 		    (select rc.report_category_name FROM marketplace.report re
 						join report_category rc on rc.report_category_num = re.report_category_num
 						where re.report_member_num2 = r.report_member_num2
@@ -51,7 +67,17 @@
 		        JOIN
 		    member m2 ON r.report_member_num2 = m2.member_num
 		group by r.report_member_num2
-		ORDER BY reportCount desc
+		<choose>
+			<when test="order == 'count_asc'">
+				ORDER BY reportCount asc
+			</when>
+			<when test="order == 'count_desc'">
+				ORDER BY reportCount desc
+			</when>
+			<otherwise>
+				ORDER BY reportCount desc	
+			</otherwise>
+		</choose>
 	</select> 
 	<select id="selectReportCategoryPostList" resultType="ReportCategoryVO">
 		select * from report_category where report_category_type = #{post}

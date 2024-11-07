@@ -119,7 +119,23 @@
 		insert into file(file_name, file_ori_name, file_target_table, file_target_num)
 		values(#{file_name},#{file_ori_name},#{file_target_table},#{file_target_num})
 	</insert>
-    
+	<!-- 게시물 수정 -->
+    <update id="updatePost">
+    	update 
+    		post 
+   		set 
+			post_position_num = #{post_position_num},
+			post_way_num = #{post_way_num}, 
+			post_category_num = #{post_category_num},
+			post_title = #{post_title},
+			post_content = #{post_content}, 
+			post_price = #{post_price}, 
+			post_deal = #{post_deal}, 
+			post_refresh = CURRENT_TIMESTAMP, 
+			post_address = #{post_address}
+		where post_num = #{post_num} 
+    		
+    </update>
     <!-- 카테고리 목록을 가져오는 쿼리 -->
 	<select id="selectCategoryList" resultType="com.team3.market.model.vo.CategoryVO">
 	    SELECT category_num, category_name FROM category
@@ -202,14 +218,22 @@
 	<delete id="deletePostAllWish">
 		delete from wish where wish_post_num = #{post_num}
 	</delete>
+	<select id="selectFile" resultType="FileVO">
+		select * from file where file_num = #{file_num}
+	</select>
 	<delete id="deleteFile">
 		delete from file where file_num = #{file_num}
 	</delete>
 	<select id="selectFileList" resultType="FileVO">
 		select * from file where file_target_table = #{target} and file_target_num = #{target_num}
 	</select>
-	<select id="selectFile" resultType="FileVO">
-		select * from file where file_target_table = #{target} and file_target_num = #{target_num}
+	<select id="selectFileThumbnail" resultType="FileVO">
+		select * from file where file_target_table = #{file_target_table} and file_target_num = #{file_target_num}
+		order by file_num
+		limit 0, 1
+	</select>
+	<select id="selectFileProfileImg" resultType="FileVO">
+		select * from file where file_target_table = #{file_target_table} and file_target_num = #{file_target_num}
 		order by file_num
 		limit 0, 1
 	</select>
@@ -226,9 +250,12 @@
 			(#{member_num}, #{type}, #{post_num}, #{propStr})
 	</insert>
 	<insert id="insertChatRoom" parameterType="ChatRoomVO" useGeneratedKeys="true" keyProperty="chatRoom_num">
-		insert into chat_room(chatRoom_member_num, chatRoom_member_num2, chatRoom_post_num) values
-			(#{chatRoom_member_num}, #{chatRoom_member_num2}, #{chatRoom_post_num})
+		insert into chat_room(chatRoom_member_num, chatRoom_member_num2, chatRoom_post_num, chatRoom_haggle) values
+			(#{chatRoom_member_num}, #{chatRoom_member_num2}, #{chatRoom_post_num}, #{chatRoom_haggle})
 	</insert>
+	<update id="updateChatRoom">
+		update chat_room set chatRoom_haggle = true where chatRoom_num = #{chatRoom_num}
+	</update>
 	<insert id="insertChat">
 		insert into chat(chat_member_num, chat_chatRoom_num, chat_content) values 
 			(#{chat_member_num}, #{chat_chatRoom_num}, #{chat_content})
@@ -281,6 +308,7 @@
 		where row_num = 1) b 
 			on a.notification_post_num = b.file_target_num
 		where notification_member_num = #{member_num} and notification_read = false
+		order by notification_date desc
 	</select>
 	<resultMap id="CombinePostWithFileResultMap" type="com.team3.market.model.dto.CombinePostWithFileDTO">
 		<association property="post" javaType="PostVO">
@@ -316,4 +344,21 @@
 	<select id="selectCategoryName" resultType="String">
 		select category_name from category where category_num = #{category_num}
 	</select>	
+	<update id="updatePostHide">
+		update post set post_state_num = 2 where post_num = #{post_num}
+	</update>
+	<update id="updatePostUse">
+		update post set post_state_num = 1 where post_num = #{post_num}
+	</update>
+	<select id="selectWishMemberListByPostNum" resultType="WishVO">
+		select wish.*, member_id from wish 
+		join member 
+			on wish_member_num = member_num
+		where wish_post_num = #{post_num}
+	</select>
+	<select id="selectHaggleOrNot" resultType="boolean">
+		select chatRoom_haggle from chat_room 
+		where 
+			chatRoom_member_num2 = #{chatRoom_member_num2} and chatRoom_post_num = #{chatRoom_post_num}
+	</select>
 </mapper>

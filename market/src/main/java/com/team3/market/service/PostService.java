@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.dao.PostDAO;
+import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.model.dto.CombineNotificationWithFileDTO;
 import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.vo.AfterVO;
@@ -38,12 +39,12 @@ public class PostService {
 
 	@Autowired
 	PostDAO postDao;
+	@Autowired
+    private NotificationWebSocketHandler notificationHandler;
 	
     @Autowired
     private String uploadPath; // WebMvcConfig에서 설정된 경로 주입
 	
-//	@Resource
-//	String uploadPath;
 	//게시글 가져오기
 	public PostVO getPost(int post_num) {
 		return postDao.selectPost(post_num);
@@ -54,13 +55,13 @@ public class PostService {
         return postDao.selectCategoryList();
     }
 	
-	public boolean insertPost(PostVO post, MemberVO user, MultipartFile[] fileList) {
+	public int insertPost(PostVO post, MemberVO user, MultipartFile[] fileList) {
 		
 		if(post == null || user == null) {
-			return false;
+			return 0;
 		}
 		if(post.getPost_title().length() == 0) {
-			return false;
+			return 0;
 		}
 		
 		post.setPost_member_num(user.getMember_num());
@@ -69,49 +70,118 @@ public class PostService {
 		boolean res = postDao.insertPost(post);
 		
 		if(!res) {
-			return false;
+			return 0;
 		}
 		
 		if(fileList == null || fileList.length == 0) {
-			return false;
+			return 0;
 		}
 		
-		//FileVO file = new FileVO("UUID_파일명", "원래파일명", "post", post.getPost_num());
-		//FileVO file = new FileVO(file_ori_name, file.file_name, "post", post.getPost_num());
-		
         for (MultipartFile file : fileList) {
-            if (!file.isEmpty()) {
-                try {
-                    // 원본 파일명 가져오기
-                    String originalFileName = file.getOriginalFilename();
-
-                    // 파일명을 UUID로 변환하여 고유하게 설정
-                    String uuidFileName = UUID.randomUUID().toString() + "_" + originalFileName;
-
-                    // 저장할 파일 객체 생성
-                    File saveFile = new File(uploadPath, uuidFileName);
-                    
-                    // 파일을 저장하는 부분
-                    file.transferTo(saveFile);
-
-                    // FileVO 객체 생성 및 데이터 설정
-                    FileVO fileVO = new FileVO(uuidFileName, originalFileName, "post", post.getPost_num());
-                    
-                    // 파일 정보를 DB에 저장
-                    postDao.insertFile(fileVO);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }
+        	res = uploadsFile(file, "post", post.getPost_num());
+			if(!res) {
+				System.out.println("파일 업로드 실패!");
+			}
         }
-		
-		
-		
-		return true;
+		return post.getPost_num();
 	}
-
+	public boolean updatePost(PostVO post, MemberVO user, MultipartFile[] files, int[] existingFileNums) {
+		if(post == null || user == null) {
+			return false;
+		}
+		if(post.getPost_title().length() == 0) {
+			return false;
+		}
+		if(!checkWriter(post.getPost_num(), user.getMember_num())) {
+			return false;
+		}
+		boolean res = false;
+		PostVO beforePost = postDao.selectPost(post.getPost_num()); //금액 비교를 위해 기존 게시물 정보 가져옴
+		DecimalFormat price = new DecimalFormat("###,###");
+		int type = 0; // 알림 타입
+		int post_num = post.getPost_num();
+		int beforePrice = beforePost.getPost_price();
+		int newPrice = post.getPost_price();
+		String message;
+		List<WishVO> wishList = postDao.selectWishMemberListByPostNum(post.getPost_num());
+		if(post.getPost_price() < beforePost.getPost_price()) {
+			type = 2;
+			message = "<div>" + beforePost.getPost_title() + "(" + user.getMember_nick() 
+			+ ")상품 가격 하락.</div>("+ price.format(beforePrice) + "원 >> " + price.format(newPrice) + "원)";
+			for(WishVO wish : wishList) {
+				postDao.insertNotification(wish.getWish_member_num(), type, post_num, message);
+				try {
+					notificationHandler.sendNotificationToUser(wish.getMember_id(), "notification");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		if(post.getPost_price() > beforePost.getPost_price()) {
+			type = 3;
+			message = "<div>" + beforePost.getPost_title() + "(" + user.getMember_nick() 
+			+ ")상품 가격 상승.</div>("+ price.format(beforePrice) + "원 >> " + price.format(newPrice) + "원)";
+			for(WishVO wish : wishList) {
+				postDao.insertNotification(wish.getWish_member_num(), type, post_num, message);
+				try {
+					notificationHandler.sendNotificationToUser(wish.getMember_id(), "notification");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+    	try {
+    		res = postDao.updatePost(post);
+		} catch (Exception e) {
+			e.printStackTrace();
+			res = false;
+		}
+    	if(!res) {
+    		return false;
+    	}
+    	if(existingFileNums != null) {
+    		for(int file_num : existingFileNums) {
+    			res = deleteFile(file_num);
+    			if(!res) {
+    				System.out.println("파일 삭제 실패!");
+    			}
+    		}
+    	}
+    	if(files != null) {
+    		for (MultipartFile file : files) {
+    			res = uploadsFile(file, "post", post.getPost_num());
+    			if(!res) {
+    				System.out.println("파일 업로드 실패!");
+    			}
+    		}
+    	}
+    	return res;	    
+	}
+	public boolean uploadsFile(MultipartFile file, String target, int target_num) {
+		if (!file.isEmpty()) {
+			try {
+				// 원본 파일명 가져오기
+				String originalFileName = file.getOriginalFilename();
+				// 파일명을 UUID로 변환하여 고유하게 설정
+				String uuidFileName = File.separator + UUID.randomUUID().toString() + "_" + originalFileName;
+				String file_name = uuidFileName.replace(File.separatorChar, '/');
+				// 저장할 파일 객체 생성
+				File saveFile = new File(uploadPath, uuidFileName);
+				// 파일을 저장하는 부분
+				file.transferTo(saveFile);
+				// FileVO 객체 생성 및 데이터 설정
+				FileVO fileVo = new FileVO(file_name, originalFileName, target, target_num);
+				// 파일 정보를 DB에 저장
+				postDao.insertFile(fileVo);
+				return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return false;
+	}
+	
 	public Map<String, Object> getPostMap(int post_num) {
 		Map<String, Object> post = postDao.selectPostMap(post_num);
 		//지난 시간 구해서 map에 추가
@@ -128,7 +198,7 @@ public class PostService {
 		postDao.updateView(post_num);
 		
 	}
-
+	// 작성자 체크	
 	private boolean checkWriter(int post_num, int member_num) {
 		PostVO post = postDao.selectPost(post_num);
 		if(post == null) {
@@ -168,14 +238,20 @@ public class PostService {
 		postDao.deletePostAllWish(post_num); 
 		return postDao.updateDelPost(post_num);
 	}
-	private void deleteFile(FileVO file) {
+	// 파일 삭제
+	private boolean deleteFile(int file_num) {
+		FileVO file = postDao.selectFile(file_num);
+		return deleteFile(file);
+	}
+	private boolean deleteFile(FileVO file) {
 		if(file == null) {
-			return;
+			return false;
 		}
 		//첨부파일을 서버에서 삭제
 		UploadFileUtils.delteFile(uploadPath, file.getFile_name());
 		//첨부파일 정보를 DB에서 삭제
 		postDao.deleteFile(file.getFile_num());
+		return true;
 	}
 
 	public List<FileVO> selectFileList(int target_num, String target) {
@@ -346,9 +422,9 @@ public class PostService {
 		return -2;
 	}
 
-	public FileVO getFile(int target_num, String target) {
-		
-		return postDao.selectFile(target_num, target);
+	public FileVO getFileThumbnail(String target, int target_num) {
+		FileVO file = new FileVO(target, target_num);
+		return postDao.selectFileThumbnail(file);
 	}
 
 	public ChatRoomVO getChatRoom(Map<String, Object> post, MemberVO user) {
@@ -357,7 +433,7 @@ public class PostService {
 		return postDao.selectChatRoom(member_num, user.getMember_num(), post_num);
 	}
 
-	public boolean notify(Map<String, Object> post, MemberVO user) {
+	public boolean notifyPropose(Map<String, Object> post, MemberVO user) {
 		DecimalFormat price = new DecimalFormat("###,###");
 		int type = 1;
 		int newPrice = (Integer) post.get("proposePrice");
@@ -371,11 +447,12 @@ public class PostService {
 
 	public boolean makeChatRoom(Map<String, Object> post, MemberVO user) {
 		DecimalFormat price = new DecimalFormat("###,###");
+		boolean haggle = true;
 		int newPrice = (Integer) post.get("proposePrice");
 		int post_num = (Integer) post.get("post_num");
 		int member_num = (Integer) post.get("member_num");
 		String propStr = "가격제안 : 이 가격에 사고 싶어요.\n(" + price.format(newPrice) + "원)";
-		ChatRoomVO chatRoom = new ChatRoomVO(member_num, user.getMember_num(), post_num);
+		ChatRoomVO chatRoom = new ChatRoomVO(member_num, user.getMember_num(), post_num, haggle);
 		postDao.insertChatRoom(chatRoom);
 		ChatVO chat = new ChatVO(chatRoom.getChatRoom_member_num2(), chatRoom.getChatRoom_num(), propStr);
 		return postDao.insertChat(chat);
@@ -383,6 +460,13 @@ public class PostService {
 	}
 
 	public boolean addChat(Map<String, Object> post, ChatRoomVO chatRoom) {
+		chatRoom.setChatRoom_haggle(true);
+		try {
+			postDao.updateChatRoom(chatRoom);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 		DecimalFormat price = new DecimalFormat("###,###");
 		int newPrice = (Integer) post.get("proposePrice");
 		String propStr = "가격제안 : 이 가격에 사고 싶어요. (" + price.format(newPrice) + "원)";
@@ -411,9 +495,9 @@ public class PostService {
 		return postDao.updateNotiReadTrue(notification_num);
 	}
 
-	public FileVO getProfileImg(int target_num, String target) {
-		
-		return postDao.selectFile(target_num, target);
+	public FileVO getProfileImg(String target, int target_num) {
+		FileVO file = new FileVO(target, target_num);
+		return postDao.selectFileProfileImg(file);
 	}
 
 	public MemberVO getMember(int member_num) {
@@ -446,6 +530,24 @@ public class PostService {
 	public void updateMemberReport(int member_num) {
 		postDao.updateMemberReport(member_num);
 	}
+
+	public boolean updatePostHide(int post_num) {
+		return postDao.updatePostHide(post_num);
+	}
+
+	public boolean updatePostUse(int post_num) {
+		return postDao.updatePostUse(post_num);
+	}
+
+	public boolean getHaggleOrNot(int post_num, MemberVO user) {
+		if(user == null) {
+			return false;
+		}
+		ChatRoomVO chatRoom = new ChatRoomVO(post_num, user.getMember_num());
+		return postDao.selectHaggleOrNot(chatRoom);
+	}
+
+	
 
 
 	

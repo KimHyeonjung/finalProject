@@ -21,6 +21,7 @@ import com.team3.market.model.vo.PostVO;
 import com.team3.market.model.vo.ReportCategoryVO;
 import com.team3.market.model.vo.ReportVO;
 import com.team3.market.service.AdminService;
+import com.team3.market.service.MemberService;
 import com.team3.market.service.PostService;
 
 @Controller
@@ -30,6 +31,8 @@ public class AdminController {
 	PostService postService;
 	@Autowired
 	AdminService adminService;
+	@Autowired
+	MemberService memberService;
 	
 	@ResponseBody
 	@PostMapping("/report/category/{type}")	
@@ -52,7 +55,7 @@ public class AdminController {
 			//게시물 신고 횟수 추가
 			postService.updatePostReport(report.getReport_post_num());
 			PostVO post = postService.getPost(report.getReport_post_num());
-			if(post.getPost_report() > 10) {
+			if(post.getPost_report() > 3) {
 				//유저 신고 횟수 추가
 				postService.updateMemberReport(report.getReport_member_num2());
 			}
@@ -73,33 +76,27 @@ public class AdminController {
 	
 	@GetMapping("/report/list") // 신고 현황 페이지
 	public String reportList(Model model) {
-//		List<Map<String, Object>> postList = adminService.getReportPostList();
-//		List<Map<String, Object>> userList = adminService.getReportUserList();
-//		List<ReportCategoryVO> reportCategoryPostList = adminService.getReportCategoryPostList("post");
-//		List<ReportCategoryVO> reportCategoryMemberList = adminService.getReportCategoryMemberList("member");
-//		
-//		model.addAttribute("rcp", reportCategoryPostList);
-//		model.addAttribute("rcm", reportCategoryMemberList);
-//		model.addAttribute("postList", postList);
-//		model.addAttribute("userList", userList);
+
 		return "/admin/report";
 	}
 	@PostMapping("/report/postList") // 게시물 신고 현황 페이지
-	public String reportPostList(Model model) {
-		List<Map<String, Object>> postList = adminService.getReportPostList();
+	public String reportPostList(Model model, @RequestParam("order")String order) {
+		List<Map<String, Object>> postList = adminService.getReportPostList(order);
 		List<ReportCategoryVO> reportCategoryPostList = adminService.getReportCategoryPostList("post");
 		
 		model.addAttribute("rcList", reportCategoryPostList);
 		model.addAttribute("list", postList);
+		model.addAttribute("order", order);
 		return "admin/reportPost";
 	}
 	@PostMapping("/report/memberList") // 유저 신고 현황 페이지
-	public String reportMemberList(Model model) {
-		List<Map<String, Object>> userList = adminService.getReportUserList();
+	public String reportMemberList(Model model, @RequestParam("order")String order) {
+		List<Map<String, Object>> userList = adminService.getReportUserList(order);
 		List<ReportCategoryVO> reportCategoryMemberList = adminService.getReportCategoryMemberList("member");
 		
 		model.addAttribute("rcList", reportCategoryMemberList);
 		model.addAttribute("list", userList);
+		model.addAttribute("order", order);
 		return "admin/reportMember";
 	}
 	// 게시물 카테고리별
@@ -134,4 +131,60 @@ public class AdminController {
 		model.addAttribute("user", user);
 		return "/admin/detailPost";
 	}
+	@ResponseBody
+	@PostMapping("/report/post/hide") // 게시물 숨김 처리
+	public boolean reportPostHide(@RequestParam("post_num")int post_num, HttpSession session){
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(user == null) {
+			return false;
+		}
+		boolean res = user.getMember_auth().equals("ADMIN");
+		if(res) {
+			res = postService.updatePostHide(post_num);
+			return res;
+		}
+		return false;
+	}	
+	@ResponseBody
+	@PostMapping("/report/post/use") // 게시물 사용 처리
+	public boolean reportPostUse(@RequestParam("post_num")int post_num, HttpSession session){
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(user == null) {
+			return false;
+		}
+		boolean res = user.getMember_auth().equals("ADMIN");
+		if(res) {
+			res = postService.updatePostUse(post_num);
+			return res;
+		}
+		return false;
+	}	
+	@ResponseBody
+	@PostMapping("/report/member/suspend") // 유저 정지 처리
+	public boolean reportMemberSuspend(@RequestParam("member_num")int member_num, HttpSession session){
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(user == null) {
+			return false;
+		}
+		boolean res = user.getMember_auth().equals("ADMIN");
+		if(res) {
+			res = memberService.updateMemberSuspend(member_num);
+			return res;
+		}
+		return false;
+	}	
+	@ResponseBody
+	@PostMapping("/report/member/use") // 유저 사용 처리
+	public boolean reportMemberUse(@RequestParam("member_num")int member_num, HttpSession session){
+		MemberVO user = (MemberVO)session.getAttribute("user");
+		if(user == null) {
+			return false;
+		}
+		boolean res = user.getMember_auth().equals("ADMIN");
+		if(res) {
+			res = memberService.updateMemberUse(member_num);
+			return res;
+		}
+		return false;
+	}	
 }
