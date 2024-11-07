@@ -356,7 +356,7 @@
 			on wish_member_num = member_num
 		where wish_post_num = #{post_num}
 	</select>
-	<select id="selectHaggleOrNot" resultType="boolean">
+	<select id="selectHaggleOrNot" resultType="chatRoomVO">
 		select chatRoom_haggle from chat_room 
 		where 
 			chatRoom_member_num2 = #{chatRoom_member_num2} and chatRoom_post_num = #{chatRoom_post_num}
