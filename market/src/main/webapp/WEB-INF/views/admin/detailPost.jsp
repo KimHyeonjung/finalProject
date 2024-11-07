@@ -5,9 +5,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-.link {cursor: pointer;}
-</style>
 </head>
 <body>
 <div class="container">

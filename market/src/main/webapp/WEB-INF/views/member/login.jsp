@@ -4,97 +4,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<style type="text/css">
-		*, *::before, *::after {
-		    box-sizing: border-box;
-		}
-		
-		html, body {
-		    margin: 0;
-		    padding: 0;
-		}
-		
-		body {
-		    font-family: 'Pretendard', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-		    font-size: 100%;
-		}
-		
-		.wrapper {
-		    max-width: 480px;
-		    margin: 100px auto;
-		    padding: 0 20px;
-		}
-		
-		.form-field {
-		    display: flex;
-		    flex-wrap: wrap;
-		    margin-bottom: 15px;
-		    align-items: center;
-		}
-		
-		.form-field .label-form {
-		    font-weight: 600;
-		    color: #000;
-		    margin-bottom: 8px;
-		}
-		.checkbox-and-links {
-		    display: flex;
-		    justify-content: space-between;
-		    align-items: center;
-		    width: 100%;
-		}
-
-		.checkbox-and-links .left {
-		    display: flex;
-		    align-items: center;
-		}
-
-		.checkbox-and-links a {
-		    text-decoration: none;
-		    color: #333;
-		    font-weight: 600;
-		    margin-left: 10px;
-		}
-		.form-control {
-		    display: block;
-		    width: 100%;
-		    height: 48px;
-		    padding: 6px 16px;
-		    font-family: inherit;
-		    font-size: 15px;
-		    color: #666;
-		    border: 1px solid #ced4da;
-		    border-radius: 6px;
-		    outline: 0;
-		}
-		
-		.form-control:focus {
-		    color: #333;
-		    border-color: #333;
-		}
-		
-		.button-submit {
-		    display: block;
-		    width: 100%;
-		    height: 56px;
-		    font-family: inherit;
-		    font-size: 17px;
-		    font-weight: 600;
-		    color: #fff;
-		    text-align: center;
-		    padding: 0;
-		    border: 0;
-		    border-radius: 6px;
-		    background-color: #333;
-		    outline: 0;
-		    cursor: pointer;
-		    margin-top: 15px;
-		}
-		
-		.button-submit:hover {
-		    background-color: #000;
-		}
-	</style>
 </head>
 <body>
 	<div class="wrapper">
@@ -126,7 +35,7 @@
 		  <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222"
 		    alt="카카오 로그인 버튼" />
 		</a>
-            <div class="form-field">
+            <div class="account-text">
             	<p>계정이 없으신가요? <a href="<c:url value='/signup'/>">회원가입</a></p>
         	</div>
        	<c:if test="${not empty message}">

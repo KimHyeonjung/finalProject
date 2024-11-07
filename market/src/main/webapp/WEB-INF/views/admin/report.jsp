@@ -4,14 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
-<head>
-<style>
-#table-user {
-	display: none;
-}
-.link {cursor: pointer;}
-</style>
-</head>
 <body>
 	<div class="container">
 		<h2 class="report-title mt-3">게시물 신고 내역</h2>

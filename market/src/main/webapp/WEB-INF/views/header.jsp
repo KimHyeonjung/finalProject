@@ -18,7 +18,7 @@
                 <option>물건</option>
                 <option>동네</option>
             </select>
-            <input class="form-control mr-sm-2" type="text" placeholder="물건이나 동네를 검색해보세요">
+            <input class="form-control" type="text" placeholder="물건이나 동네를 검색해보세요">
             <button type="button" id="search-button" onclick="performSearch()">
                 <i class="fa fa-search"></i> 검색
             </button>
@@ -27,7 +27,8 @@
             <i class="fa-solid fa-megaphone">공지사항</i>
         </a>
         <button id="noti-btn" type="button" class="btn noti-btn">
-            <i class="fa-solid fa-bell"></i> 알림
+            <i class="fa-solid fa-bell"></i>
+    		<div class="alert-dot"></div>
         </button>
     </div>
 
@@ -68,26 +69,33 @@
                             <img src="<c:url value="/resources/img/none_profile_image.png"/>" alt="Profile" class="profile-img">
                         </button>
                         <div id="profile-dropdown" class="dropdown-content">
-                            <div>
-                                <p>${user.member_nick}</p>
-                                <a href="<c:url value='/mypage'/>">개인정보 변경</a>
-                                <p>온도</p>
-                            </div>
-                            <div>
-                                <p><span id="balance">0</span>원</p>
-                                <a href="<c:url value='/wallet/list'/>">내역</a>
-                                <a href="<c:url value='/wallet/point'/>">충전</a>
-                            </div>
-                            <div>
-                                <a href="<c:url value='/mypage/post/list'/>">게시글 관리</a>
-                                <a href="<c:url value='/mypage/wish/list'/>">찜목록</a>
-                            </div>
-                            <div>
-                                <a href="#">주소록</a>
-                                <a href="#">거래 내역</a>
-                            </div>
-                            <a href="<c:url value='/logout'/>">로그아웃</a>
-                        </div>
+						    <div class="account-section">
+						        <p>${user.member_nick}</p>
+						        <a href="<c:url value='/mypage'/>">개인정보 변경</a>
+						    </div>
+						    <div class="account-section">
+						        <p>${user.member_score}점</p>
+						    </div>
+						    <div class="account-section">
+						        <p><span id="balance">0</span>원</p>
+					        </div>
+						    <div class="account-section">
+						        <a href="<c:url value='/wallet/list'/>">내역</a>
+						        <a href="<c:url value='/wallet/point'/>">충전</a>
+						    </div>
+						    <div class="account-section">
+						        <a href="<c:url value='/mypage/post/list'/>">게시글 관리</a>
+						    </div>
+						    <div class="account-section">
+						        <a href="<c:url value='/mypage/wish/list'/>">찜목록</a>
+						    </div>
+						    <div class="account-section">
+						        <a href="#">거래 내역</a>
+						    </div>
+						    <div class="account-section">
+						        <a href="<c:url value='/logout'/>">로그아웃</a>
+						    </div>
+						</div>
                     </div>
                 </li>
             </c:if>
@@ -120,9 +128,9 @@ function notiCheck(){
 			success : function (data){	
 				count = data;
 				if(count != 0){
-					$('#noti-btn').html('<i style="color: yellow;" class="fa-solid fa-bell"></i>알림(' + count + ')');
+					$('#noti-btn').html('<i class="fa-solid fa-bell"></i> (' + count + ')');
 				} else {
-					$('#noti-btn').html('<i class="fa-solid fa-bell"></i>알림(' + count + ')');
+					$('#noti-btn').html('<i class="fa-solid fa-bell"></i> (' + count + ')');
 				}
 			}, 
 			error : function(jqXHR, textStatus, errorThrown){
@@ -241,14 +249,14 @@ $(document).ready(function (){
     });
     
     $('#categoryButton').on('click', function(event) {
-        event.stopPropagation(); // 클릭 이벤트가 상위 요소로 전달되지 않도록 방지
-        $('#categoryList').toggleClass('show'); // 'show' 클래스를 추가/제거하여 메뉴를 보이거나 숨김
+        event.stopPropagation();
+        $('#categoryList').toggleClass('show');
     });
 
-    // 문서 클릭 시 드롭다운 메뉴 닫기
+    // 페이지 클릭 시 드롭다운 메뉴 닫기
     $(document).on('click', function(e) {
         if (!$(e.target).closest('#categoryButton, #categoryList').length) {
-            $('#categoryList').removeClass('show'); // 'show' 클래스를 제거하여 메뉴를 닫음
+            $('#categoryList').removeClass('show');
         }
     });
 });

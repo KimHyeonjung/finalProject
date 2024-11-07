@@ -9,13 +9,6 @@
 	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-<style type="text/css">
-.profile img {
-	width: 200px;
-	height: 200px;
-	border-radius: 100px;
-}
-</style>
 </head>
 <body>
 <div class="container">
