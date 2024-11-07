@@ -308,6 +308,7 @@ $(document).on('change','.state', function(){
 	}
 	if(state == '5'){
 		openChatRoomModal();
+		
 	}
 	$(this).find('option[value="' + state + '"]').hide();
 	let obj = {

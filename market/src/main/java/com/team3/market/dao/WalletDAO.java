@@ -30,6 +30,7 @@ public interface WalletDAO {
 
 	ChatRoomVO selectChatRoomById(int chatRoomNum);
 
+	
 	void updateChatRoomStayMoney(ChatRoomVO chatRoom);
 
 	List<MemberVO> getChatRoomMembers(int chatRoomNum);

@@ -21,6 +21,7 @@
         WHERE member_num = #{member_num}
     </update>
     
+    
     <select id="selectPointHistory" parameterType="int" resultType="com.team3.market.model.vo.PointVO">
         SELECT * 
         FROM point 

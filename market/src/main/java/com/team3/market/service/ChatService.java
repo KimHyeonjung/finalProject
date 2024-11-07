@@ -149,6 +149,7 @@ public class ChatService {
 
 	@Transactional
 	public void completeTransaction(int chatRoom_num) {
+		
 		// 선택한 채팅방 정보 가져오기
 		ChatRoomVO selectedChatRoom = walletDao.selectChatRoomById(chatRoom_num);
 		if (selectedChatRoom == null) {

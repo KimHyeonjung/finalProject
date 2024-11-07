@@ -113,6 +113,7 @@ public class MyPageController {
     }
 
     @PostMapping("/completeTransaction")
+    
     public ResponseEntity<Map<String, String>> completeTransaction(@RequestBody Map<String, Object> requestData) {
         Map<String, String> response = new HashMap<>();
         try {
