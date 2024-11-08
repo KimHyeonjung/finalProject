@@ -14,6 +14,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 
+import com.team3.market.interceptor.AdminInterceptor;
+import com.team3.market.interceptor.MemberInterceptor;
 import com.team3.market.interceptor.PrevUrlInterceptor;
 import com.team3.market.interceptor.SignupLoginInterceptor;
 
@@ -57,7 +59,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	  public void addInterceptors(InterceptorRegistry registry) { 
 		  registry.addInterceptor(new SignupLoginInterceptor()).addPathPatterns("/login", "/signup");
 		  registry.addInterceptor(new PrevUrlInterceptor()).addPathPatterns("/login");
-//		  registry.addInterceptor(new AdminInterceptor()).addPathPatterns("/report/list"); // 관리자만 접근
+		  registry.addInterceptor(new AdminInterceptor()).addPathPatterns("/report/list"); // 관리자만 접근
+		  registry.addInterceptor(new MemberInterceptor()).addPathPatterns("/post/insert", "/post/update", "/mypage/*/*"); // 회원만
 	  }
 	  // .excludePathPatterns("/login", "/logout");
 	  // 인터셉터추가 및 URL 패턴 설정 // 모든 경로에 대해 인터셉터 적용 //제외할 경로, 특정 경로 제외 }
