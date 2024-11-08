@@ -107,7 +107,6 @@
             <c:forEach items="${categoryList}" var="category">
                 <div>
                     <a href="${pageContext.request.contextPath}/post/list/${category.category_num}">${category.category_name}</a>
-                    <script type="text/javascript">console.log('list1')</script>
                 </div>
             </c:forEach>
         </div>

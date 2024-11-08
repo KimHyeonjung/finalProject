@@ -28,7 +28,7 @@
 <div class="container">
     <h3 class="mt-3">${category_name}</h3>
     <div class="product-grid">
-    	<c:forEach items="${list }" var="item">    		
+    	<c:forEach items="${list }" var="item"> 
     		<div class="product-item" data-post_num="${item.post.post_num}">
 	            <img class="prouct-img" 
 	            	src="<c:url value="/uploads/${item.file.file_name }"/>" 
