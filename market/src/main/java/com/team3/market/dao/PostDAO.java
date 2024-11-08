@@ -122,4 +122,8 @@ public interface PostDAO {
 
 	List<WishVO> selectWishMemberListByPostNum(int post_num);
 
+	public List<CombinePostWithFileDTO> searchItems(String query);
+
+	public List<CombinePostWithFileDTO> searchLocations(String query);
+
 }
