@@ -125,5 +125,8 @@ public interface PostDAO {
 	void updateChatRoom(ChatRoomVO chatRoom);
 
 	ChatRoomVO selectHaggleOrNot(ChatRoomVO chatRoom);
+	public List<CombinePostWithFileDTO> searchItems(String query);
+
+	public List<CombinePostWithFileDTO> searchLocations(String query);
 
 }

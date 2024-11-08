@@ -361,5 +361,18 @@
 		select chatRoom_haggle from chat_room 
 		where 
 			chatRoom_member_num2 = #{chatRoom_member_num2} and chatRoom_post_num = #{chatRoom_post_num}
+	<select id="searchItems" parameterType="string" resultMap="CombinePostWithFileResultMap">
+	    SELECT post.*, file.file_num, file.file_name, file.file_ori_name, file.file_target_table, file.file_target_num
+	    FROM post
+	    LEFT JOIN file ON post.post_num = file.file_target_num 
+	                    AND file.file_target_table = 'post'
+	    WHERE post.post_title LIKE CONCAT('%', #{query}, '%')
+	</select>
+    <select id="searchLocations" parameterType="string" resultMap="CombinePostWithFileResultMap">
+	    SELECT post.*, file.file_num, file.file_name, file.file_ori_name, file.file_target_table, file.file_target_num
+	    FROM post
+	    LEFT JOIN file ON post.post_num = file.file_target_num 
+	                    AND file.file_target_table = 'post'
+	    WHERE post.post_address LIKE CONCAT('%', #{query}, '%')
 	</select>
 </mapper>

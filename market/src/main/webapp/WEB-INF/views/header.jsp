@@ -13,13 +13,13 @@
         <a class="navbar-brand" href="<c:url value="/" />">
             <img src="<c:url value="/resources/img/중고날아.svg"/>" alt="Logo" class="logo-img">
         </a>
-        <form class="form-inline" action="/market/action_page.php">
-            <select>
-                <option>물건</option>
-                <option>동네</option>
+        <form class="form-inline" action="/market/search" method="get">
+            <select name="type">
+                <option value="물건">물건</option>
+                <option value="동네">동네</option>
             </select>
-            <input class="form-control" type="text" placeholder="물건이나 동네를 검색해보세요">
-            <button type="button" id="search-button" onclick="performSearch()">
+            <input class="form-control" type="text" name="query" placeholder="물건이나 동네를 검색해보세요">
+            <button type="submit" id="search-button" onclick="performSearch()">
                 <i class="fa fa-search"></i> 검색
             </button>
         </form>

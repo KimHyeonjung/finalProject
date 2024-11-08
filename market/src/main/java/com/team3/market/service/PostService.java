@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -559,7 +560,13 @@ public class PostService {
 	}
 
 	
+	public List<CombinePostWithFileDTO> searchItems(String query) {
+	    return postDao.searchItems(query);
+	}
 
+	public List<CombinePostWithFileDTO> searchLocations(String query) {
+	    return postDao.searchLocations(query);
+	}
 
 	
 	
