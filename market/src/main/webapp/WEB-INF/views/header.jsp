@@ -107,6 +107,7 @@
             <c:forEach items="${categoryList}" var="category">
                 <div>
                     <a href="${pageContext.request.contextPath}/post/list/${category.category_num}">${category.category_name}</a>
+                    <script type="text/javascript">console.log('list1')</script>
                 </div>
             </c:forEach>
         </div>
@@ -195,6 +196,36 @@ function notiListDisplay(){
 $(document).ready(function (){
 	updateHeader();  // 로그인 후 헤더를 업데이트
 	notiCheck();
+	
+	$('#categoryButton').mouseenter(function() {
+		var contextPath = '${pageContext.request.contextPath}';
+	    $.ajax({
+	        url: contextPath + '/category',
+	        type: 'GET',
+	        dataType: 'json', 
+	        success: function(data) {
+	            
+	            var html = '';
+	            $.each(data, function(index, category) {
+	                html += '<div><a href="' + contextPath +'/post/list/' + category.category_num + '">' + category.category_name + '</a></div>';
+	            });
+	            
+	            $('#categoryList').html(html);  // 생성된 HTML을 카테고리 목록에 삽입
+	            $('#categoryList').toggle();  // 목록을 보여주거나 숨김
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("Error: " + error);
+	        }
+	    });
+	});
+	$('#categoryList').mouseenter(function() {
+		$('#categoryList').show();  // 마우스가 목록에 있을 때 유지
+	});
+	
+	// 카테고리 버튼 또는 목록에서 마우스를 벗어나면 목록이 사라짐
+	$('#categoryButton, #categoryList').mouseleave(function() {
+	    $('#categoryList').hide();  // 마우스를 벗어나면 목록이 사라짐
+	});
 
 	$('#noti-btn').on('mouseenter', function() {
         if (${user != null}) {
@@ -298,6 +329,8 @@ function performSearch() {
     var searchForm = document.getElementById("searchForm");
     searchForm.submit();
 }
+
+
 
 </script>
 </html>
