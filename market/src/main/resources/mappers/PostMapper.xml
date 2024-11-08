@@ -361,6 +361,7 @@
 		select chatRoom_haggle from chat_room 
 		where 
 			chatRoom_member_num2 = #{chatRoom_member_num2} and chatRoom_post_num = #{chatRoom_post_num}
+	</select>
 	<select id="searchItems" parameterType="string" resultMap="CombinePostWithFileResultMap">
 	    SELECT post.*, file.file_num, file.file_name, file.file_ori_name, file.file_target_table, file.file_target_num
 	    FROM post
