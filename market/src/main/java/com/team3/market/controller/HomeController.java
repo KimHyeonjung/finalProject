@@ -335,4 +335,12 @@ public class HomeController {
 	    return "/search/results"; // 검색 결과 페이지로 이동
 	}
 	
+	@PostMapping("/session/reload")
+	@ResponseBody
+	public void sessionReload(HttpSession session) {
+		
+		MemberVO member = (MemberVO)session.getAttribute("user");
+		MemberVO user = memberService.getMemberById(member.getMember_id());
+		session.setAttribute("user", user);		
+	}
 }

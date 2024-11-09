@@ -1,13 +1,11 @@
 package com.team3.market.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +19,7 @@ import com.team3.market.handler.NotificationWebSocketHandler;
 import com.team3.market.model.dto.ChatRoomDTO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
+import com.team3.market.model.vo.WalletVO;
 import com.team3.market.service.ChatService;
 import com.team3.market.service.WalletService;
 
@@ -71,9 +70,10 @@ public class ChatController {
 		}
 
 		PostVO post = chatService.getChatRoomPost(chatRoomNum);
-		
+		WalletVO wallet = walletService.getWalletForCheck(post.getPost_num(), user.getMember_num());
 		// 해당 채팅방의 채팅 내역 가져오기
 		List<ChatRoomDTO> chatDTOs = chatService.getChatsByRoom(chatRoomNum);
+		model.addAttribute("wallet", wallet);
 		model.addAttribute("chatDTOs", chatDTOs);
 		model.addAttribute("member", user);
 		model.addAttribute("post", post);

@@ -76,7 +76,7 @@
 									<p>${user.member_score}점</p>
 								</div>
 								<div class="account-section">
-									<p><span id="balance">0</span>원</p>
+									<p><span id="balance">${user.member_money}</span>원</p>
 								</div>
 								<div class="account-section">
 									<a href="<c:url value='/wallet/list'/>">내역</a>
@@ -120,7 +120,7 @@ var count = 0;
 function notiCheck(){
 	if(${user != null}){
 		$.ajax({
-			async : true, //비동기 : true(비동기), false(동기)
+			async : false, //비동기 : true(비동기), false(동기)
 			url : '<c:url value="/notification/count"/>', 
 			type : 'post', 
 			success : function (data){	
@@ -182,7 +182,9 @@ function notiListDisplay(){
 					</div>
 					`;
 				}
-				$('.noti-list').html(str);
+				if(count > 0){
+					$('.noti-list').html(str);
+				}
 			}
 			
 		}, 
@@ -193,7 +195,7 @@ function notiListDisplay(){
 }
 
 $(document).ready(function (){
-	updateHeader();  // 로그인 후 헤더를 업데이트
+	//updateHeader();  // 로그인 후 헤더를 업데이트
 	notiCheck();
 	
 	$('#categoryButton').mouseenter(function() {
@@ -296,11 +298,11 @@ $(document).on('click', '.close.checked', function(){
 		type : 'post', 
 		data : {notification_num : notification_num},
 		success : function (data){
-			if(data){
-				
+			if(data){	
 				notiListDisplay();
 				if(count == 0){
-					$('#notiListModal').modal("hide");
+					$('.noti-modal').hide();
+					return;
 				}
 			}
 		}, 

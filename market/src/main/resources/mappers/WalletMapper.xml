@@ -29,9 +29,9 @@
         ORDER BY point_date DESC
     </select>
     
-    <update id="updateFakeMoney" parameterType="com.team3.market.model.vo.MemberVO">
+    <update id="updateMoney" parameterType="com.team3.market.model.vo.MemberVO">
     	UPDATE member 
-    	SET member_fake_money = #{member_fake_money} 
+    	SET member_money = #{member_money} 
     	WHERE member_num = #{member_num}
 	</update>
 	
@@ -79,6 +79,54 @@
 	    VALUES (#{wallet_member_num}, #{wallet_post_num}, #{wallet_money}, NOW())
 	</insert>
 		
-		    
-    
+	<select id="selectTargetMemberByChatRoomNum" resultType="int">
+		SELECT m.member_num
+        FROM chat_room cr
+        JOIN member m ON (m.member_num = CASE
+            WHEN cr.chatRoom_member_num != #{senderMemberNum} THEN cr.chatRoom_member_num
+            WHEN cr.chatRoom_member_num2 != #{senderMemberNum} THEN cr.chatRoom_member_num2
+        END)
+        WHERE cr.chatRoom_num = #{chatRoomNum}
+	</select>	    
+    <select id="selectPostNumByChatRoomNum" resultType="int">
+    	select chatRoom_post_num from chat_room where chatRoom_num = #{chatRoomNum}
+    </select>
+    <insert id="insertTransaction">
+    	insert into wallet(wallet_post_num, wallet_seller, wallet_buyer, wallet_amount) values
+    		(#{wallet_post_num}, #{wallet_seller}, #{wallet_buyer}, #{wallet_amount})
+    </insert>
+    <select id="selectTransaction" resultType="WalletVO">
+    	select * from wallet 
+    	where 
+    		wallet_post_num = #{wallet_post_num} and wallet_seller = #{wallet_seller} and wallet_buyer = #{wallet_buyer}
+    </select>
+    <update id="updateTransaction">
+    	update wallet 
+    	set 
+    		wallet_amount = wallet_amount + #{wallet_amount}, 
+    		wallet_order_status = '결제 완료',
+    		wallet_payout_status = '대기 중'
+    	where
+    		wallet_num = #{wallet_num}
+    </update>
+    <select id="selectWalletForCheck" resultType="WalletVO">
+    	select * from wallet 
+    	where 
+    		wallet_post_num = #{wallet_post_num} and (wallet_seller = #{wallet_buyer} or wallet_buyer = #{wallet_buyer}) 
+    </select>
+    <update id="updateTransactionBuyerCancel">
+    	update wallet 
+    	set 
+    		wallet_amount = #{wallet_amount}, 
+    		wallet_order_status = #{wallet_order_status}, 
+    		wallet_payout_status = #{wallet_payout_status}
+    	where
+    		wallet_num = #{wallet_num}
+    </update>
+    <update id="updateWalletShipmentByWalletNum">
+    	update wallet set wallet_order_status = '발송 완료' where wallet_num = #{wallet_num}
+    </update>
+    <select id="selectWalletByWalletNum" resultType="WalletVO">
+    	select * from wallet where wallet_num = #{wallet_num}
+    </select>
 </mapper>

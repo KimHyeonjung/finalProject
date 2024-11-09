@@ -26,7 +26,7 @@ public interface WalletDAO {
 
 	void insertPayment(PointVO receiverPointLog);
 
-	void updateFakeMoney(MemberVO sender);
+	void updateMoney(MemberVO sender);
 
 	ChatRoomVO selectChatRoomById(int chatRoomNum);
 
@@ -38,6 +38,24 @@ public interface WalletDAO {
 	void insertWalletEntry(WalletVO walletEntry);
 
 	List<ChatRoomVO> getOtherChatRooms(Map<String, Object> params);
+
+	Integer selectTargetMemberByChatRoomNum(Map<String, Integer> params);
+
+	int selectPostNumByChatRoomNum(int chatRoomNum);
+
+	void insertTransaction(WalletVO transaction);
+
+	WalletVO selectTransaction(WalletVO existWallet);
+
+	void updateTransaction(WalletVO transaction);
+
+	WalletVO selectWalletForCheck(WalletVO wallet);
+
+	void updateTransactionBuyerCancel(WalletVO existWallet);
+
+	boolean updateWalletShipmentByWalletNum(int wallet_num);
+
+	WalletVO selectWalletByWalletNum(Integer wallet_num);
 
 
 }
