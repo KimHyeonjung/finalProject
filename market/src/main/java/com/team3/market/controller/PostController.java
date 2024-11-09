@@ -1,6 +1,5 @@
 package com.team3.market.controller;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team3.market.handler.NotificationWebSocketHandler;
-import com.team3.market.handler.SocketHandler;
 import com.team3.market.model.dto.CombinePostWithFileDTO;
-import com.team3.market.model.dto.MessageDTO;
-import com.team3.market.model.vo.AfterVO;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.FileVO;
 import com.team3.market.model.vo.MemberVO;
@@ -40,9 +36,6 @@ public class PostController {
 	PostService postService;
 	@Autowired
     private NotificationWebSocketHandler notificationHandler;
-	@Autowired
-    private SocketHandler socketHandler; // SocketHandler 주입
-
 	
     @GetMapping("/insert")
     public String insert(Model model, HttpSession session) {

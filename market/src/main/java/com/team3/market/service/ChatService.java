@@ -75,22 +75,22 @@ public class ChatService {
 		return chatDAO.deleteChatRoom(chatRoomNum);
 	}
 
-	public boolean notify(Map<String, Object> item, MemberVO user, MemberVO postUser) {
+	public boolean notify(Map<String, Object> item, MemberVO senderMember, MemberVO targetMember) {
 		int type = 4;
 		int chatRoom_num = (Integer) item.get("chatRoom_num");
 		String content = (String) item.get("content");
 
-		int maxLength = 15;
-		if (content.length() > maxLength) {
-			content = content.substring(0, maxLength) + "..."; // 15자를 넘으면 자르고 "..." 추가
-		}
+//		int maxLength = 15;
+//		if (content.length() > maxLength) {
+//			content = content.substring(0, maxLength) + "..."; // 15자를 넘으면 자르고 "..." 추가
+//		}
 
-		String propStr = "<div>" + user.getMember_id() + "(" + user.getMember_nick() + ")</div>" + "<div>" + content
+		String propStr = "<div>" + senderMember.getMember_id() + "(" + senderMember.getMember_nick() + ")</div>" + "<div>" + content
 				+ "</div>";
 
 		System.out.println(propStr);
 
-		return chatDAO.insertNotification(postUser.getMember_num(), type, chatRoom_num, propStr);
+		return chatDAO.insertNotification(targetMember.getMember_num(), type, chatRoom_num, propStr);
 	}
 
 	public MemberVO getMember(Integer chatRoom_num, Integer member_num) {
@@ -149,7 +149,7 @@ public class ChatService {
 
 	@Transactional
 	public void completeTransaction(int chatRoom_num) {
-		
+		/*
 		// 선택한 채팅방 정보 가져오기
 		ChatRoomVO selectedChatRoom = walletDao.selectChatRoomById(chatRoom_num);
 		if (selectedChatRoom == null) {
@@ -203,7 +203,8 @@ public class ChatService {
 			// 거래 완료된 채팅방의 stay_money를 0으로 초기화
 			selectedChatRoom.setChatRoom_stay_money(0);
 			walletDao.updateChatRoomStayMoney(selectedChatRoom);
-		}
+		}*/
 	}
+
 
 }

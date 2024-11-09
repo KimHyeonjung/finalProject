@@ -21,6 +21,7 @@ import com.team3.market.model.dto.ReadyResponse;
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PointVO;
+import com.team3.market.model.vo.WalletVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -109,7 +110,7 @@ public class WalletService {
 
 
 	@Transactional(rollbackFor = Exception.class)
-	public void transferMoney(Integer senderMemberNum, Integer targetMemberNum, int amount) throws Exception {
+	public int transferMoney(Integer senderMemberNum, Integer targetMemberNum, int amount, int postNum) throws Exception {
 	    // 1. 송금할 금액이 유효한지 확인
 	    if (amount <= 0) {
 	        throw new IllegalArgumentException("송금 금액이 유효하지 않습니다."); // 예외를 던져 클라이언트에 알리기
@@ -117,45 +118,80 @@ public class WalletService {
 
 	    // 2. 송금자의 포인트 정보 조회
 	    MemberVO sender = walletDao.selectMemberById(senderMemberNum);
-	    int senderBalance = sender.getMember_money();
-	    int senderfake = sender.getMember_fake_money();
-	    int totalMoney = senderBalance + senderfake;
+	    int totalMoney = sender.getMember_money();
 
 	    if (totalMoney < amount) {
 	        throw new IllegalStateException("잔액이 부족합니다."); // 예외를 던져 클라이언트에 알리기
 	    }
 	    
-	    int senderaftermoney = senderfake - amount;
-
-	    // 3. 수신자의 포인트 정보 조회
-	    MemberVO receiver = walletDao.selectMemberById(targetMemberNum);
-	    int receiverfake = receiver.getMember_fake_money();
-	    int receiveraftermoney = receiverfake + amount;
-
-	    // 4. 송금자의 포인트 차감
-	    sender.setMember_fake_money(senderaftermoney);
-	    walletDao.updateFakeMoney(sender);
-
-	    // 5. 수신자의 포인트 추가
-	    receiver.setMember_fake_money(receiveraftermoney);
-	    walletDao.updateFakeMoney(receiver);
-
-	    // 6. 송금 및 수신 내역을 포인트 기록으로 남김 (옵션)
-	    PointVO senderPointLog = new PointVO();
-	    senderPointLog.setPoint_member_num(senderMemberNum);
-	    senderPointLog.setPoint_money(-amount); // 포인트 차감
-	    senderPointLog.setPoint_type("거래 송금");
-	    senderPointLog.setPoint_date(new Date());
-	    walletDao.deletePayment(senderPointLog);
-
-	    PointVO receiverPointLog = new PointVO();
-	    receiverPointLog.setPoint_member_num(targetMemberNum);
-	    receiverPointLog.setPoint_money(amount); // 포인트 증가
-	    receiverPointLog.setPoint_type("거래 입금");
-	    receiverPointLog.setPoint_date(new Date());
-	    walletDao.insertPayment(receiverPointLog);
+	    // 3. 송금자의 포인트 차감
+	    int senderaftermoney = totalMoney - amount;
+	    sender.setMember_money(senderaftermoney);
+	    walletDao.updateMoney(sender);
+	    
+	    // 4. 거래 테이블에 추가
+	    WalletVO transaction = new WalletVO(postNum, targetMemberNum, senderMemberNum, amount);
+	    WalletVO existWallet = walletDao.selectTransaction(transaction);
+	    if(existWallet == null) {
+	    	walletDao.insertTransaction(transaction);
+	    } else { // 송금 내역이 있으면 기존 금액에 추가
+	    	existWallet.setWallet_amount(amount);
+	    	walletDao.updateTransaction(existWallet);
+	    }
+	    
+	    return senderaftermoney;
+	    
+	    
+//	    // 6. 송금 및 수신 내역을 포인트 기록으로 남김 (옵션)
+//	    PointVO senderPointLog = new PointVO();
+//	    senderPointLog.setPoint_member_num(senderMemberNum);
+//	    senderPointLog.setPoint_money(-amount); // 포인트 차감
+//	    senderPointLog.setPoint_type("거래 송금");
+//	    senderPointLog.setPoint_date(new Date());
+//	    walletDao.deletePayment(senderPointLog);
+//
+//	    PointVO receiverPointLog = new PointVO();
+//	    receiverPointLog.setPoint_member_num(targetMemberNum);
+//	    receiverPointLog.setPoint_money(amount); // 포인트 증가
+//	    receiverPointLog.setPoint_type("거래 입금");
+//	    receiverPointLog.setPoint_date(new Date());
+//	    walletDao.insertPayment(receiverPointLog);
 	    
 	}
+	@Transactional(rollbackFor = Exception.class)
+	public int transferMoneyCancel(int senderMemberNum, Integer targetMemberNum, int postNum) throws Exception {
+		// 1. 거래정보 가져옴
+		WalletVO transaction = new WalletVO(postNum, targetMemberNum, senderMemberNum);
+		WalletVO existWallet = walletDao.selectTransaction(transaction);
+
+		if (existWallet.getWallet_amount() == 0) {
+			throw new IllegalStateException("송금한 금액이 없습니다."); // 예외를 던져 클라이언트에 알리기
+		}
+	    // 2. 거래 진행 상태 확인	    
+	    if (existWallet.getWallet_order_status().equals("발송 완료")) {
+	        throw new IllegalStateException("상품 발송"); // 예외를 던져 클라이언트에 알리기
+	    }
+	    if (!existWallet.getWallet_order_status().equals("결제 완료")) {
+	    	throw new IllegalStateException("취소가 불가능합니다."); // 예외를 던져 클라이언트에 알리기
+	    }
+	    // 3. 송금자의 포인트 정보 조회
+	    MemberVO sender = walletDao.selectMemberById(senderMemberNum);
+	    int totalMoney = sender.getMember_money();
+	    int amount = existWallet.getWallet_amount();
+	    // 4. 송금자의 포인트 환급
+	    int senderaftermoney = totalMoney + amount;
+	    sender.setMember_money(senderaftermoney);
+	    walletDao.updateMoney(sender);
+	    
+	    // 4. 거래 테이블에 업데이트	  
+    	existWallet.setWallet_amount(0);
+    	existWallet.setWallet_order_status("거래 취소");
+    	existWallet.setWallet_payout_status("환불 완료");
+    	walletDao.updateTransactionBuyerCancel(existWallet);
+	    
+	    return senderaftermoney;
+	}
+	
 	
 	public void updateSessionMoney(Integer memberNum, HttpSession session) {
 	    MemberVO member = walletDao.selectMemberById(memberNum);
@@ -187,5 +223,102 @@ public class WalletService {
 	        throw new IllegalArgumentException("해당 채팅방을 찾을 수 없습니다.");
 	    }
 	}
+
+	public Integer getTargetMemberNumByChatRoomNum(int chatRoomNum, int senderMemberNum) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put("chatRoomNum", chatRoomNum);
+		params.put("senderMemberNum", senderMemberNum);
+		return walletDao.selectTargetMemberByChatRoomNum(params);
+	}
+
+	public int getPostNumByChatRoomNum(int chatRoomNum) {
+		
+		return walletDao.selectPostNumByChatRoomNum(chatRoomNum);
+	}
+
+	public WalletVO getWalletForCheck(int post_num, int member_num) {
+		WalletVO wallet = new WalletVO(post_num, member_num);
+		return walletDao.selectWalletForCheck(wallet);
+	}
+
+	public WalletVO getSendAmount(WalletVO wallet) {
+		if(wallet == null) {
+			return null;
+		}
+		return walletDao.selectWalletForCheck(wallet);
+	}
+
+	public boolean updateWalletShipmentByWalletNum(int wallet_num) {
+		try {
+			return walletDao.updateWalletShipmentByWalletNum(wallet_num);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public WalletVO getWalletByWalletNum(Integer wallet_num) {
+		return walletDao.selectWalletByWalletNum(wallet_num);
+	}
+
+	public int tradeCancel(WalletVO wallet) {
+
+		if (wallet.getWallet_amount() == 0) {
+			throw new IllegalStateException("송금한 금액이 없습니다."); // 예외를 던져 클라이언트에 알리기
+		}
+	    if (wallet.getWallet_order_status().equals("발송 완료")) {
+	        throw new IllegalStateException("상품 발송"); // 예외를 던져 클라이언트에 알리기
+	    }
+	    if (!wallet.getWallet_order_status().equals("결제 완료")) {
+	    	throw new IllegalStateException("취소가 불가능합니다."); // 예외를 던져 클라이언트에 알리기
+	    }
+	    // 3. 송금자의 포인트 정보 조회
+	    MemberVO sender = walletDao.selectMemberById(wallet.getWallet_buyer());
+	    int totalMoney = sender.getMember_money();
+	    int amount = wallet.getWallet_amount();
+	    // 4. 송금자의 포인트 환급
+	    int senderaftermoney = totalMoney + amount;
+	    sender.setMember_money(senderaftermoney);
+	    walletDao.updateMoney(sender);
+	    
+	    // 4. 거래 테이블에 업데이트	  
+	    wallet.setWallet_amount(0);
+	    wallet.setWallet_order_status("거래 취소");
+	    wallet.setWallet_payout_status("환불 완료");
+    	walletDao.updateTransactionBuyerCancel(wallet);
+	    
+	    return senderaftermoney;
+	}
+
+	public int tradeCompleted(WalletVO wallet) {
+		
+		if (wallet.getWallet_amount() == 0) {
+			throw new IllegalStateException("송금한 금액이 없습니다."); // 예외를 던져 클라이언트에 알리기
+		}
+	    if (!wallet.getWallet_order_status().equals("발송 완료")) {
+	        throw new IllegalStateException("미발송"); // 예외를 던져 클라이언트에 알리기
+	    }
+	    if (!wallet.getWallet_order_status().equals("발송 완료")) {
+	    	throw new IllegalStateException("구매확인이 불가능합니다."); // 예외를 던져 클라이언트에 알리기
+	    }
+	    // 3. 판매자의 포인트 정보 조회
+	    MemberVO seller = walletDao.selectMemberById(wallet.getWallet_seller());
+	    int totalMoney = seller.getMember_money();
+	    int amount = wallet.getWallet_amount();
+	    // 4. 판매자에게 송금액 지급
+	    int afterMoney = totalMoney + amount;
+	    seller.setMember_money(afterMoney);
+	    walletDao.updateMoney(seller);
+	    
+	    // 4. 거래 테이블에 업데이트	  
+	    wallet.setWallet_amount(0);
+	    wallet.setWallet_order_status("거래 완료");
+	    wallet.setWallet_payout_status("지급 완료");
+    	walletDao.updateTransactionBuyerCancel(wallet);
+	    
+	    return amount;
+		
+	}
+
 
 }

@@ -32,6 +32,8 @@ $(document).ready(function() {
 	        var notification = event.data;
 	        if(notification === 'notification') {
 	        	notiCheck();
+	        	sessionReload();
+	        	location.reload();
 	        }
 	    };
 	
@@ -44,7 +46,17 @@ $(document).ready(function() {
 	    };
 	}
 });
-
+function sessionReload(){
+	$.ajax({
+	    url: "<c:url value='/session/reload'/>", // 데이터를 가져올 URL을 설정하세요.
+	    type: "post", // GET 또는 POST로 요청 타입을 설정하세요.
+	    success: function(data) {
+	    },
+	    error: function(xhr, status, error) {
+	        console.error("데이터를 가져오는 중 오류 발생:", error); // 오류 로그
+	    }
+	});
+}
 </script>
 </body>
 </html>

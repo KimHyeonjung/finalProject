@@ -163,14 +163,14 @@ DROP TABLE IF EXISTS `wallet`;
 CREATE TABLE `wallet` (
 	`wallet_num`	int primary key auto_increment	NOT NULL,
 	`wallet_post_num`	int	NOT NULL,
-	`wallet_member_num`	int	NOT NULL,
-	`wallet_member_num2`	int NOT NULL,
-	`wallet_amount`	int	NOT NULL,
-	`wallet_payout_status`	ENUM('결제 대기', '결제 완료', '발송 완료', '거래 완료')	NOT NULL	DEFAULT '결제 대기',
-	`wallet_order_status`	ENUM('대기 중', '지급 완료')	NULL	DEFAULT '대기 중',
+	`wallet_seller`	int	NOT NULL,
+	`wallet_buyer`	int NOT NULL,
+	`wallet_amount`	int	NOT NULL,	
+	`wallet_order_status`	ENUM('결제 완료', '발송 완료', '거래 완료', '거래 취소')	NOT NULL	DEFAULT '결제 완료',
+	`wallet_payout_status`	ENUM('대기 중', '지급 완료', '환불 완료')	NULL	DEFAULT '대기 중',
 	`wallet_created`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
 	`wallet_updated`	TIMESTAMP	NULL	DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CHECK (`wallet_member_num` != `wallet_member_num2`)
+    CHECK (`wallet_seller` != `wallet_buyer`)
 );
 
 DROP TABLE IF EXISTS `point`;
@@ -433,14 +433,14 @@ REFERENCES `member` (
 );
 
 ALTER TABLE `wallet` ADD CONSTRAINT `FK_member_TO_wallet_1` FOREIGN KEY (
-	`wallet_member_num`
+	`wallet_seller`
 )
 REFERENCES `member` (
 	`member_num`
 );
 
 ALTER TABLE `wallet` ADD CONSTRAINT `FK_member_TO_wallet_2` FOREIGN KEY (
-	`wallet_member_num2`
+	`wallet_buyer`
 )
 REFERENCES `member` (
 	`member_num`

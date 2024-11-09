@@ -22,6 +22,45 @@
 			<h3>${post.post_title}</h3> <!-- 게시물 제목 -->
 			<p><strong>가격:</strong> ${post.post_price}원</p> <!-- 게시물 가격 -->
 		</div>
+		<div>
+			<c:choose>
+				<c:when test="${wallet.wallet_order_status eq '거래 완료'}">
+					<span>거래가 완료되었습니다.</span>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${member.member_num eq wallet.wallet_buyer && wallet.wallet_order_status ne '거래 취소'}">
+						<div>
+							내 송금액 : <span id="remittance">${wallet.wallet_amount}</span>
+						</div>
+						<c:if test="${wallet.wallet_amount ne 0 && wallet.wallet_order_status eq '결제 완료'}">
+							<button type="button" class="send-cancel-button" onclick="event.stopPropagation(); sendMoneyCancel();">송금취소</button>
+						</c:if>
+						<c:if test="${wallet.wallet_order_status eq '발송 완료' }">
+							<button type="button" class="send-cancel-button" disabled onclick="event.stopPropagation(); sendMoneyCancel();">송금취소</button>
+							<button type="button" class="send-cancel-button" onclick="event.stopPropagation(); tradeCompleted();">구매확인</button>
+							<span>거래물품에 이상이 없으면 구매확인을 눌러주세요</span>
+						</c:if>
+					</c:if>
+					<c:if test="${member.member_num eq wallet.wallet_seller && wallet.wallet_order_status ne '거래 취소'}">
+						<div>
+							구매자 송금 확인 : <span id="remittance">${wallet.wallet_amount}</span>					
+						</div>
+						<div id="remittance-check">
+							<c:if test="${wallet.wallet_amount > 0 }">
+								<c:if test="${wallet.wallet_order_status eq '발송 완료'}">
+									<button type="button" class="shipment-button" disabled onclick="event.stopPropagation(); sendProduct();">발송 완료</button>
+									<span>구매확인을 기다리는 중</span>
+								</c:if>
+								<c:if test="${wallet.wallet_order_status eq '결제 완료'}">
+									<button type="button" class="shipment-button" onclick="event.stopPropagation(); sendProduct();">발송 완료</button>
+									<button type="button" class="cancel-trade-button" onclick="event.stopPropagation(); cancelTrade();">거래 취소</button>
+								</c:if>
+							</c:if>
+						</div>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+		</div>
 	</div>
 	
 	<button type="button" onclick="window.location.href='<c:url value='/after/review/${post.post_num}' />'">후기 작성</button>
@@ -62,6 +101,7 @@
 	</div>	
 	
 	<script>
+const post_price = ${post.post_price};
 		//let websocket = new WebSocket("http://localhost:8080/market/chat/echo.do?chatRoomNum=${chatRoomNum}&member_nick=${member.member_nick}");
 		let websocket = new WebSocket("http://localhost:8080/market/ws/notify?chatRoomNum=${chatRoomNum}&member_nick=${member.member_nick}");
 		websocket.onopen = function(evt) {
@@ -231,7 +271,9 @@
 	    function sendMoney() {
 	        var amount = document.getElementById('amount').value;
 	        var chatRoomNum = document.getElementById('chatRoomNum').value;
-
+	        var wallet_post_num = "${wallet.wallet_post_num}";
+	        var wallet_order_status = "${wallet.wallet_order_status}";
+	        var post_num = "${post.post_num}";
 	        if (amount <= 0) {
 	            alert("금액은 0보다 커야 합니다.");
 	            return;
@@ -241,6 +283,19 @@
 	            alert('송금할 금액은 최소 100원이어야 합니다.');
 	            return;
 	        }
+	        if(wallet_order_status == '거래 취소' || wallet_post_num != post_num) {
+		        if (amount > post_price) {
+		        	if(!confirm('상품 가격보다 많습니다. 이 금액이 맞습니까?')){
+		        		return;
+		        	}
+		        }
+		        if (amount < post_price) {
+		        	if(!confirm('상품 가격보다 적습니다. 이 금액이 맞습니까?')){
+		        		return;
+		        	}
+		        }
+	        }
+	        
 
 	        var data = {
 	            amount: amount,
@@ -262,7 +317,7 @@
 	                    var targetMemberNum = response.targetMemberNum;
 
 	                    // 송금 알림 전송
-	                    sendTransferNotification(senderMemberNum, targetMemberNum, amount, chatRoomNum);
+	                    //sendTransferNotification(senderMemberNum, targetMemberNum, amount, chatRoomNum);
 
 	                    closeModal(); // 모달 닫기
 	                    updateHeader(); // 헤더 업데이트
@@ -283,7 +338,82 @@
 	            }
 	        });
 	    }
-	    
+	    function sendMoneyCancel() {
+	        var chatRoomNum = document.getElementById('chatRoomNum').value;
+		    if(!confirm('정말 취소하시겠습니까?')){
+	        	return;
+		    }
+
+	        var data = {
+	            chatRoomNum: chatRoomNum
+	        };
+
+	        $.ajax({
+	            type: 'POST',
+	            url: '/market/wallet/sendMoneyCancel',
+	            data: JSON.stringify(data),
+	            contentType: 'application/json',
+	            success: function(response) {
+	                alert(response.message); // 메시지 표시
+	                if (response.redirectUrl) {
+	                    window.location.href = response.redirectUrl; // 리다이렉트 URL로 이동
+	                } else {
+
+	                    updateHeader(); // 헤더 업데이트
+	                    window.location.href = '/market/chat?chatRoomNum=' + chatRoomNum; // 기존 URL로 리다이렉트
+	                }
+	            },
+	            error: function(xhr) {
+	                var response = xhr.responseJSON || {};
+	                var errorMessage = response.message || "송금취소 중 오류가 발생했습니다.";
+	                alert(errorMessage); // 오류 메시지 표시
+
+	                if (xhr.status === 400 && errorMessage.includes("상품 발송")) {
+	                    // 잔액 부족 시 포인트 충전 페이지로 리다이렉트
+	                    alert('상품이 발송되어 취소가 불가능합니다.');
+	                }
+	            }
+	        });
+	    }
+	    function cancelTrade(){
+	    	var chatRoomNum = document.getElementById('chatRoomNum').value;
+	    	var wallet_num = "${wallet.wallet_num}";
+		    if(!confirm('정말 취소하시겠습니까?')){
+	        	return;
+		    }
+
+	        var data = {
+        		wallet_num: wallet_num,
+        		chatRoomNum : chatRoomNum
+	        };
+
+	        $.ajax({
+	            type: 'POST',
+	            url: '/market/wallet/cancelTrade',
+	            data: JSON.stringify(data),
+	            contentType: 'application/json',
+	            success: function(response) {
+	                alert(response.message); // 메시지 표시
+	                if (response.redirectUrl) {
+	                    window.location.href = response.redirectUrl; // 리다이렉트 URL로 이동
+	                } else {
+
+	                    updateHeader(); // 헤더 업데이트
+	                    window.location.href = '/market/chat?chatRoomNum=' + chatRoomNum; // 기존 URL로 리다이렉트
+	                }
+	            },
+	            error: function(xhr) {
+	                var response = xhr.responseJSON || {};
+	                var errorMessage = response.message || "송금취소 중 오류가 발생했습니다.";
+	                alert(errorMessage); // 오류 메시지 표시
+
+	                if (xhr.status === 400 && errorMessage.includes("상품 발송")) {
+	                    // 잔액 부족 시 포인트 충전 페이지로 리다이렉트
+	                    alert('상품이 발송되어 취소가 불가능합니다.');
+	                }
+	            }
+	        });
+	    }
 	    function sendTransferNotification(senderMemberNum, targetMemberNum, amount, chatRoomNum) {
 	        let content = `${senderMemberNum}님이 ${amount}원을 송금했습니다.`; // 알림 내용
 
@@ -325,7 +455,67 @@
 	            }
 	        });
 	    }
-	    
+	  
+	    function sendProduct(){
+	    	var wallet_num = "${wallet.wallet_num}";
+	    	var chatRoomNum = document.getElementById('chatRoomNum').value;
+	    	$.ajax({
+	    	    url: "<c:url value='/wallet/sendproduct'/>", // 데이터를 가져올 URL을 설정하세요.
+	    	    type: "post", // GET 또는 POST로 요청 타입을 설정하세요.
+	    	    contentType: "application/json", // 전송할 데이터의 MIME 타입을 JSON으로 설정
+	    	    data: JSON.stringify({wallet_num : wallet_num, chatRoomNum : chatRoomNum}),
+	    	    success: function(data) {
+	    	    	if(data){
+	    	    		var str = `
+	    	    			<button type="button" class="shipment-button" disabled onclick="event.stopPropagation(); sendProduct();">발송 완료</button>
+							<span>구매확인을 기다리는 중</span>
+	    	    		`;
+		    	        $("#remittance-check").html(str);
+	    	    	}
+	    	    },
+	    	    error: function(xhr, status, error) {
+	    	        console.error("데이터를 가져오는 중 오류 발생:", error); // 오류 로그
+	    	    }
+	    	});
+	    }
+	    function tradeCompleted(){
+	    	var chatRoomNum = document.getElementById('chatRoomNum').value;
+	    	var wallet_num = "${wallet.wallet_num}";
+		    if(!confirm('거래를 완료하시겠습니까?')){
+	        	return;
+		    }
+
+	        var data = {
+        		wallet_num : wallet_num,
+        		chatRoomNum : chatRoomNum
+	        };
+
+	        $.ajax({
+	            type: 'POST',
+	            url: '/market/wallet/tradeCompleted',
+	            data: JSON.stringify(data),
+	            contentType: 'application/json',
+	            success: function(response) {
+	                alert(response.message); // 메시지 표시
+	                if (response.redirectUrl) {
+	                    window.location.href = response.redirectUrl; // 리다이렉트 URL로 이동
+	                } else {
+
+	                    window.location.href = '/market/chat?chatRoomNum=' + chatRoomNum; // 기존 URL로 리다이렉트
+	                }
+	            },
+	            error: function(xhr) {
+	                var response = xhr.responseJSON || {};
+	                var errorMessage = response.message || "구매확인 중 오류가 발생했습니다.";
+	                alert(errorMessage); // 오류 메시지 표시
+
+	                if (xhr.status === 400 && errorMessage.includes("상품 발송")) {
+	                    // 잔액 부족 시 포인트 충전 페이지로 리다이렉트
+	                    alert('상품이 발송되어 취소가 불가능합니다.');
+	                }
+	            }
+	        });
+	    }
 	</script>
 </body>
 </html>
