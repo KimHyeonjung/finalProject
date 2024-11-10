@@ -1,35 +1,112 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ page session="false" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>카테고리 분류</title>
+    <title>검색 결과</title>
+    <style>
+       * a,a:hover {
+		text-decoration: none;
+		color: inherit;
+	}
+   .product-grid {
+       display: grid;
+       grid-template-columns: repeat(5, 1fr); /* 5개의 열 */
+       gap: 20px;
+       padding: 20px;
+   }
+   .product-item {
+       border: 1px solid #ccc;
+       padding: 10px;
+       text-align: left;
+       cursor: pointer;
+       padding: 0 0;
+   }
+   .product-item img {
+       width: 100%;
+       height: auto;
+       object-fit: cover;
+   }
+   .product-item .name {
+       color: #7f8c8d;
+       font-size: 14px;
+       margin-top: 10px;
+       margin-left: 10px;
+   }
+   .product-item .price {
+       color: #1B1B1B;
+       font-weight: bold;
+       font-size: 16px;
+       margin-top: 10px;
+       margin-left: 10px;
+   }
+   .product-item .time, .wish {
+       color: #7f8c8d;
+       font-size: 11px;
+       margin-top: 10px;
+       margin-right: 10px;
+       text-align: right;
+   }
+   .product-item .time { margin-top: 0px; margin-bottom: 10px; }
+   
+   .dropdown-content {
+	  display: none;
+	  position: absolute;
+	  background-color: white;
+	  min-width: 160px;
+	  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+	  z-index: 1;
+	}
+	
+	.dropdown-content a {
+	  color: black;
+	  padding: 12px 16px;
+	  text-decoration: none;
+	  display: block;
+	}
+	
+	.dropdown-content a:hover {
+	  background-color: #f1f1f1;
+	}
+	
+	.dropdown-btn {
+	  background-color: #343a40;
+	  color: white;
+	  padding: 10px;
+	  width: 160px;
+	  font-size: 16px;
+	  border: none;
+	  cursor: pointer;
+	  display: flex;            
+	  align-items: center;      
+	  justify-content: center;
+	}
+	
+	.dropdown-btn:hover {
+	  background-color: #3d444b;
+	}
+	.dropdown-btn svg {
+	  margin-right: 8px; 
+	  vertical-align: middle; 
+	}
+    </style>
 </head>
 <body>
 
-<div class="container">
 
-<button id="categoryButton" class="dropdown-btn">
-	<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 20 20" class="text-xl" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-    	<path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-    </svg>
-    카테고리
-</button>
-	
 <div id="categoryList" class="dropdown-content" style="display:none;">
 </div>
-</div>
+
 
 <div class="container">
-    <h3 class="mt-3">${category_name}</h3>
+    <h3 class="mt-3">검색 결과</h3>
     <div class="product-grid">
-    	<c:forEach items="${list }" var="item"> 
-    		<div class="product-item" data-post_num="${item.post.post_num}">
+        <c:forEach items="${results}" var="item">
+		    <div class="product-item" data-post_num="${item.post.post_num}">
 	            <img class="prouct-img" 
 	            	src="<c:url value="/uploads/${item.file.file_name }"/>" 
 	            	onerror="this.onerror=null; this.src='<c:url value="/resources/img/none_image.jpg"/>';" alt="${item.file.file_ori_name }">
@@ -57,11 +134,11 @@
 			            <div class="time"> ${item.post.post_timepassed }시간 전</div>
 	            	</c:otherwise>
 	            </c:choose>
-	        </div>    		
-    	</c:forEach>        
-        <!-- 추가 상품 -->
+	        </div>
+		</c:forEach>
     </div>
 </div>
+
 <script>
 $(document).ready(function(){
 	
@@ -99,7 +176,7 @@ $(document).ready(function(){
 	    $('#categoryList').hide();  // 마우스를 벗어나면 목록이 사라짐
 	});
 });
-
 </script>
+
 </body>
 </html>

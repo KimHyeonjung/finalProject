@@ -1,6 +1,7 @@
 package com.team3.market.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.team3.market.model.dto.CombinePostWithFileDTO;
 import com.team3.market.model.dto.MessageDTO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PostVO;
@@ -45,6 +47,7 @@ public class HomeController {
 	
 		return "/main/home";//타일즈에서 /*로 했기 때문에 /를 붙임
 	}
+	
 	
 	@GetMapping("/signup")
 	public String showSignupForm() {
@@ -319,5 +322,25 @@ public class HomeController {
 
 	    return "/member/findpwresult";  // 결과 메시지 페이지로 이동
 	}
+	@GetMapping("/search")
+    public String searchItemsOrLocations(@RequestParam("query") String query, 
+                                         @RequestParam("type") String type, Model model) {
+		List<CombinePostWithFileDTO> results;
+	    if (type.equals("물건")) {
+	        results = postService.searchItems(query); // 물건 검색
+	    } else {
+	        results = postService.searchLocations(query); // 동네 검색
+	    }
+	    model.addAttribute("results", results);
+	    return "/search/results"; // 검색 결과 페이지로 이동
+	}
 	
+	@PostMapping("/session/reload")
+	@ResponseBody
+	public void sessionReload(HttpSession session) {
+		
+		MemberVO member = (MemberVO)session.getAttribute("user");
+		MemberVO user = memberService.getMemberById(member.getMember_id());
+		session.setAttribute("user", user);		
+	}
 }

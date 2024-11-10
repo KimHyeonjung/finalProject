@@ -13,13 +13,13 @@
         <a class="navbar-brand" href="<c:url value="/" />">
             <img src="<c:url value="/resources/img/중고날아.svg"/>" alt="Logo" class="logo-img">
         </a>
-        <form class="form-inline" action="/market/action_page.php">
-            <select>
-                <option>물건</option>
-                <option>동네</option>
+        <form class="form-inline" action="/market/search" method="get">
+            <select name="type">
+                <option value="물건">물건</option>
+                <option value="동네">동네</option>
             </select>
-            <input class="form-control" type="text" placeholder="물건이나 동네를 검색해보세요">
-            <button type="button" id="search-button" onclick="performSearch()">
+            <input class="form-control" type="text" name="query" placeholder="물건이나 동네를 검색해보세요">
+            <button type="submit" id="search-button" onclick="performSearch()">
                 <i class="fa fa-search"></i> 검색
             </button>
         </form>
@@ -130,7 +130,7 @@ var count = 0;
 function notiCheck(){
 	if(${user != null}){
 		$.ajax({
-			async : true, //비동기 : true(비동기), false(동기)
+			async : false, //비동기 : true(비동기), false(동기)
 			url : '<c:url value="/notification/count"/>', 
 			type : 'post', 
 			success : function (data){	
@@ -192,7 +192,9 @@ function notiListDisplay(){
 					</div>
 					`;
 				}
-				$('.noti-list').html(str);
+				if(count > 0){
+					$('.noti-list').html(str);
+				}
 			}
 			
 		}, 
@@ -203,8 +205,38 @@ function notiListDisplay(){
 }
 
 $(document).ready(function (){
-	updateHeader();  // 로그인 후 헤더를 업데이트
+	//updateHeader();  // 로그인 후 헤더를 업데이트
 	notiCheck();
+	
+	$('#categoryButton').mouseenter(function() {
+		var contextPath = '${pageContext.request.contextPath}';
+	    $.ajax({
+	        url: contextPath + '/category',
+	        type: 'GET',
+	        dataType: 'json', 
+	        success: function(data) {
+	            
+	            var html = '';
+	            $.each(data, function(index, category) {
+	                html += '<div><a href="' + contextPath +'/post/list/' + category.category_num + '">' + category.category_name + '</a></div>';
+	            });
+	            
+	            $('#categoryList').html(html);  // 생성된 HTML을 카테고리 목록에 삽입
+	            $('#categoryList').toggle();  // 목록을 보여주거나 숨김
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("Error: " + error);
+	        }
+	    });
+	});
+	$('#categoryList').mouseenter(function() {
+		$('#categoryList').show();  // 마우스가 목록에 있을 때 유지
+	});
+	
+	// 카테고리 버튼 또는 목록에서 마우스를 벗어나면 목록이 사라짐
+	$('#categoryButton, #categoryList').mouseleave(function() {
+	    $('#categoryList').hide();  // 마우스를 벗어나면 목록이 사라짐
+	});
 
 	$('#noti-btn').on('mouseenter', function() {
         if (${user != null}) {
@@ -276,11 +308,11 @@ $(document).on('click', '.close.checked', function(){
 		type : 'post', 
 		data : {notification_num : notification_num},
 		success : function (data){
-			if(data){
-				
+			if(data){	
 				notiListDisplay();
 				if(count == 0){
-					$('#notiListModal').modal("hide");
+					$('.noti-modal').hide();
+					return;
 				}
 			}
 		}, 
@@ -308,6 +340,8 @@ function performSearch() {
     var searchForm = document.getElementById("searchForm");
     searchForm.submit();
 }
+
+
 
 </script>
 </html>
