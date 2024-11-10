@@ -28,7 +28,7 @@
     </style>
 </head>
 <body>
-<div class="w3-container">
+<div class="w3-container container-board">
     <h2>리뷰 게시판</h2>
     <hr>
     <c:choose>

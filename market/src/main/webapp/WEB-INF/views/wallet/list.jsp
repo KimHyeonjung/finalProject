@@ -9,8 +9,8 @@
     <title>충전 내역</title>
 </head>
 <body>
-    <div class="container">
-        <h2>충전 내역</h2>
+    <div class="container-point">
+        <h2 class="mb-3">충전 내역</h2>
         
         <table class="table table-bordered">
             <thead>
@@ -29,7 +29,7 @@
             </tbody>
         </table>
         
-        <a href="<c:url value='/wallet/point'/>" class="btn btn-primary">충전하기</a>
+        <a href="<c:url value='/wallet/point'/>" class="btn color col-12">충전하기</a>
     </div>
 
 </body>

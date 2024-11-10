@@ -15,7 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/style.css'/>">
 </head>
 <body>
-<div class="container mt-4">
+<div class="container-post">
 	<h1>상품 등록</h1>
 	<form id="uploadForm" action="<c:url value='/post/insert'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
 		

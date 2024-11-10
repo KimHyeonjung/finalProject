@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,16 +10,14 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/style.css'/>">
 </head>
 <body>
-<div class="container">
+<div class="container-chat">
 	<!-- 게시물 정보 표시 영역 -->
-	<div class="post-info" 
-	     style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; cursor: pointer;" 
-	     onclick="window.location.href='<c:url value='/post/detail/${post.post_num}' />'">
+	<div class="post-info" onclick="window.location.href='<c:url value='/post/detail/${post.post_num}' />'">
 		<!-- 게시물 프로필 이미지 (썸네일) -->
 		<%-- <img src="${post.post_thumbnail}" alt="게시물 이미지" style="width: 100px; height: 100px; object-fit: cover; margin-right: 15px; display: inline-block;"> --%>
 		
 		<!-- 게시물 제목 및 가격 -->
-		<div style="display: inline-block; vertical-align: top;">
+		<div>
 			<h3>${post.post_title}</h3> <!-- 게시물 제목 -->
 			<p><strong>가격:</strong> ${post.post_price}원</p> <!-- 게시물 가격 -->
 		</div>
@@ -63,27 +62,28 @@
 		</div>
 	</div>
 	
-	<button type="button" onclick="window.location.href='<c:url value='/after/review/${post.post_num}' />'">후기 작성</button>
-	
-	
 	<!-- 채팅 내용 표시 영역 -->
-	<div id="chat-history">
+	<div id="chat-history" class="chat-history">
 		<c:forEach var="chatDTO" items="${chatDTOs}">
 			<div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
 				<strong>${chatDTO.getTargetMember().member_nick}</strong>: 
 				<span>${chatDTO.getChat().chat_content}</span>
-				<p style="font-size: small;">[${chatDTO.getChat().chat_date}]</p>
+				<span class="last-time" style="font-size: small;">
+                    <fmt:formatDate value="${chatRoom.getChat().chat_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </span>
 			</div>
 		</c:forEach>
 	</div>
 	
-	<!-- 메시지 입력창 -->
-	<input type="text" id="message" placeholder="메시지를 입력하세요." style="width: 80%;" onkeypress="checkEnter(event)">
-    <!-- 메시지 전송 버튼 -->
-	<button onclick="sendMessage()">Send</button>
-	
-	<!-- 송금 요청 버튼 -->
-	<button onclick="openModal()">송금</button>
+	<div class="chat-input-container">
+		<!-- 메시지 입력창 -->
+		<input type="text" id="message" placeholder="메시지를 입력하세요." onkeypress="checkEnter(event)">
+	    <!-- 메시지 전송 버튼 -->
+		<button onclick="sendMessage()" class="chat-btn">Send</button>
+		<!-- 송금 요청 버튼 -->
+		<button onclick="openModal()" class="chat-btn">송금</button>
+		<button type="button" onclick="window.location.href='<c:url value='/after/review/${post.post_num}' />'" class="chat-btn">후기 작성</button>
+	</div>
 	
 	<!-- 송금 모달 -->
 	<div id="sendMoneyModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
@@ -256,6 +256,9 @@ const post_price = ${post.post_price};
 				alert(successMessage);
 			
 			}
+			
+			var chatHistory = document.getElementById('chat-history');
+		    chatHistory.scrollTop = chatHistory.scrollHeight;
 		};
 		
 		function openModal() {

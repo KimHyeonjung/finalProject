@@ -11,9 +11,7 @@
 <body>
 <div class="container">
 	<div class="container-detail">
-		<h1 class="hide">상세</h1>
 		<section id="article-images">
-			<h3 class="hide">이미지</h3>
 			<div id="carousel-indicators" class="carousel slide" data-interval="false">
 				<!-- Indicators -->
 				<ul class="carousel-indicators"> 
@@ -57,8 +55,7 @@
 				</a>
 			</div>
 		</section>
-		<section id="article-profile" class="article">
-			<h3 class="hide">프로필</h3>
+		<section id="article-profile" class="article mt-4">
 			<div class="d-flex justify-content-between">
 				<div style="display: flex;">
 					<div id="article-profile-image">
@@ -74,76 +71,76 @@
 					<div id="article-profile-left">
 						<div id="nickname">${post.member_nick }</div>
 						<div id="region-name">${post.post_address }</div>
-						<div id="btn-group">
+						<div id="btn-group" style="display: flex; gap: 5px;">
 							<c:choose>
 								<c:when test="${user ne null}">
 									<c:if test="${user.member_num ne post.post_member_num }">
-										<div class="btn btn-outline-success <c:if test="${wish.wish_member_num == user.member_num}">active</c:if>" 
+										<div class="btn color <c:if test="${wish.wish_member_num == user.member_num}">active</c:if>" 
 											id="wish" data-post_num="${post.post_num}">찜하기</div>
-										<div class="btn btn-outline-danger <c:if test="${report.report_member_num == user.member_num}">active</c:if>" 
+										<div class="btn color <c:if test="${report.report_member_num == user.member_num}">active</c:if>" 
 											id="report" data-post_num="${post.post_num}">신고하기</div>
-										<div class="btn btn-warning" id="chat" data-post_num="${post.post_num}">채팅방</div>
+										<div class="btn color" id="chat" data-post_num="${post.post_num}">채팅방</div>
+										
 										<c:if test="${post.post_deal eq true }">
-											<div class="dropdown dropright">
-											    <button type="button" data-toggle="dropdown" id="dropdown-btn"
-											    	class="btn btn-outline-primary dropdown-toggle <c:if test="${haggle}">active</c:if>" >
-													흥정하기
-											    </button>
-											    <div class="dropdown-menu" style="padding: 4px;">
-											      <span class="dropdown-item discount" data-price="1000">
-											      	<fmt:formatNumber value="-1000" type="number"/><span>원</span></span>
-											      <span class="dropdown-item discount" data-price="5000">
-											      	<fmt:formatNumber value="-5000" type="number"/><span>원</span></span>
-											      <span class="dropdown-item discount" data-price="10000">
-											     	 <fmt:formatNumber value="-10000" type="number"/><span>원</span></span>
-											      <div class="dropdown-divider"></div>
-											      <span class="dropdown-item" style="padding: 4px 5px;">										      	
-											      	<input type="text" value="${post.post_price }"
-											      		id="input-discount" style="width: 120px; margin-right: 5px;">
-											      	<button type="button" class="btn btn-outline-dark" id="propose">제안</button>
-											      </span>
-											    </div>
-											</div>
-										</c:if>
-									</c:if>
+						                    <div class="dropdown dropright">
+						                        <button type="button" data-toggle="dropdown" id="dropdown-btn"
+						                                class="btn color dropdown-toggle <c:if test="${haggle}">active</c:if>">
+						                            흥정하기
+						                        </button>
+						                        <div class="dropdown-menu">
+						                            <span class="dropdown-item discount" data-price="1000">
+						                                <fmt:formatNumber value="-1000" type="number"/><span>원</span></span>
+						                            <span class="dropdown-item discount" data-price="5000">
+						                                <fmt:formatNumber value="-5000" type="number"/><span>원</span></span>
+						                            <span class="dropdown-item discount" data-price="10000">
+						                                <fmt:formatNumber value="-10000" type="number"/><span>원</span></span>
+						                            <div class="dropdown-divider"></div>
+						                            <span class="dropdown-item">
+						                                <input type="text" value="${post.post_price }" id="input-discount">
+						                                <button type="button" class="btn color" id="propose">제안</button>
+						                            </span>
+						                        </div>
+						                    </div>
+						                </c:if>
+						            </c:if>
 									<c:if test="${user.member_num eq post.post_member_num }">
-										<div>
+										<div class="state-detail-container">
 											<select class="state" data-post_num="${post.post_num}">
 												<c:choose>
 							                    	<c:when test="${post.post_position_num == 1}">
-							                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
-								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
-								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+							                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매 중</option>
+								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약 중</option>
+								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래 완료</option>
 							                    	</c:when>
 							                    	<c:when test="${post.post_position_num == 2}">
-								                        <option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매중</option>
-								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
-								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+								                        <option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매 중</option>
+								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약 중</option>
+								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래 완료</option>
 							                    	</c:when>
 							                    	<c:when test="${post.post_position_num == 3}">
-								                        <option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료나눔</option>
-								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
-								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+								                        <option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료 나눔</option>
+								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약 중</option>
+								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래 완료</option>
 							                    	</c:when>
 							                    	<c:otherwise>
-							                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
-							                    		<option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매중</option>
-							                    		<option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료나눔</option>
-								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
-								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+							                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매 중</option>
+							                    		<option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매 중</option>
+							                    		<option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료 나눔</option>
+								                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약 중</option>
+								                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래 완료</option>
 							                    	</c:otherwise>
 												</c:choose>
 						                    </select>
-											<a class="btn btn-outline-info" href="<c:url value="/mypage/post/list"/>">내 상점 관리</a>
+											<a class="btn color-detail" href="<c:url value="/mypage/post/list"/>">내 게시물 관리</a>
 										</div>
 									</c:if>
 								</c:when>								
 								<c:otherwise>
-									<div class="btn btn-dark" 
+									<div class="btn color" 
 										id="wish">찜하기</div>
-									<div class="btn btn-dark" 
+									<div class="btn color" 
 										id="report">신고하기</div>
-									<div class="btn btn-dark" 
+									<div class="btn color" 
 										id="chat">채팅신청</div>
 								</c:otherwise>
 							</c:choose>
@@ -156,6 +153,19 @@
 							${post.member_score } <span>m</span>
 						</dd>
 					</dl>
+					<time>
+						<c:choose>
+			            	<c:when test="${post.post_timepassed > 24 }">	      
+			            		<c:set var="timepassed" value="${post.post_timepassed div 24 }"/>      	
+			            		<div class="time">
+			            			<fmt:formatNumber value="${timepassed - (timepassed mod 1)}" pattern="###"/>일 전
+			            		</div>
+			            	</c:when>
+			            	<c:otherwise>
+					            <div class="time">${post.post_timepassed }시간 전</div>
+			            	</c:otherwise>
+		           	 	</c:choose>
+					</time>
 				</div>				
 			</div>
 		</section>
@@ -164,22 +174,8 @@
 				style="margin-top: 0px;">${post.post_title }</h5>
 			<p id="article-category">
 				${post.post_category_name }
-				<time>
-					<c:choose>
-		            	<c:when test="${post.post_timepassed > 24 }">	      
-		            		<c:set var="timepassed" value="${post.post_timepassed div 24 }"/>      	
-		            		<div class="time">
-		            			<fmt:formatNumber value="${timepassed - (timepassed mod 1)}" pattern="###"/>일 전
-		            		</div>
-		            	</c:when>
-		            	<c:otherwise>
-				            <div class="time">${post.post_timepassed }시간 전</div>
-		            	</c:otherwise>
-	           	 	</c:choose>
-				</time>
 			</p>
-			
-			<p id="article-price" style="font-size: 18px; font-weight: bold;">
+			<p id="article-price">
 				${post.post_price }</p>
 			<div id="article-detail">
 				${post.post_content }</div>

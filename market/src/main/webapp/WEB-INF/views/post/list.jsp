@@ -13,19 +13,6 @@
 <body>
 
 <div class="container">
-
-<button id="categoryButton" class="dropdown-btn">
-	<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 20 20" class="text-xl" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-    	<path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-    </svg>
-    카테고리
-</button>
-	
-<div id="categoryList" class="dropdown-content" style="display:none;">
-</div>
-</div>
-
-<div class="container">
     <h3 class="mt-3">${category_name}</h3>
     <div class="product-grid">
     	<c:forEach items="${list }" var="item"> 
@@ -68,35 +55,6 @@ $(document).ready(function(){
 	$('.product-item').click(function(){
 		let post_num = $(this).data('post_num')
 		location.href = `<c:url value="/post/detail/\${post_num}"/>`;	
-	});
-	$('#categoryButton').mouseenter(function() {
-		var contextPath = '${pageContext.request.contextPath}';
-	    $.ajax({
-	    	url: contextPath + '/category',
-	        type: 'GET',
-	        dataType: 'json', 
-	        success: function(data) {
-	            
-	            var html = '';
-	            $.each(data, function(index, category) {
-	            	html += '<div><a href="' + contextPath +'/post/list/' + category.category_num + '">' + category.category_name + '</a></div>';
-	            });
-	            
-	            $('#categoryList').html(html);  // 생성된 HTML을 카테고리 목록에 삽입
-	            $('#categoryList').toggle();  // 목록을 보여주거나 숨김
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("Error: " + error);
-	        }
-	    });
-	});
-	$('#categoryList').mouseenter(function() {
-		$('#categoryList').show();  // 마우스가 목록에 있을 때 유지
-	});
-	
-	// 카테고리 버튼 또는 목록에서 마우스를 벗어나면 목록이 사라짐
-	$('#categoryButton, #categoryList').mouseleave(function() {
-	    $('#categoryList').hide();  // 마우스를 벗어나면 목록이 사라짐
 	});
 });
 

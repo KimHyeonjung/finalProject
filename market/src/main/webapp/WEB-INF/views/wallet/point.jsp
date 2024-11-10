@@ -10,11 +10,11 @@
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<div class="container">
-   <h1>카카오페이 결제 페이지</h1>
+<div class="container centered-container">
+   <h1>포인트 충전 페이지</h1>
    <form id="paymentForm">
-       <label for="totalPrice">충전 금액:</label>
-       <input type="number" min="1000" id="totalPrice" name="totalPrice" required><br><br>
+       <label for="totalPrice">충전 금액 : </label>
+       <input type="number" min="1000" id="totalPrice" name="totalPrice" placeholder="금액을 입력해주세요" required><br><br>
        <button type="button" id="btn-pay-ready">결제하기</button>
    </form>
 </div>

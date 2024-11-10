@@ -18,7 +18,7 @@
                 </c:otherwise>
             </c:choose>
         </div>
-        <a href="<c:url value='/findPassword'/>" class="back-button">비밀번호 찾기</a>
+        <a href="<c:url value='/findPassword'/>" class="back-button" id="home-link">비밀번호 찾기</a>
     </div>
 </div>
 </body>

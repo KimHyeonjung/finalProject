@@ -24,11 +24,10 @@
             </button>
         </form>
         <a id="notice" href="/market/notice/list">
-            <i class="fa-solid fa-megaphone">공지사항</i>
+            <i class="fa-solid fa-megaphone"></i>
         </a>
         <button id="noti-btn" type="button" class="btn noti-btn">
             <i class="fa-solid fa-bell"></i>
-    		<div class="alert-dot"></div>
         </button>
     </div>
 
@@ -68,40 +67,40 @@
 						<button id="profile-btn" type="button" class="profile-btn">
 							<img src="<c:url value="/resources/img/none_profile_image.png"/>" alt="Profile" class="profile-img">
 						</button>
-						<div id="profile-dropdown" class="dropdown-content">
-							<div class="account-section">
+						<div id="profile-dropdown" class="dropdown-content" style="display:none;">
+							<div>
 								<p>${user.member_nick}</p>
 							</div>
-							<div class="account-section">
+							<div>
 								<p>${user.member_score} M</p>
 							</div>
-							<div class="account-section">
+							<div>
 								<p><span id="balance">0</span>원</p>
 								<a href="<c:url value='/wallet/list'/>">내역</a>
 								<a href="<c:url value='/wallet/point'/>">충전</a>
 							</div>
 							<div class="account-section">
 								<a href="<c:url value='/mypage'/>">
-									<i class="fa-solid fa-user"></i>
-									개인정보 변경
+									<i class="fa-solid fa-user"></i>개인정보 변경
 								</a>
+							</div>
+							<div class="account-section">
 								<a href="<c:url value='/mypage/post/list'/>">
-									<i class="fa-solid fa-note-sticky"></i>
-									게시글 관리
+									<i class="fa-solid fa-note-sticky"></i>게시글 관리
 								</a>
 							</div>
 							<div class="account-section">
 								<a href="<c:url value='/mypage/wish/list'/>">
-									<i class="fa-solid fa-heart"></i>
-									찜목록
-								</a>
-								<a href="<c:url value="/after/board"/>">
-									<i class="fa-regular fa-pen-to-square"></i>
-									내 리뷰
+									<i class="fa-solid fa-heart"></i>찜목록
 								</a>
 							</div>
 							<div class="account-section">
-									<a href="<c:url value='/logout'/>">로그아웃</a>
+								<a href="<c:url value="/after/board"/>">
+									<i class="fa-regular fa-pen-to-square"></i>내 리뷰
+								</a>
+							</div>
+							<div>
+								<a href="<c:url value='/logout'/>">로그아웃</a>
 							</div>
 						</div>
                     </div>
@@ -109,7 +108,7 @@
             </c:if>
         </div>
     
-        <div class="noti-modal">
+        <div class="noti-modal" style="display:none;">
             <div class="list-group noti-list"></div>
         </div>
         
@@ -207,6 +206,8 @@ function notiListDisplay(){
 $(document).ready(function (){
 	//updateHeader();  // 로그인 후 헤더를 업데이트
 	notiCheck();
+	
+	$('#profile-dropdown').hide();
 	
 	$('#categoryButton').mouseenter(function() {
 		var contextPath = '${pageContext.request.contextPath}';

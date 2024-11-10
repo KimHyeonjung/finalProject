@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,7 +67,7 @@
 </script>
 </head>
 <body>
-<div class="container">
+<div class="container-chat">
 	<div id="chatRoomList">
 		<!-- 채팅방 목록을 반복하여 표시 -->
 		<c:forEach var="chatRoom" items="${chatRooms}">
@@ -82,10 +83,13 @@
 					<span class="last-message">${chatRoom.getChat().chat_content}</span>
 					<!-- 마지막 메시지 내용 -->
 				</div>
-				<span class="last-time">${chatRoom.getChat().chat_date}</span>
-				<!-- 마지막 메시지 시간 -->
+				<div class="chat-room-right">
+				    <span class="last-time">
+				        <fmt:formatDate value="${chatRoom.getChat().chat_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+				    </span>
+				    <button onclick="leaveChatRoom('${chatRoom.getChatRoom().chatRoom_num}')" class="leave-button">채팅방 나가기</button>
+				</div>
 			</div>
-			<button onclick="leaveChatRoom('${chatRoom.getChatRoom().chatRoom_num}')">채팅방 나가기</button>
 		</c:forEach>
 	</div>
 </div>

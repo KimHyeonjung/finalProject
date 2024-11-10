@@ -8,25 +8,28 @@
 <head>
 </head>
 <body>
-<div class="container">
-	<h2>내 상점관리 ${list.size()}</h2>
+<div class="container-mylist">
     <form action="<c:url value="/mypage/post/list"/>" id="form">
-	    <div>
-	    	<input type="hidden" name="type" value="${pm.cri.type}">
-	    	<input type="hidden" name="page" value="${pm.cri.page}">
-	        <input type="text" name="search" value="${pm.cri.search}" placeholder="상품명을 입력해주세요."/>
-	        <button id="btn-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i>검색</button>
-	        <select id="perPageSelect" name="perPageNum">
-	            <option value="10" <c:if test="${pm.cri.perPageNum == 10}">selected</c:if>>10개씩</option>
-	            <option value="20" <c:if test="${pm.cri.perPageNum == 20}">selected</c:if>>20개씩</option>
-	            <option value="50" <c:if test="${pm.cri.perPageNum == 50}">selected</c:if>>50개씩</option>
-	        </select>
-	        <button id="btn-all" class="<c:if test="${pm.cri.type == '' }">type-selected</c:if>">전체</button>
-	        <button id="btn-selling" class="<c:if test="${pm.cri.type == 'selling' }">type-selected</c:if>">판매중</button>
-	        <button id="btn-buying" class="<c:if test="${pm.cri.type == 'buying' }">type-selected</c:if>">구매중</button>
-	        <button id="btn-reserved" class="<c:if test="${pm.cri.type == 'reserved' }">type-selected</c:if>">예약중</button>
-	        <button id="btn-soldout" class="<c:if test="${pm.cri.type == 'soldout' }">type-selected</c:if>">거래완료</button>
-	        <button id="btn-forfree" class="<c:if test="${pm.cri.type == 'forfree' }">type-selected</c:if>">무료나눔</button>
+	    <div class="mb-3">
+		    <div class="form-inline">
+		        <select id="perPageSelect" name="perPageNum">
+		            <option value="10" <c:if test="${pm.cri.perPageNum == 10}">selected</c:if>>10개씩</option>
+		            <option value="20" <c:if test="${pm.cri.perPageNum == 20}">selected</c:if>>20개씩</option>
+		            <option value="50" <c:if test="${pm.cri.perPageNum == 50}">selected</c:if>>50개씩</option>
+		        </select>
+		    	<input type="hidden" name="type" value="${pm.cri.type}">
+		    	<input type="hidden" name="page" value="${pm.cri.page}">
+		        <input type="text" id="list-search" name="search" value="${pm.cri.search}" placeholder=" 상품명을 입력해주세요."/>
+		        <button id="btn-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+		    </div>
+	        <div class="filter-buttons">
+		        <button id="btn-all" class="<c:if test="${pm.cri.type == '' }">type-selected</c:if>">전체</button>
+		        <button id="btn-selling" class="<c:if test="${pm.cri.type == 'selling' }">type-selected</c:if>">판매 중</button>
+		        <button id="btn-buying" class="<c:if test="${pm.cri.type == 'buying' }">type-selected</c:if>">구매 중</button>
+		        <button id="btn-reserved" class="<c:if test="${pm.cri.type == 'reserved' }">type-selected</c:if>">예약 중</button>
+		        <button id="btn-soldout" class="<c:if test="${pm.cri.type == 'soldout' }">type-selected</c:if>">거래 완료</button>
+		        <button id="btn-forfree" class="<c:if test="${pm.cri.type == 'forfree' }">type-selected</c:if>">무료 나눔</button>
+	        </div>
 	    </div>
     </form>
     <table>
@@ -56,26 +59,26 @@
                     <select class="state" data-post_num="${post.post_num}">
                     	<c:choose>
 	                    	<c:when test="${post.post_position_num == 1}">
-	                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
-		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
-		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+	                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매 중</option>
+		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약 중</option>
+		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래 완료</option>
 	                    	</c:when>
 	                    	<c:when test="${post.post_position_num == 2}">
-		                        <option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매중</option>
-		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
-		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+		                        <option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매 중</option>
+		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약 중</option>
+		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래 완료</option>
 	                    	</c:when>
 	                    	<c:when test="${post.post_position_num == 3}">
-		                        <option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료나눔</option>
-		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
-		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+		                        <option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료 나눔</option>
+		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약 중</option>
+		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래 완료</option>
 	                    	</c:when>
 	                    	<c:otherwise>
-	                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매중</option>
-	                    		<option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매중</option>
-	                    		<option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료나눔</option>
-		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약중</option>
-		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래완료</option>
+	                    		<option value="1" <c:if test="${post.post_position_num == 1}">selected</c:if>>판매 중</option>
+	                    		<option value="2" <c:if test="${post.post_position_num == 2}">selected</c:if>>구매 중</option>
+	                    		<option value="3" <c:if test="${post.post_position_num == 3}">selected</c:if>>무료 나눔</option>
+		                        <option value="4" <c:if test="${post.post_position_num == 4}">selected</c:if>>예약 중</option>
+		                        <option value="5" <c:if test="${post.post_position_num == 5}">selected</c:if>>거래 완료</option>
 	                    	</c:otherwise>
 						</c:choose>
                     </select>
@@ -111,7 +114,9 @@
     <div class="page-number">
         <ul class="pagination justify-content-center">
         	<c:if test="${pm.prev}">
-			    <li class="page-item"><a class="page-link" id="pn-prev" href="javascript:void(0);">이전</a></li>
+			    <li class="page-item">
+			    	<a class="page-link" id="pn-prev" href="javascript:void(0);" style="border: 1px solid #7590bd; background-color: #7590bd; color: white;">이전</a>
+		    	</li>
         	</c:if>
         	<c:forEach begin="${pm.startPage}" end="${pm.endPage}" var="i">   
        			<c:choose>
@@ -122,11 +127,14 @@
 						<c:set var="active" value="" />
 					</c:otherwise>
 				</c:choose>    		
-			    <li class="page-item ${active}"><a class="page-link" href="javascript:void(0);"
-			    	data-page="${i}">${i}</a></li>
+			    <li class="page-item ${active}">
+			    	<a class="page-link" href="javascript:void(0);" data-page="${i}" style="border: 1px solid #7590bd; background-color: #7590bd; color: white;">${i}</a>
+		    	</li>
         	</c:forEach>
 		    <c:if test="${pm.next}">
-			    <li class="page-item"><a class="page-link" id="pn-next" href="javascript:void(0);">다음</a></li>
+			    <li class="page-item">
+			    	<a class="page-link" id="pn-next" href="javascript:void(0);" style="border: 1px solid #7590bd; background-color: #7590bd; color: white;">다음</a>
+		    	</li>
 		    </c:if>
 		  </ul>
     </div>

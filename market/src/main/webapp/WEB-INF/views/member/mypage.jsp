@@ -11,7 +11,7 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<div class="container">
+<div class="container-mypage">
 	<form action="<c:url value="/mypage"/>" method="post" id="form">
 		<div class="form-group profile">
 			<c:if test="${user.file_name ne null }">
@@ -21,36 +21,36 @@
 				<img id="mypage-preview" src="<c:url value="/resources/img/none_profile_image.png"/>" alt="none" style="width:200px;">
 			</c:if>
 			<div class="form-group">
-				<input type="file" class="form-control" id="member_file" name="member_file" accept="image/*">
+				<input type="file" class="form-control-a mt-1" id="member_file" name="member_file" accept="image/*">
 			</div>
 			<div class="d-flex justify-content-left">
-				<div class="btn btn-dark m-auto" id="profile-change">프로필 사진 변경</div>
+				<div class="btn m-auto color" id="profile-change">프로필 사진 변경</div>
 			</div>	
 			<label class="label-form" for="member_id">${user.member_id}</label>
 			<label class="label-form" for="member_nick">${user.member_nick}</label>
 		</div>
 		<div class="d-flex justify-content-left">
-			<div class="btn btn-dark m-auto" data-toggle="modal" data-target="#modal">비밀번호 변경</div>
+			<div class="btn m-auto color" data-toggle="modal" data-target="#modal">비밀번호 변경</div>
 		</div>
 		
 		<div class="form-group">
 			<label for="email">이메일 주소:</label>
-			<label class="form-control" for="email">${user.member_email}</label>
+			<label class="form-control-a" for="email">${user.member_email}</label>
 		</div>
 		<div class="d-flex justify-content-left">
-			<div class="btn btn-dark m-auto" data-toggle="modal" data-target="#modal_email">이메일 변경</div>
+			<div class="btn m-auto color" data-toggle="modal" data-target="#modal_email">이메일 변경</div>
 		</div>
 		<div class="form-group">
 			<label for="phone">연락처</label>
-			<label class="form-control">${user.member_phone}</label>
+			<label class="form-control-a">${user.member_phone}</label>
 		</div>
 		<div class="d-flex justify-content-left">
-			<div class="btn btn-dark m-auto" data-toggle="modal" data-target="#modal_phone">연락처 변경</div>
+			<div class="btn m-auto color" data-toggle="modal" data-target="#modal_phone">연락처 변경</div>
 		</div>
 		
-		<button type="button" onclick="location.href='/market'" class="btn btn-outline-success col-12">나가기</button>
+		<button type="button" onclick="location.href='/market'" class="btn color col-12" id="exit-button">나가기</button>
 		
-		<button type="button" class="btn btn-outline-error col-12" id="delete">회원 탈퇴</button>
+		<button type="button" class="btn col-12" id="delete">회원 탈퇴</button>
 		
 	</form>
 </div>
@@ -163,8 +163,6 @@
 	    </div>
 	</div>
 	
-	</div>
-
 	<script>
 	const preview = document.getElementById("mypage-preview");
 	const previewImage = preview.src;

@@ -8,7 +8,7 @@
 <head>
 </head>
 <body>
-	<div class="container">				
+	<div class="container-wish">				
 		<h2>찜 목록 ${list.size()}</h2>
 		<div class="d-flex justify-content-between">
 			<ul class="nav">

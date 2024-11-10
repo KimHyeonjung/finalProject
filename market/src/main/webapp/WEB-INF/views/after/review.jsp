@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<style>
 		.btn-option {
-	        border: 1px solid #007bff; /* 기본 파란색 테두리 */
+	        border: 1px solid #7590bd; /* 기본 파란색 테두리 */
 	        background-color: white; /* 기본 흰색 배경 */
 	        color: black; /* 기본 검은색 글자 */
 	    }
@@ -39,7 +39,7 @@
 	</style>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container">
 	<h1>거래 리뷰</h1>
 	<hr>
 	<form action="<c:url value='/after/review'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
@@ -140,7 +140,7 @@
 		<hr>
 		
 		<!-- 등록 버튼 -->
-		<button type="submit" class="btn btn-primary btn-block" id="submitBtn" onclick="validateForm(event)">등록</button>
+		<button type="submit" class="btn btn-block" id="submitBtn" onclick="validateForm(event)">등록</button>
 	</form>
 </div>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -163,7 +163,7 @@
 	    });
 	
 	    const selectedBtn = document.getElementById('option' + option);
-	    selectedBtn.style.backgroundColor = '#007bff';
+	    selectedBtn.style.backgroundColor = '#7590bd';
 	    selectedBtn.style.color = 'white';
 	
 	    document.getElementById('selectedOption').value = option;

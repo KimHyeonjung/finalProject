@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=55f22ec08aea99a6511585b99e78d0d6&libraries=services"></script>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container-detail">
 	<h1>상품 수정</h1>
 	<form id="uploadForm" action="<c:url value='/post/update'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
 		
@@ -127,7 +127,7 @@
 		<input type="hidden" id="post_position_num" name="post_position_num" value="${post.post_position_num}">
 
 		<!-- 등록 버튼 -->
-		<button type="submit" class="btn btn-primary btn-block" id="submitBtn" onclick="validateForm(event)">수정</button>
+		<button type="submit" class="btn color btn-block" id="submitBtn" onclick="validateForm(event)">수정</button>
 	</form>
 </div>
 <script>
@@ -472,7 +472,7 @@ const uploadForm = $('#uploadForm');
 	
 	    // 선택된 버튼의 스타일 변경
 	    const selectedBtn = document.getElementById('option' + option);
-	    selectedBtn.style.backgroundColor = '#007bff'; // 파란색 배경
+	    selectedBtn.style.backgroundColor = '#7590bd'; // 파란색 배경
 	    selectedBtn.style.color = 'white'; // 하얀색 글자
 	
 	    // 숨겨진 필드에 선택된 값 저장

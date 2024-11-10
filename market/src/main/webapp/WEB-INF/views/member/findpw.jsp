@@ -10,7 +10,7 @@
 <body>
 <div class="container">
 	<div class="wrapper">
-        <h2>비밀번호 찾기</h2>
+        <h2 class="mb-3">비밀번호 찾기</h2>
         <form action="<c:url value='/findPassword'/>" method="post">
             <div class="form-field">
                 <input type="text" name="member_id" required placeholder="아이디">
