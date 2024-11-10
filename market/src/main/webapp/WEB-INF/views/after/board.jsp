@@ -8,24 +8,6 @@
     <meta charset="UTF-8">
     <title>리뷰 게시판</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-	<style>
-        .no-reviews {
-            color: gray;         /* 글자 색상 회색 */
-            font-weight: bold;   /* 글자 굵게 */
-            text-align: center;  /* 가운데 정렬 */
-            margin-top: 20px;    /* 위쪽 여백 */
-        }
-        
-		/* 테이블 셀 텍스트 가운데 정렬 (강제 적용) */
-        th, td {
-            text-align: center !important;
-        }
-        /* 테이블 구분선 추가 */
-        .w3-table-all, .w3-table-all th, .w3-table-all td {
-            border: 1px solid #ddd;
-            border-collapse: collapse;
-        }
-    </style>
 </head>
 <body>
 <div class="w3-container container-board">

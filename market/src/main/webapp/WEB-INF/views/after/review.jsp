@@ -11,35 +11,9 @@
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-	<style>
-		.btn-option {
-	        border: 1px solid #7590bd; /* 기본 파란색 테두리 */
-	        background-color: white; /* 기본 흰색 배경 */
-	        color: black; /* 기본 검은색 글자 */
-	    }
-	    
-	    
-        .radio-group {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-top: 20px;
-        }
-        .radio-group label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-        }
-        
-		.radio-group input[type="radio"] {
-	        transform: scale(1.5); /* 라디오 버튼 크기 조정 */
-	        margin-bottom: 5px; /* 텍스트와 라디오 버튼 사이 여백 */
-	    }
-	</style>
 </head>
 <body>
-<div class="container">
+<div class="container-review">
 	<h1>거래 리뷰</h1>
 	<hr>
 	<form action="<c:url value='/after/review'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">
@@ -131,9 +105,9 @@
 		
 		<!-- 상품 설명 -->
 		<div class="form-group">
-			<label for="content" style="font-weight: bold;">소중한 후기를 더 자세히 적어주세요.</label>
-			<textarea class="form-control" id="after_message" name="after_message" rows="5" oninput="updateCharCount()" maxlength="200"
-			placeholder="남겨주신 후기는 더 나은 중고거래 환경을 만드는데 보탬이 돼요. (선택사항)"></textarea>
+			<label for="content mt-3" style="font-weight: bold;">소중한 후기를 더 자세히 적어주세요.</label>
+			<textarea class="form-control mt-3" id="after_message" name="after_message" rows="5" oninput="updateCharCount()" maxlength="200"
+				placeholder="남겨주신 후기는 더 나은 중고거래 환경을 만드는데 보탬이 돼요. (선택사항)"></textarea>
 			<div class="char-count">0 / 200</div>
 		</div>
 		

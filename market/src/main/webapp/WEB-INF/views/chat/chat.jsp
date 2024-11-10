@@ -64,17 +64,29 @@
 	
 	<!-- 채팅 내용 표시 영역 -->
 	<div id="chat-history" class="chat-history">
-		<c:forEach var="chatDTO" items="${chatDTOs}">
-			<div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-				<strong>${chatDTO.getTargetMember().member_nick}</strong>: 
-				<span>${chatDTO.getChat().chat_content}</span>
-				<span class="last-time" style="font-size: small;">
-                    <fmt:formatDate value="${chatRoom.getChat().chat_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
-                </span>
-			</div>
-		</c:forEach>
+	    <c:forEach var="chatDTO" items="${chatDTOs}">
+	        <c:choose>
+	            <c:when test="${chatDTO.getTargetMember().member_nick ne member.member_nick}">
+	                <div class="chat-message their-message">
+	                    <strong>${chatDTO.getTargetMember().member_nick}</strong>: 
+	                    <span>${chatDTO.getChat().chat_content}</span>
+	                    <span class="last-time">
+	                        <fmt:formatDate value="${chatRoom.getChat().chat_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+	                    </span>
+	                </div>
+	            </c:when>
+	            <c:otherwise>
+	                <div class="chat-message my-message">
+	                    <span>${chatDTO.getChat().chat_content}</span>
+	                    <span class="last-time">
+	                        <fmt:formatDate value="${chatRoom.getChat().chat_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+	                    </span>
+	                </div>
+	            </c:otherwise>
+	        </c:choose>
+	    </c:forEach>
 	</div>
-	
+
 	<div class="chat-input-container">
 		<!-- 메시지 입력창 -->
 		<input type="text" id="message" placeholder="메시지를 입력하세요." onkeypress="checkEnter(event)">
