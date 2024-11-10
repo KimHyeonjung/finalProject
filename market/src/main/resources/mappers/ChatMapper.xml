@@ -17,13 +17,13 @@
     
     <!-- 채팅방의 최근 메시지 송신자 정보 조회 -->
     <select id="selectSenderByChatRoom" resultType="MemberVO">
-	SELECT m.*
-	FROM member m
-	JOIN chat_room cr
-	ON (m.member_num = cr.chatRoom_member_num OR m.member_num =
-	cr.chatRoom_member_num2)
-	WHERE cr.chatRoom_num = #{chatRoom_num}
-	AND m.member_num != #{member_num};
+		SELECT m.*
+		FROM member m
+		JOIN chat_room cr
+		ON (m.member_num = cr.chatRoom_member_num OR m.member_num =
+		cr.chatRoom_member_num2)
+		WHERE cr.chatRoom_num = #{chatRoom_num}
+		AND m.member_num != #{member_num};
     </select>
     
     <!-- 채팅방의 최근 메시지 조회 -->
@@ -68,7 +68,7 @@
     </delete>
     
     <insert id="insertNotification">
-    INSERT INTO notification (
+    	INSERT INTO notification (
             notification_member_num,
             notification_type_num,
             notification_chatRoom_num,
@@ -143,7 +143,7 @@
 	        SELECT chatRoom_member_num FROM chat_room WHERE chatRoom_num = #{chatRoomId}
 	        UNION
 	        SELECT chatRoom_member_num2 FROM chat_room WHERE chatRoom_num = #{chatRoomId}
-    );
-</select>
+	    );
+	</select>
     
 </mapper>

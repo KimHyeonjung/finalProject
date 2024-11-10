@@ -152,9 +152,8 @@
 				</div>
 				<div id="article-profile-right">
 					<dl id="point-wrap">
-						<dt>유저점수</dt>
-						<dd class="text-color-04 ">
-							${post.member_score } <span>점</span>
+						<dd>
+							${post.member_score } <span>m</span>
 						</dd>
 					</dl>
 				</div>				

@@ -70,25 +70,35 @@
 						</button>
 						<div id="profile-dropdown" class="dropdown-content">
 							<div class="account-section">
-									<p>${user.member_nick}</p>
-								</div>
-								<div class="account-section">
-									<p>${user.member_score}점</p>
-								</div>
-								<div class="account-section">
-									<p><span id="balance">0</span>원</p>
-								</div>
-								<div class="account-section">
-									<a href="<c:url value='/wallet/list'/>">내역</a>
-									<a href="<c:url value='/wallet/point'/>">충전</a>
-								</div>
-								<div class="account-section">
-									<a href="<c:url value='/mypage'/>">개인정보 변경</a>
-									<a href="<c:url value='/mypage/post/list'/>">게시글 관리</a>
-								</div>
-								<div class="account-section">
-								<a href="<c:url value='/mypage/wish/list'/>">찜목록</a>
-									<a href="<c:url value="/after/board"/>">내 리뷰</a>
+								<p>${user.member_nick}</p>
+							</div>
+							<div class="account-section">
+								<p>${user.member_score} M</p>
+							</div>
+							<div class="account-section">
+								<p><span id="balance">0</span>원</p>
+								<a href="<c:url value='/wallet/list'/>">내역</a>
+								<a href="<c:url value='/wallet/point'/>">충전</a>
+							</div>
+							<div class="account-section">
+								<a href="<c:url value='/mypage'/>">
+									<i class="fa-solid fa-user"></i>
+									개인정보 변경
+								</a>
+								<a href="<c:url value='/mypage/post/list'/>">
+									<i class="fa-solid fa-note-sticky"></i>
+									게시글 관리
+								</a>
+							</div>
+							<div class="account-section">
+								<a href="<c:url value='/mypage/wish/list'/>">
+									<i class="fa-solid fa-heart"></i>
+									찜목록
+								</a>
+								<a href="<c:url value="/after/board"/>">
+									<i class="fa-regular fa-pen-to-square"></i>
+									내 리뷰
+								</a>
 							</div>
 							<div class="account-section">
 									<a href="<c:url value='/logout'/>">로그아웃</a>
