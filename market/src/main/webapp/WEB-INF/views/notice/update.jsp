@@ -17,7 +17,7 @@
     <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/style.css'/>">
 </head>
 <body>
-    <div class="container">
+    <div class="container-notice">
         <h1>공지사항 수정</h1>
         <form action="<c:url value='/notice/update' />" method="post">
             <!-- 공지사항 번호 (hidden) -->
@@ -33,7 +33,7 @@
                 <textarea class="form-control" id="content" name="notice_content" required>${notice.notice_content}</textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary">수정 완료</button>
+            <button type="submit" class="btn color-update">수정 완료</button>
             <a href="/market/notice/detail?notice_num=${notice.notice_num}" class="btn btn-secondary">취소</a>
         </form>
     </div>

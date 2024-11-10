@@ -7,7 +7,7 @@
 <head>
 </head>
 <body>
-<div class="container">
+<div class="container-category">
 	<h3 class="report-title mt-3"><span>${post.post_title }</span> 게시물 신고 내역</h3>	
 	<div>
 		<span>${post.member_id }(${post.member_nick }) / </span><span>${post.post_date }</span>

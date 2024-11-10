@@ -211,13 +211,13 @@ header .form-control {
 }
 
 .noti-btn {
-    color: white;
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #9f78c9;
-    border: 1px solid #9f78c9;
-    border-radius: 3px;
-    margin-left: 10px;
+    color: white !important;
+    padding: 5px 15px !important;
+    cursor: pointer !important;
+    background-color: #9f78c9 !important;
+    border: 1px solid #9f78c9 !important;
+    border-radius: 3px !important;
+    margin-left: 10px !important;
 }
 
 .header-bottom {
@@ -264,48 +264,34 @@ header .form-control {
 }
 
 #profile-dropdown {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 두 개의 열로 정렬 */
-    gap: 15px;
+    display: flex;
+    flex-direction: column; /* 한 열로 정렬 */
     padding: 15px;
-    width: 220px; /* 전체 너비 조정 */
+    width: 220px;
     position: absolute;
     top: 100%;
+    right: 0;
     background-color: white;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     z-index: 1000;
 }
 
-#profile-dropdown > div {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px; /* 항목 사이 간격 */
-    flex-wrap: wrap; /* 항목이 공간을 넘어가면 자동 줄바꿈 */
-}
-
-.account-section {
-    display: flex;
-    flex-direction: column;
+#profile-dropdown .account-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns layout */
+    gap: 10px; /* Space between items */
     align-items: center;
-    text-align: center;
-    font-size: 14px;
+}
+
+#profile-dropdown .account-section i {
+    font-size: 20px; /* 아이콘 크기 조정 */
+    color: #666;
+}
+
+#profile-dropdown .account-section a {
+    font-size: 14px; /* 텍스트 크기 */
     color: #333;
-}
-
-.account-section p {
-    margin: 5px 0;
-    font-size: 16px;
-}
-
-.account-section a {
-    font-size: 1px; /* 텍스트 크기를 줄여서 아이콘과 균형을 맞춥니다 */
-    color: #333; /* 텍스트 색상을 더 눈에 띄게 */
-}
-
-.account-section i {
-    font-size: 40px; /* 아이콘 크기를 줄입니다 */
-    color: #666; /* 아이콘 색상을 조정하여 더 잘 어울리게 합니다 */
 }
 
 /* 상품 그리드 */
@@ -420,7 +406,7 @@ header .form-control {
 main {
     max-width: 100%;
     min-height: 80vh;
-    margin-top: 100px;
+    margin-top: 70px; /* 헤더 아래 공간을 줄임 */
     margin-bottom: 50px;
     padding: 10px;
     background-color: #f4f5f9;
@@ -797,11 +783,14 @@ input[type="number"] {
     main {
         margin: 10px 2%;
     }
+     #profile-dropdown .account-section {
+        grid-template-columns: 1fr; /* Single column layout for larger screens */
+    }
 }
 
 .fa-megaphone {
     color: #9f78c9;
-    font-size: 20px;
+    margin-right: 10px;
 }
 
 .fa-search {
@@ -1062,7 +1051,7 @@ footer a:hover {
     background-color: #5a359a;
 }
 
-.container-chat, .container-wish, .container-mypage, .container-mylist, .container-point, .container-board, .container-post, .container-detail {
+.container-home, .container-chat, .container-wish, .container-mypage, .container-mylist, .container-point, .container-board, .container-post, .container-detail, .container-category, .container-notice {
     max-width: 1000px; /* 원하는 너비 설정 */
     margin: 0 auto; /* 중앙 정렬 */
     padding: 15px; /* 적절한 여백 추가 */
@@ -1072,6 +1061,7 @@ footer a:hover {
 .container-review {
 	max-width: 1000px; /* 원하는 너비 설정 */
     margin: 0 auto; /* 중앙 정렬 */
+    margin-top: 0; /* 불필요한 여백 제거 */
     border-radius: 10px; /* 모서리를 둥글게 */
 }
 
@@ -1230,4 +1220,66 @@ th, td {
     font-size: small;
     color: gray;
     margin-top: 5px;
+}
+
+#btn-post, #btn-user, .color-update {
+    border: 1px solid #7590bd;
+    color: #7590bd;
+    background-color: transparent; /* 기본 배경색 */
+}
+
+#btn-post.active, #btn-user.active {
+    background-color: #7590bd; /* 클릭 시 배경색 */
+    color: white; /* 클릭 시 글자 색 */
+}
+
+.color-update:hover {
+	background-color: #7590bd; /* 클릭 시 배경색 */
+    color: white; /* 클릭 시 글자 색 */
+}
+
+.notice-header {
+	font-size: 30px;
+	font-weight: bold;
+}
+
+.notice-title {
+	font-size: 20px;
+	text-decoration: none;
+}
+
+.custom-btn {
+	background-color: #7590bd; /* 클릭 시 배경색 */
+    color: white; /* 클릭 시 글자 색 */
+    border: 1px solid #7590bd;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.notice-list {
+	background-color: #7590bd; /* 클릭 시 배경색 */
+    color: white; /* 클릭 시 글자 색 */
+    border: 1px solid #7590bd;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#topButton {
+    display: none; /* 기본적으로 버튼을 숨김 */
+    position: fixed;
+    bottom: 30px; /* 화면 하단에서의 위치 */
+    right: 30px; /* 화면 오른쪽에서의 위치 */
+    z-index: 99; /* 다른 요소보다 위에 표시 */
+    background-color: #7590bd; /* 버튼 배경색 */
+    color: white; /* 버튼 텍스트 색상 */
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s; /* 효과를 부드럽게 전환 */
+}
+
+#topButton:hover {
+    background-color: #5a359a; /* 버튼에 마우스 올릴 때 색상 변경 */
 }

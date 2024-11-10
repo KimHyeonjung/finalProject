@@ -24,7 +24,7 @@
             </button>
         </form>
         <a id="notice" href="/market/notice/list">
-            <i class="fa-solid fa-megaphone"></i>
+            <i class="fa-solid fa-megaphone">공지사항</i>
         </a>
         <button id="noti-btn" type="button" class="btn noti-btn">
             <i class="fa-solid fa-bell"></i>

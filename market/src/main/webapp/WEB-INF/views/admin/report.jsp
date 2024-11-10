@@ -5,10 +5,10 @@
 <!DOCTYPE html>
 <html>
 <body>
-	<div class="container">
+	<div class="container-category">
 		<h2 class="report-title mt-3">게시물 신고 내역</h2>
-		<button type="button" class="btn btn-outline-dark" id="btn-post">게시물</button>
-		<button type="button" class="btn btn-outline-dark active" id="btn-user">유저</button>
+		<button type="button" class="btn" id="btn-post">게시물</button>
+		<button type="button" class="btn active" id="btn-user">유저</button>
 		<div id="table-report">
 			
 		</div>

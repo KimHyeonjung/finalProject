@@ -12,7 +12,7 @@
 </head>
 </head>
 <body>
-<div class="container">
+<div class="container-notice">
 <div class="notice-container">
     <div class="notice-header">공지사항</div>
     
@@ -42,7 +42,7 @@
 	    </div>
 	</c:forEach>
     <c:if test="${user != null && memberAuth == 'ADMIN'}">
-	    <button class="insert-button" onclick="location.href='/market/notice/insert'">글쓰기</button>
+	    <button class="insert-button notice-list" onclick="location.href='/market/notice/insert'">글쓰기</button>
 	</c:if>
 	
 </div>

@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container-review">
+<div class="container-review mt-3">
 	<h1>거래 리뷰</h1>
 	<hr>
 	<form action="<c:url value='/after/review'/>" method="post" onsubmit="setPostPosition()" accept-charset="UTF-8" enctype="multipart/form-data">

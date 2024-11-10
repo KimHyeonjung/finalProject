@@ -17,7 +17,7 @@
 
 <body>
 
-<div class="container">
+<div class="container-home">
     <h3 class="mt-3">오늘의 상품 추천</h3>
     <div class="product-grid">
     	<c:forEach items="${list }" var="post">    		
@@ -53,7 +53,6 @@
     	</c:forEach>        
         <!-- 추가 상품 -->
     </div>
-</div>
 </div>
 <script>
 $(document).ready(function(){

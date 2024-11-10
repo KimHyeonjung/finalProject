@@ -13,7 +13,7 @@
 </head>
 </head>
 <body>
-<div class="container">
+<div class="container-notice">
     <h1 class="title">${notice.notice_title}</h1>
     <div class="info">
          <fmt:formatDate value="${notice.notice_date}" pattern="yyyy/MM/dd" />
@@ -39,7 +39,7 @@
 	    </c:if>
     </div>
   
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 10px;">
         <a href="/market/notice/list" class="btn btn-secondary">목록으로</a>
     </div>
     
