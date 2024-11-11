@@ -129,4 +129,7 @@
     <select id="selectWalletByWalletNum" resultType="WalletVO">
     	select * from wallet where wallet_num = #{wallet_num}
     </select>
+    <update id="updatePostPosition">
+    	update post set post_position_num = #{postion_num} where post_num = #{post_num}
+    </update>
 </mapper>

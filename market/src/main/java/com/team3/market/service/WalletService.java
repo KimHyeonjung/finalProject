@@ -310,11 +310,13 @@ public class WalletService {
 	    seller.setMember_money(afterMoney);
 	    walletDao.updateMoney(seller);
 	    
-	    // 4. 거래 테이블에 업데이트	  
+	    // 5. 거래 테이블에 업데이트	  
 	    wallet.setWallet_amount(0);
 	    wallet.setWallet_order_status("거래 완료");
 	    wallet.setWallet_payout_status("지급 완료");
     	walletDao.updateTransactionBuyerCancel(wallet);
+    	// 6. 게시물 거래 상태 변경 
+    	walletDao.updatePostPosition(wallet.getWallet_post_num(), 5);
 	    
 	    return amount;
 		
