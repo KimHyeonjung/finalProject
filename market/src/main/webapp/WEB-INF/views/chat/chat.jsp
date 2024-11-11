@@ -115,7 +115,7 @@
 	<script>
 const post_price = ${post.post_price};
 		//let websocket = new WebSocket("http://localhost:8080/market/chat/echo.do?chatRoomNum=${chatRoomNum}&member_nick=${member.member_nick}");
-		let websocket = new WebSocket("http://localhost:8080/market/ws/notify?chatRoomNum=${chatRoomNum}&member_nick=${member.member_nick}");
+		let websocket = new WebSocket("http://192.168.30.194:8080/market/ws/notify?chatRoomNum=${chatRoomNum}&member_nick=${member.member_nick}");
 		websocket.onopen = function(evt) {
 			console.log("open websocket");
 			//websocket.send(JSON.stringify({ type: "join", chatRoomNum: ${chatRoomNum} }));
