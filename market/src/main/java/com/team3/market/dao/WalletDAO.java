@@ -1,13 +1,15 @@
 package com.team3.market.dao;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import com.team3.market.model.vo.ChatRoomVO;
 import com.team3.market.model.vo.MemberVO;
 import com.team3.market.model.vo.PointVO;
 import com.team3.market.model.vo.WalletVO;
-
-import org.apache.ibatis.annotations.Mapper;
-import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface WalletDAO {
@@ -56,6 +58,8 @@ public interface WalletDAO {
 	boolean updateWalletShipmentByWalletNum(int wallet_num);
 
 	WalletVO selectWalletByWalletNum(Integer wallet_num);
+
+	void updatePostPosition(@Param("post_num")int post_num, @Param("position_num")int position_num);
 
 
 }

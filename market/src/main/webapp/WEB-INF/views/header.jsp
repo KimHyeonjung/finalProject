@@ -75,7 +75,7 @@
 								<p>${user.member_score} M</p>
 							</div>
 							<div>
-								<p><span id="balance">0</span>원</p>
+								<p><span id="balance">${user.member_money }</span>원</p>
 								<a href="<c:url value='/wallet/list'/>">내역</a>
 								<a href="<c:url value='/wallet/point'/>">충전</a>
 							</div>
