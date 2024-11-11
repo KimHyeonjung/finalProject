@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container-list">
     <h3 class="mt-3">${category_name}</h3>
     <div class="product-grid">
     	<c:forEach items="${list }" var="item"> 

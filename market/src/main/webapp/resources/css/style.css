@@ -1080,11 +1080,13 @@ footer a:hover {
     background-color: #5a359a;
 }
 
-.container-home, .container-chat, .container-wish, .container-mypage, .container-mylist, .container-point, .container-board, .container-post, .container-detail, .container-category, .container-notice {
+.container-list, .container-home, .container-chat, .container-wish, .container-mypage, .container-mylist, .container-point, .container-board, .container-post, .container-detail, .container-category, .container-notice {
     max-width: 1000px; /* 원하는 너비 설정 */
     margin: 0 auto; /* 중앙 정렬 */
     padding: 15px; /* 적절한 여백 추가 */
     border-radius: 10px; /* 모서리를 둥글게 */
+    margin-top: 10px;
+    min-height: calc(100vh - 60px); /* 화면 전체 높이에서 header 높이만큼 뺌 */
 }
 
 .container-review {

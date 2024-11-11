@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body>
-<div class="w3-container container-board">
+<div class="container-board mt-3">
     <h2>리뷰 게시판</h2>
     <hr>
     <c:choose>
