@@ -8,8 +8,8 @@
 html, body {
     margin: 0;
     padding: 0;
-    overflow-x: hidden; /* 가로 스크롤을 없애기 위한 설정 */
-    width: 100vw; /* 화면 너비에 맞추기 */
+    width: 100%; /* 전체 너비 */
+    overflow-x: hidden; /* 가로 스크롤 제거 */
 }
 
 body {
@@ -270,28 +270,41 @@ header .form-control {
     width: 220px;
     position: absolute;
     top: 100%;
-    right: 0;
+    right: auto; /* 기존 right 속성 해제 */
     background-color: white;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     z-index: 1000;
+    transform: translateX(-80%); /* 완전히 왼쪽에 위치 */
 }
 
 #profile-dropdown .account-section {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Two columns layout */
-    gap: 10px; /* Space between items */
+    gap: 5px; /* Space between items */
     align-items: center;
+    margin-right: 10px; /* 오른쪽 여백을 없앰 */
+    text-align: left; /* 왼쪽 정렬 */
+    width: 180px; /* 원하는 크기로 설정 */
 }
 
-#profile-dropdown .account-section i {
-    font-size: 20px; /* 아이콘 크기 조정 */
-    color: #666;
+.account-section:hover {
+	text-decoration: none;
 }
 
-#profile-dropdown .account-section a {
-    font-size: 14px; /* 텍스트 크기 */
-    color: #333;
+/* 금액과 내역, 충전을 같은 줄에 배치 */
+.balance-info {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* 간격 조정 */
+}
+
+/* 아이콘과 텍스트를 수직 정렬 */
+.account-section > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 /* 상품 그리드 */
@@ -352,7 +365,7 @@ header .form-control {
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
+    left: 40px;
     background-color: white;
     width: 200px;
     padding: 10px;
@@ -370,7 +383,7 @@ header .form-control {
 }
 
 .dropdown-content a:hover {
-    background-color: #f1f1f1;
+    text-decoration: none;
 }
 
 .dropdown-content.show {
@@ -388,6 +401,7 @@ header .form-control {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     z-index: 10001;
+    transform: translateX(-65%); /* 완전히 왼쪽에 위치 */
 }
 
 .noti-list .list-group-item {
@@ -404,13 +418,12 @@ header .form-control {
 
 /* 메인 콘텐츠 */
 main {
+    width: 100%;
     max-width: 100%;
-    min-height: 80vh;
-    margin-top: 70px; /* 헤더 아래 공간을 줄임 */
-    margin-bottom: 50px;
-    padding: 10px;
+    padding: 0;
+    overflow-x: hidden;
     background-color: #f4f5f9;
-    border-radius: 10px;
+    margin-top: 60px;
 }
 
 .button-submit, #submitBtn {
@@ -731,6 +744,7 @@ input[type="number"] {
     z-index: 20;
     text-align: center;
     display: none;
+    border-radius: 10px;
 }
 
 .list-group {
@@ -769,22 +783,32 @@ input[type="number"] {
 
 @media (max-width: 992px) {
     main {
-        margin: 2px 10%;
+        margin: 2% 10%;
+    }
+    body {
+        padding-top: 100px; /* 작은 화면에서는 header의 높이에 맞춰 여백을 늘림 */
+        padding: 100px 0;
     }
 }
 
 @media (max-width: 768px) {
     main {
-        margin: 5px 5%;
+        margin: 5% 5%;
+    }
+    body {
+        padding-top: 100px; /* 작은 화면에서는 header의 높이에 맞춰 여백을 늘림 */
     }
 }
 
 @media (max-width: 576px) {
     main {
-        margin: 10px 2%;
+        margin: 10 2%;
     }
      #profile-dropdown .account-section {
         grid-template-columns: 1fr; /* Single column layout for larger screens */
+    }
+    body {
+        padding-top: 100px; /* 작은 화면에서는 header의 높이에 맞춰 여백을 늘림 */
     }
 }
 
@@ -803,6 +827,11 @@ input[type="number"] {
 
 .fa-heart {
     color: white;
+}
+
+#fa-user {
+    font-size: 60px; /* 원하는 크기로 조정 */
+    color: #ccc;
 }
 
 #search-button {
@@ -863,10 +892,10 @@ footer {
     background-color: #f4f5f9;
     color: #9f78c9;
     width: 100%;
-    margin: 0 5%;
     height: 200px;
     padding: 20px 0;
     text-align: left;
+    margin-top: auto; /* 화면 하단에 고정 */
 }
 
 footer a {
@@ -1059,10 +1088,14 @@ footer a:hover {
 }
 
 .container-review {
-	max-width: 1000px; /* 원하는 너비 설정 */
-    margin: 0 auto; /* 중앙 정렬 */
-    margin-top: 0; /* 불필요한 여백 제거 */
-    border-radius: 10px; /* 모서리를 둥글게 */
+	max-width: 1000px; /* 원하는 너비로 설정 */
+    margin: 0 auto;
+    padding: 15px;
+    box-sizing: border-box;
+    flex-grow: 1;
+    min-height: calc(100vh - 260px); /* header와 footer 높이를 뺀 값 */
+    background-color: #f4f5f9;
+    width: 100%;
 }
 
 .container-chat {
@@ -1243,7 +1276,7 @@ th, td {
 	font-weight: bold;
 }
 
-.notice-title {
+.notice-title a {
 	font-size: 20px;
 	text-decoration: none;
 }
@@ -1282,4 +1315,69 @@ th, td {
 
 #topButton:hover {
     background-color: #5a359a; /* 버튼에 마우스 올릴 때 색상 변경 */
+}
+
+
+.btn-active {
+    background-color: #7590bd; /* 활성화 상태의 배경색 */
+    color: white; /* 활성화 상태의 글자 색 */
+    border: 1px solid #7590bd;
+    outline: none; /* 포커스 outline 제거 */
+    box-shadow: none; /* 박스 그림자 제거 */
+    text-decoration: none; /* 텍스트 장식 제거 */
+}
+
+.container-product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 각 칸의 최소 너비를 200px로 설정 */
+    gap: 20px; /* 칸 간격 */
+    padding: 20px;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ddd; /* 테두리 추가 */
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px; /* 모서리를 둥글게 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.product img.thumbnail {
+    width: 100%;
+    height: 150px; /* 이미지 크기 조정 */
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.product-info h2 {
+    font-size: 18px;
+    margin: 10px 0;
+    font-weight: bold;
+    color: #333;
+}
+
+.product-info .price, .product-info .time, .product-info .location {
+    color: #666;
+    font-size: 14px;
+}
+
+/* 전체 선택과 삭제 버튼 스타일 */
+.nav .nav-link {
+    cursor: pointer;
+    color: #7590bd;
+}
+
+.nav .nav-link:hover {
+    color: #333;
+}
+
+/* 선택 삭제 버튼의 확인 메시지 */
+#select-delete {
+    color: red;
+    cursor: pointer;
 }

@@ -401,7 +401,7 @@ $(document).on('click', '.report-btn', function(){
 			success : function (data){
 				if(data == 1){
 					alert('신고 완료');
-					$('#report').addClass('active');
+					$('#report').addClass('btn-active');
 				}
 				else if(data == 2){
 					alert('이미 신고한 게시글입니다.');
@@ -429,9 +429,9 @@ $(document).on('click', '#wish', function(){
 		data : {post_num : post_num}, 
 		success : function (data){	
 			if(data){
-				$('#wish').addClass('active');
+				$('#wish').addClass('btn-active');
 			}else{
-				$('#wish').removeClass('active');
+				$('#wish').removeClass('btn-active');
 			}
 		}, 
 		error : function(jqXHR, textStatus, errorThrown){
@@ -485,7 +485,7 @@ $(document).on('click', '#propose', function () {
 			if(data){
 				$('.dropdown-toggle').click();
 				alert('판매자에게 가격제안을 보냈습니다.');
-				$('.dropdown-toggle').addClass('active');
+				$('.dropdown-toggle').addClass('btn-active');
 				/* location.href = `<c:url value="/채팅룸"/>`; */
 			} else {
 				alert('더 이상 흥정을 할 수 없습니다.');

@@ -9,7 +9,6 @@
 </head>
 <body>
 	<div class="container-wish">				
-		<h2>찜 목록 ${list.size()}</h2>
 		<div class="d-flex justify-content-between">
 			<ul class="nav">
 				<li class="nav-item">
@@ -37,7 +36,7 @@
 				</li>
 			</ul>
 		</div>
-		<div class="container-product">		
+		<div class="container-product-grid">		
 			<c:forEach items="${list }" var="post"> 
 				<div class="product">
 		            <img class="product-click thumbnail" src="<c:url value="/resources/img/none_image.jpg"/>" 

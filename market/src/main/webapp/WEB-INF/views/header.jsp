@@ -74,30 +74,28 @@
 							<div>
 								<p>${user.member_score} M</p>
 							</div>
-							<div>
-								<p><span id="balance">${user.member_money }</span>원</p>
-								<a href="<c:url value='/wallet/list'/>">내역</a>
-								<a href="<c:url value='/wallet/point'/>">충전</a>
+							<div class="balance-info">
+								<p><span id="balance" style="margin-bottom: 15px;">0</span>원</p>
+								<a href="<c:url value='/wallet/list'/>" style="margin-bottom: 15px;">내역</a>
+								<a href="<c:url value='/wallet/point'/>" style="margin-bottom: 15px;">충전</a>
 							</div>
 							<div class="account-section">
-								<a href="<c:url value='/mypage'/>">
-									<i class="fa-solid fa-user"></i>개인정보 변경
-								</a>
-							</div>
-							<div class="account-section">
-								<a href="<c:url value='/mypage/post/list'/>">
-									<i class="fa-solid fa-note-sticky"></i>게시글 관리
-								</a>
-							</div>
-							<div class="account-section">
-								<a href="<c:url value='/mypage/wish/list'/>">
-									<i class="fa-solid fa-heart"></i>찜목록
-								</a>
-							</div>
-							<div class="account-section">
-								<a href="<c:url value="/after/board"/>">
-									<i class="fa-regular fa-pen-to-square"></i>내 리뷰
-								</a>
+								<div>
+						            <i class="fa-solid fa-user" id="fa-user" style="font-size: 30px; color: #666;"></i>
+						            <a href="<c:url value='/mypage'/>" style="font-size: 12px; color: #333;">개인정보 변경</a>
+						        </div>
+						        <div>
+						            <i class="fa-solid fa-note-sticky" style="font-size: 30px; color: #666;"></i>
+						            <a href="<c:url value='/mypage/post/list'/>" style="font-size: 12px; color: #333;">게시글 관리</a>
+						        </div>
+						        <div>
+						            <i class="fa-solid fa-heart abc" id="fa-user" style="font-size: 30px; color: #666;"></i>
+						           	<a href="<c:url value='/mypage/wish/list'/>" style="font-size: 12px; color: #333;">찜목록</a>
+						        </div>
+						        <div>
+						           	<i class="fa-regular fa-pen-to-square" id="fa-user" style="font-size: 30px; color: #666;"></i>
+						            <a href="<c:url value="/after/board"/>" style="font-size: 12px; color: #333;">내 리뷰</a>
+						        </div>
 							</div>
 							<div>
 								<a href="<c:url value='/logout'/>">로그아웃</a>
@@ -107,7 +105,7 @@
                 </li>
             </c:if>
         </div>
-    
+        
         <div class="noti-modal" style="display:none;">
             <div class="list-group noti-list"></div>
         </div>
