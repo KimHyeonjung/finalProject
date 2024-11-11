@@ -61,7 +61,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		  registry.addInterceptor(new PrevUrlInterceptor()).addPathPatterns("/login");
 		  registry.addInterceptor(new AdminInterceptor()).addPathPatterns("/report/list"); // 관리자만 접근
 		  registry.addInterceptor(new MemberInterceptor()).addPathPatterns("/post/insert", "/post/update", 
-				  "/mypage/*/*", "/wallet/*/*"); // 회원만
+				  "/mypage/*/*", "/wallet/*/*").excludePathPatterns("/post/thumbnail"); // 회원만
 	  }
 	  // .excludePathPatterns("/login", "/logout");
 	  // 인터셉터추가 및 URL 패턴 설정 // 모든 경로에 대해 인터셉터 적용 //제외할 경로, 특정 경로 제외 }
