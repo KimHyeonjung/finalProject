@@ -26,7 +26,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	if(${user != null}){
-	    var socket = new WebSocket("ws://192.168.30.194:8080" + "<c:url value="/ws/notify"/>");
+	    var socket = new WebSocket("ws://localhost:8080" + "<c:url value="/ws/notify"/>");
 	
 	    socket.onmessage = function(event) {
 	        var notification = event.data;
