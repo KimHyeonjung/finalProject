@@ -1276,6 +1276,7 @@ th, td {
 .notice-header {
 	font-size: 30px;
 	font-weight: bold;
+	margin-bottom: 10px;
 }
 
 .notice-title a {
@@ -1297,6 +1298,15 @@ th, td {
     border: 1px solid #7590bd;
     border-radius: 5px;
     margin-top: 10px;
+}
+
+.notice-item {
+    padding: 15px 0; /* 상하 여백 추가 */
+    border-top: 1px solid #ddd; /* 항목 하단에 구분선 추가 */
+}
+
+.notice-item:last-child {
+    border-bottom: none; /* 마지막 항목에는 선을 표시하지 않음 */
 }
 
 #topButton {

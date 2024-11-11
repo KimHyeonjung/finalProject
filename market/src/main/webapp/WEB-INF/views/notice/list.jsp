@@ -18,7 +18,7 @@
     
     <c:forEach var="notice" items="${pinnedNotices}">
 	    <div class="notice-item pinned">
-	        <div class="notice-title">
+	        <div class="notice-title mt-3">
 	            <a href="/market/notice/detail?notice_num=${notice.notice_num}">
 	                <strong></strong> ${notice.notice_title}
 	            </a>
