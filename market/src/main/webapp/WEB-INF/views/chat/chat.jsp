@@ -2,7 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -68,19 +67,19 @@
 	        <c:choose>
 	            <c:when test="${chatDTO.getTargetMember().member_nick ne member.member_nick}">
 	                <div class="chat-message their-message">
-	                    <strong>${chatDTO.getTargetMember().member_nick}</strong>: 
+	                    <strong>${chatDTO.getTargetMember().member_nick}</strong>
 	                    <span>${chatDTO.getChat().chat_content}</span>
-	                    <span class="last-time">
-	                        <fmt:formatDate value="${chatRoom.getChat().chat_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
-	                    </span>
+                        <span>
+					        <fmt:formatDate value="${chatRoom.getChat().chat_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+					    </span>
 	                </div>
 	            </c:when>
 	            <c:otherwise>
 	                <div class="chat-message my-message">
 	                    <span>${chatDTO.getChat().chat_content}</span>
-	                    <span class="last-time">
-	                        <fmt:formatDate value="${chatRoom.getChat().chat_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
-	                    </span>
+                        <span>
+					        <fmt:formatDate value="${chatRoom.getChat().chat_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+					    </span>
 	                </div>
 	            </c:otherwise>
 	        </c:choose>
@@ -95,6 +94,7 @@
 		<!-- 송금 요청 버튼 -->
 		<button onclick="openModal()" class="chat-btn">송금</button>
 		<button type="button" onclick="window.location.href='<c:url value='/after/review/${post.post_num}' />'" class="chat-btn">후기 작성</button>
+		<span>${chatRoom.getChat().chat_date}</span>
 	</div>
 	
 	<!-- 송금 모달 -->
